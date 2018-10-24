@@ -5,7 +5,9 @@ import android.bluetooth.BluetoothAdapter;
 
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +25,10 @@ import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.Bluetooth.BluetoothLeService;
 import com.guanglun.atouch.Bluetooth.BuleDevice;
 import com.guanglun.atouch.Bluetooth.ScanBlueActivity;
+import com.guanglun.atouch.DBManager.DBControl;
+import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.Floating.FloatService;
+import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
 import com.guanglun.atouch.Touch.TCPClient;
 
@@ -42,10 +47,30 @@ public class MainActivity extends AppCompatActivity {
 
     private BlueScanAlertDialog blueScanAlertDialog;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        try {
+            //检测是否有写的权限
+            int permission = ActivityCompat.checkSelfPermission(this,
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // 没有写的权限，去申请写的权限，会弹出对话框
+                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
@@ -103,6 +128,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        DBControl dbControl = new DBControl(this);
+
+        //KeyMouse keyMouse = new KeyMouse(1,"F1","F1按键");
+
+        //dbControl.InsertDatabase(DatabaseStatic.TABLE_NAME,keyMouse);
+
+        dbControl.SearchDatabase(DatabaseStatic.TABLE_NAME);
     }
 
     public void add_plan()

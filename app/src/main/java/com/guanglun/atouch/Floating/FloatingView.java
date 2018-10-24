@@ -1,6 +1,8 @@
 package com.guanglun.atouch.Floating;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.Log;
@@ -12,7 +14,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 
+import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.R;
 
 /**
@@ -20,17 +24,25 @@ import com.guanglun.atouch.R;
  */
 public class FloatingView extends FrameLayout {
     private Context mContext;
-    private View mView;
+    private View mView,select_view;
     private Button bt_float_manager,bt_float_add;
     private int mTouchStartX, mTouchStartY;//手指按下时坐标
     private WindowManager.LayoutParams mParams;
     private FloatingManager mWindowManager;
+    private FloatSelectAlertDialog floatSelectAlertDialog;
+    private ListView select_listview;
 
     public FloatingView(Context context) {
         super(context);
         mContext = context.getApplicationContext();
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
+
         mView = mLayoutInflater.inflate(R.layout.floating_view, null);
+
+        select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
+        select_listview = select_view.findViewById(R.id.listview);
+        floatSelectAlertDialog = new FloatSelectAlertDialog(mContext,select_view);
+
         bt_float_manager = (Button) mView.findViewById(R.id.bt_float_manager);
         bt_float_manager.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,10 +58,19 @@ public class FloatingView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Log.e("DEBUG","bt_float_add");
+
+                SelectKey();
             }
         });
 
         mWindowManager = FloatingManager.getInstance(mContext);
+    }
+
+    void SelectKey()
+    {
+
+
+        floatSelectAlertDialog.Show();
     }
 
     public void show() {

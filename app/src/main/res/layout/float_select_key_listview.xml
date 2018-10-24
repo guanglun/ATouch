@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_float_select_key_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="F1"
+        android:textColor="#444"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_float_select_key_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_float_select_key_name"
+        android:layout_marginTop="1dp"
+        android:maxLines="2"
+        android:minLines="1"
+        android:text="键盘F1键"
+        android:textColor="#898989"
+        android:textSize="16sp" />
+
+</RelativeLayout>
