@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Atouch</string>
+    <string name="title_activity_scan_blue">ScanBlueActivity</string>
+
+        <string-array name="keymap">
+            <item >鼠标 左键</item>
+            <item >鼠标 右键</item>
+            <item >鼠标 中键</item>
+            <item >鼠标 移动</item>
+            <item >Esc</item>
+            <item >F1</item>
+            <item >F2</item>
+            <item >F3</item>
+            <item >F4</item>
+        </string-array>
+
+</resources>
