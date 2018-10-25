@@ -58,19 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        try {
-            //检测是否有写的权限
-            int permission = ActivityCompat.checkSelfPermission(this,
-                    "android.permission.WRITE_EXTERNAL_STORAGE");
-            if (permission != PackageManager.PERMISSION_GRANTED) {
-                // 没有写的权限，去申请写的权限，会弹出对话框
-                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        PermissionsManager.DSPermissions(this);
 
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
@@ -131,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         DBControl dbControl = new DBControl(this);
 
-        //KeyMouse keyMouse = new KeyMouse(1,"F1","F1按键");
+        KeyMouse keyMouse = new KeyMouse(1,"F1","F1按键");
 
         //dbControl.InsertDatabase(DatabaseStatic.TABLE_NAME,keyMouse);
 

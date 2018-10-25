@@ -9,10 +9,10 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     private String DEBUG_TAG = "SQLHelper";
 
-    public static String CREATE_TABLE = "create table "+ DatabaseStatic.TABLE_NAME +"(" +
-            DatabaseStatic.KEY_MOUSE_ID + " Integer," +
-            DatabaseStatic.KEY_MOUSE_NAME + " varchar(30)," +
-            DatabaseStatic.KEY_MOUSE_DESCRIPTION + " varchar(30))" ;    // 用于创建表的SQL语句
+    public static String CREATE_TABLE = "CREATE TABLE "+ DatabaseStatic.TABLE_NAME +"(" +
+            DatabaseStatic.KEY_MOUSE_ID + " INT PRIMARY KEY," +
+            DatabaseStatic.KEY_MOUSE_NAME + " VARCHAR(30)," +
+            DatabaseStatic.KEY_MOUSE_DESCRIPTION + " VARCHAR(30)) WITHOUT ROWID" ;    // 用于创建表的SQL语句
 
 
     public SQLHelper(Context context, String name,

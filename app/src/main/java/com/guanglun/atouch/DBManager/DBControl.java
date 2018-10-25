@@ -35,10 +35,11 @@ public class DBControl {
 
     public void InsertDatabase(String TableName,KeyMouse keyMouse)   // 向数据库中插入新数据
     {
-        if(QSLhelper == null)
+        if(database == null)
         {
             return;
         }
+
 
         //database = QSLhelper.getWritableDatabase();
 
@@ -50,7 +51,7 @@ public class DBControl {
 
     public void UpdateDatabase(String TableName,KeyMouse keyMouse)   // 更新数据
     {
-        if(QSLhelper == null)
+        if(database == null)
         {
             return;
         }
@@ -64,7 +65,7 @@ public class DBControl {
 
     public void DeleteDatabase(String TableName,int id)   // 数据库中删除数据
     {
-        if(QSLhelper == null)
+        if(database == null)
         {
             return;
         }
@@ -79,7 +80,7 @@ public class DBControl {
 
     public void SearchDatabase(String TableName)   // 查询数据库中的数据
     {
-        if(QSLhelper == null)
+        if(database == null)
         {
             return;
         }
@@ -105,7 +106,7 @@ public class DBControl {
             str.append("数据库为空！");
         }
 
-        Log.i(DEBUG_TAG,str.toString());
+        Log.i(DEBUG_TAG, str.toString());
     }
 
 }
