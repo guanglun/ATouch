@@ -49,11 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     private BlueScanAlertDialog blueScanAlertDialog;
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

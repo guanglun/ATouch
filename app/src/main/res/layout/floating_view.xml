@@ -20,8 +20,8 @@
         android:id="@+id/bt_float_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:text="保存" />

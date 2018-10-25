@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.DBManager.DBControl;
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class FloatingView extends FrameLayout {
     private Context mContext;
-    private View mView,select_view;
+    private View select_view;
     private Button bt_float_manager,bt_float_add;
     private int mTouchStartX, mTouchStartY;//手指按下时坐标
     private WindowManager.LayoutParams mParams;
@@ -38,14 +39,18 @@ public class FloatingView extends FrameLayout {
     private FloatSelectAlertDialog floatSelectAlertDialog;
     private ListView select_listview;
 
+    private RelativeLayout relativeLayout;
+
     private List<KeyMouse> keyMouseList;
 
     public FloatingView(Context context) {
         super(context);
+
         mContext = context.getApplicationContext();
+
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
 
-        mView = mLayoutInflater.inflate(R.layout.floating_view, null);
+        relativeLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.floating_view, null);
 
         select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
@@ -61,11 +66,24 @@ public class FloatingView extends FrameLayout {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 KeyMouse keyMouse = keyMouseList.get(i);
+
+                final Button bt_save = new Button(mContext);
+                bt_save.setText("保存");
+
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                lp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+                bt_save.setLayoutParams(lp);   ////设置按钮的布局属性
+                relativeLayout.addView(bt_save);
+
+                mWindowManager.addView(relativeLayout,mParams);
+
                 floatSelectAlertDialog.Cancel();
             }
         });
 
-        bt_float_manager = (Button) mView.findViewById(R.id.bt_float_manager);
+        bt_float_manager = (Button) relativeLayout.findViewById(R.id.bt_float_manager);
         bt_float_manager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +93,7 @@ public class FloatingView extends FrameLayout {
 
         //bt_float_manager.setOnTouchListener(mOnTouchListener);
 
-        bt_float_add = (Button) mView.findViewById(R.id.bt_float_add);
+        bt_float_add = (Button) relativeLayout.findViewById(R.id.bt_float_add);
         bt_float_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +114,7 @@ public class FloatingView extends FrameLayout {
     }
 
     public void show() {
+
         mParams = new WindowManager.LayoutParams();
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
         mParams.x = 0;
@@ -109,16 +128,13 @@ public class FloatingView extends FrameLayout {
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mParams.width = LayoutParams.MATCH_PARENT;
         mParams.height = LayoutParams.WRAP_CONTENT;
-        mWindowManager.addView(mView, mParams);
+        mWindowManager.addView(relativeLayout, mParams);
 
-        //bt_float_add.setVisibility(View.GONE);
-        //逐帧动画
-        //AnimationDrawable animationDrawable=(AnimationDrawable)mImageView.getDrawable();
-        //animationDrawable.start();
+
     }
 
     public void hide() {
-        mWindowManager.removeView(mView);
+        mWindowManager.removeView(relativeLayout);
     }
 
     private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
@@ -132,7 +148,7 @@ public class FloatingView extends FrameLayout {
                 case MotionEvent.ACTION_MOVE:
                     mParams.x += (int) event.getRawX() - mTouchStartX;
                     mParams.y += (int) event.getRawY() - mTouchStartY;//相对于屏幕左上角的位置
-                    mWindowManager.updateView(mView, mParams);
+                    mWindowManager.updateView(relativeLayout, mParams);
                     break;
                 case MotionEvent.ACTION_UP:
                     break;
