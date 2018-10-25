@@ -22,6 +22,7 @@ public class FloatListAdapter extends BaseAdapter {
 
         mInflater = LayoutInflater.from(context);
         this.keyMouseList = keyMouseList;
+
     }
 
     //返回数据集的长度

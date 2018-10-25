@@ -15,7 +15,8 @@ public class FloatService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-        mFloatingView=new FloatingView(this);
+
+        mFloatingView = new FloatingView(this);
     }
 
     @Override
@@ -26,13 +27,21 @@ public class FloatService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
+
             String action=intent.getStringExtra(ACTION);
+
             if(SHOW.equals(action)){
+
                 mFloatingView.show();
+
             }else if(HIDE.equals(action)){
+
                 mFloatingView.hide();
+
             }
         }
+
         return super.onStartCommand(intent, flags, startId);
+
     }
 }

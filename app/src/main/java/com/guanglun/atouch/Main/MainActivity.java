@@ -32,6 +32,8 @@ import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
 import com.guanglun.atouch.Touch.TCPClient;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private TCPClient tcpclient = null;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             public void on_disconnect() {
                 Log.e("DEBUG","socket disconnect");
             }
+
         });
 
         Button bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
@@ -119,11 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         DBControl dbControl = new DBControl(this);
 
-        KeyMouse keyMouse = new KeyMouse(1,"F1","F1按键");
-
-        //dbControl.InsertDatabase(DatabaseStatic.TABLE_NAME,keyMouse);
-
-        dbControl.SearchDatabase(DatabaseStatic.TABLE_NAME);
+        List<KeyMouse> keyMouseList = dbControl.LoadTableList(DatabaseStatic.TABLE_NAME);
     }
 
     public void add_plan()

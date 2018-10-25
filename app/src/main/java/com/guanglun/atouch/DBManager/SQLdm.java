@@ -20,9 +20,11 @@ public class SQLdm {
 
     private String DEBUG_TAG = "SQLdm";
 
+    private final boolean isReloadDB = false;
+
     //数据库存储路径
-    String filePath = "/ATouch";
-    String fileName = "KeyboardMouse.db";
+    private final String filePath = "/ATouch";
+    private final String fileName = "KeyboardMouse.db";
 
     SQLiteDatabase database;
 
@@ -31,6 +33,16 @@ public class SQLdm {
         String sd_path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         Log.i(DEBUG_TAG, "filePath: " + sd_path + filePath + "/" + fileName);
+
+        if(isReloadDB == true){
+
+            File file = new File( sd_path + filePath + "/" + fileName);
+
+            if(file.exists()){
+                Log.i(DEBUG_TAG, "isReloadDB == true Delet file");
+                file.delete();
+            }
+        }
 
         File jhPath = new File( sd_path + filePath + "/" + fileName);
 
@@ -44,28 +56,33 @@ public class SQLdm {
 
         }else{
 
+            Log.i(DEBUG_TAG, "不存在数据库");
+
             //不存在先创建文件夹
             File path = new File(sd_path + filePath);
 
             Log.i(DEBUG_TAG, "pathStr= "+sd_path + filePath);
 
-            if (path.mkdir()){
+            if(!path.exists())
+            {
+                if (path.mkdir()){
 
-                Log.i(DEBUG_TAG, "创建成功");
+                    Log.i(DEBUG_TAG, "创建成功");
 
-            }else{
+                }else{
 
-                Log.i(DEBUG_TAG, "创建失败");
+                    Log.i(DEBUG_TAG, "创建失败");
 
-            };
+                };
+            }
+
+
             try {
 
                 //得到资源
                 AssetManager am= context.getAssets();
                 //得到数据库的输入流
                 InputStream is=am.open("KeyboardMouse.db");
-
-                Log.i(DEBUG_TAG, is+"");
 
                 //用输出流写到SDcard上面
                 FileOutputStream fos = new FileOutputStream(jhPath);
@@ -87,14 +104,13 @@ public class SQLdm {
                 fos.close();
                 is.close();
 
+                return SQLiteDatabase.openOrCreateDatabase(jhPath, null);
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 return null;
             }
-
-            //如果没有这个数据库  我们已经把他写到SD卡上了，然后在执行一次这个方法 就可以返回数据库了
-            return openDatabase(context);
         }
     }
 }

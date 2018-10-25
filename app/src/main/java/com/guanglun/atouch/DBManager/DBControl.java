@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DBControl {
 
     private String DEBUG_TAG = "DBControl";
@@ -109,4 +112,36 @@ public class DBControl {
         Log.i(DEBUG_TAG, str.toString());
     }
 
+    public List<KeyMouse> LoadTableList(String TableName)
+    {
+        if(database == null)
+        {
+            return null;
+        }
+
+        List<KeyMouse> keyMouseList = new ArrayList<KeyMouse>();
+
+        Cursor cursor = database.query(TableName, null, null, null, null, null, null);
+
+        if(cursor.moveToFirst())    // 显示数据库的内容
+        {
+            for(; !cursor.isAfterLast(); cursor.moveToNext())   // 获取查询游标中的数据
+            {
+                KeyMouse keyMouse = new KeyMouse();
+                keyMouse.SetID(cursor.getInt(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_ID)));
+                keyMouse.SetName(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_NAME)));
+                keyMouse.SetDescription(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_DESCRIPTION)));
+
+                keyMouseList.add(keyMouse);
+            }
+        }
+        cursor.close(); // 记得关闭游标对象
+
+        if(keyMouseList.size() == 0)
+        {
+            return null;
+        }
+
+        return keyMouseList;
+    }
 }

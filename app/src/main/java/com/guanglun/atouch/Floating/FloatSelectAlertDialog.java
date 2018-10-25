@@ -19,6 +19,8 @@ public class FloatSelectAlertDialog {
         this.context = context;
         this.select_view = blue_view;
 
+
+
         alertDialog = new AlertDialog.Builder(context)
                 //.setTitle("正在扫描蓝牙...")
                 //.setIcon(R.mipmap.ic_launcher)

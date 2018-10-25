@@ -6,7 +6,25 @@ public class KeyMouse {
     public String Name = null;
     public String Description = null;
 
+    public void SetID(int id)
+    {
+        this.ID = id;
+    }
 
+    public void SetName(String name)
+    {
+        this.Name = name;
+    }
+
+    public void SetDescription(String description)
+    {
+        this.Description = description;
+    }
+
+    public KeyMouse()
+    {
+
+    }
 
     public KeyMouse(int id,String name,String description)
     {
@@ -14,4 +32,6 @@ public class KeyMouse {
         this.Name = name;
         this.Description = description;
     }
+
+
 }

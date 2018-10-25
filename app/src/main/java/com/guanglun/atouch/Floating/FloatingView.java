@@ -11,13 +11,19 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
+import com.guanglun.atouch.DBManager.DBControl;
+import com.guanglun.atouch.DBManager.DatabaseStatic;
+import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
+
+import java.util.List;
 
 /**
  * 悬浮窗view
@@ -32,6 +38,8 @@ public class FloatingView extends FrameLayout {
     private FloatSelectAlertDialog floatSelectAlertDialog;
     private ListView select_listview;
 
+    private List<KeyMouse> keyMouseList;
+
     public FloatingView(Context context) {
         super(context);
         mContext = context.getApplicationContext();
@@ -42,6 +50,20 @@ public class FloatingView extends FrameLayout {
         select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
         floatSelectAlertDialog = new FloatSelectAlertDialog(mContext,select_view);
+
+        DBControl dbControl = new DBControl(context);
+        keyMouseList = dbControl.LoadTableList(DatabaseStatic.TABLE_NAME);
+
+        FloatListAdapter floatListAdapter = new FloatListAdapter(context,keyMouseList);
+        select_listview.setAdapter(floatListAdapter);
+
+        select_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                KeyMouse keyMouse = keyMouseList.get(i);
+                floatSelectAlertDialog.Cancel();
+            }
+        });
 
         bt_float_manager = (Button) mView.findViewById(R.id.bt_float_manager);
         bt_float_manager.setOnClickListener(new View.OnClickListener() {
