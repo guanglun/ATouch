@@ -121,6 +121,22 @@ public class DBManager {
                     }
                 }).create();
         dialog.show();
+    }
 
+
+    public byte[] GetUseTable(List<KeyMouse> list)
+    {
+        byte[] buf = new byte[list.size()*5];
+
+        for(int i=0;i<list.size();i++)
+        {
+            buf[i*5] = (byte)list.get(i).KeyCode;
+            buf[i*5+1] = (byte)(list.get(i).PX>>8);
+            buf[i*5+2] = (byte)(list.get(i).PX);
+            buf[i*5+3] = (byte)(list.get(i).PY>>8);
+            buf[i*5+4] = (byte)(list.get(i).PY);
+        }
+
+        return buf;
     }
 }

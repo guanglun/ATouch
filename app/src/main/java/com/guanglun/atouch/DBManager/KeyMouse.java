@@ -5,6 +5,7 @@ public class KeyMouse {
     public int ID;
     public String Name = null;
     public String Description = null;
+    public int KeyCode;
     public int PX;
     public int PY;
 
@@ -17,7 +18,10 @@ public class KeyMouse {
     {
         this.Name = name;
     }
-
+    public void SetKeyCode(int kc)
+    {
+        this.KeyCode = kc;
+    }
     public void SetDescription(String description)
     {
         this.Description = description;
@@ -33,11 +37,12 @@ public class KeyMouse {
 
     }
 
-    public KeyMouse(int id,String name,String description,int px,int py)
+    public KeyMouse(int id,String name,String description,int kc,int px,int py)
     {
         this.ID = id;
         this.Name = name;
         this.Description = description;
+        this.KeyCode = kc;
         this.PX = px;
         this.PY = py;
     }

@@ -33,8 +33,13 @@ import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
+import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,8 +59,11 @@ public class MainActivity extends AppCompatActivity {
     private DBManager mDBManager;
 
     private TextView tv_use_keymap_now;
+    private DataProc mDataProc;
 
     private List<KeyMouse> keyMouseListUseNow;
+    private Button bt_connect_auto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,29 +71,40 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionsManager.DSPermissions(this);
 
+        mDataProc = new DataProc();
+
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
             public void on_connect_success() {
                 Log.e("DEBUG","socket creat success");
+                bt_connect_auto.setText("断开");
             }
 
             @Override
             public void on_connect_fail() {
                 Log.e("DEBUG","socket creat fail");
+                bt_connect_auto.setText("连接");
             }
 
             @Override
             public void on_disconnect() {
                 Log.e("DEBUG","socket disconnect");
+                bt_connect_auto.setText("连接");
             }
 
         });
 
-        Button bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
+        bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
         bt_connect_auto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tcpclient.connect();
+                if(bt_connect_auto.getText().equals("连接"))
+                {
+                    tcpclient.connect();
+                }else {
+                    tcpclient.disconnect();
+                }
+
             }
         });
 
@@ -122,11 +141,18 @@ public class MainActivity extends AppCompatActivity {
 
         tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
+
         mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
             @Override
             public void on_update_use_table_now(String table,List<KeyMouse> list) {
+
                 tv_use_keymap_now.setText("使用映射：" + table);
+
                 keyMouseListUseNow = list;
+                //Log.i("DEBUG",keyMouseListUseNow.toString());
+                byte[] temp = mDBManager.GetUseTable(keyMouseListUseNow);
+                temp = DataProc.Creat((byte)0x01,temp,temp.length);
+                tcpclient.socket_send(temp,temp.length);
             }
         });
     }
@@ -166,7 +192,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void on_receive(byte[] buffer) {
                 //showToast("接收到数据");
-                printf(new String(buffer));
+                //mDataProc.OnBlueReceive(buffer);
+                Log.i("DEBUG", "BLE "+buffer.length);
+                tcpclient.socket_send(buffer,buffer.length);
             }
         });
 

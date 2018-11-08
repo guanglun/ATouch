@@ -2,6 +2,15 @@ package com.guanglun.atouch.Main;
 
 import android.content.Context;
 
+import com.guanglun.atouch.DBManager.KeyMouse;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 public class EasyTool {
 
     /**
@@ -19,4 +28,21 @@ public class EasyTool {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    public static String bytes2hex(byte[] bytes,int len) {
+        StringBuilder sb = new StringBuilder();
+        String tmp = null;
+        for (int i=0;i<len;i++) {
+            // 将每个字节与0xFF进行与运算，然后转化为10进制，然后借助于Integer再转化为16进制
+            tmp = Integer.toHexString(0xFF & bytes[i]);
+            if (tmp.length() == 1) {
+                tmp = "0" + tmp;
+            }
+            sb.append(tmp.toUpperCase()+" ");
+        }
+        return sb.toString();
+
+    }
+
+
 }

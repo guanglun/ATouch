@@ -15,7 +15,6 @@ public class DBControl {
 
     private String DEBUG_TAG = "DBControl";
 
-    private SQLHelper QSLhelper = null;
     private SQLiteDatabase database = null;
 
     public static String CREATE_TABLE1 = "CREATE TABLE ";
@@ -29,10 +28,6 @@ public class DBControl {
 
     public DBControl(Context context)   // 创建或者打开数据库
     {
-        //QSLhelper = new SQLHelper(context);
-
-        //QSLhelper.getWritableDatabase();
-
         SQLdm s = new SQLdm();
         database = s.openDatabase(context);
     }
@@ -43,6 +38,7 @@ public class DBControl {
         cV.put(DatabaseStatic.KEY_MOUSE_ID,keyMouse.ID);
         cV.put(DatabaseStatic.KEY_MOUSE_NAME, keyMouse.Name);
         cV.put(DatabaseStatic.KEY_MOUSE_DESCRIPTION, keyMouse.Description);
+        cV.put(DatabaseStatic.KEY_MOUSE_KEYCODE, keyMouse.KeyCode);
         cV.put(DatabaseStatic.KEY_MOUSE_PX, keyMouse.PX);
         cV.put(DatabaseStatic.KEY_MOUSE_PY, keyMouse.PY);
         return cV;
@@ -127,6 +123,7 @@ public class DBControl {
                     str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_ID)) + "  ");
                     str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_NAME)) + "  ");
                     str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_DESCRIPTION)) + "  ");
+                    str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_KEYCODE)) + "  ");
                     str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_PX)) + "  ");
                     str.append(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_PY)) + "\n");
                 }
@@ -168,6 +165,7 @@ public class DBControl {
                     keyMouse.SetID(cursor.getInt(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_ID)));
                     keyMouse.SetName(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_NAME)));
                     keyMouse.SetDescription(cursor.getString(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_DESCRIPTION)));
+                    keyMouse.SetKeyCode(cursor.getInt(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_KEYCODE)));
                     keyMouse.SetPosition(cursor.getInt(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_PX)),
                             cursor.getInt(cursor.getColumnIndex(DatabaseStatic.KEY_MOUSE_PY)));
 

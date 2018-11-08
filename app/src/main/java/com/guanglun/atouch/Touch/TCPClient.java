@@ -2,6 +2,7 @@ package com.guanglun.atouch.Touch;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -38,8 +39,6 @@ public class TCPClient {
         this.ip = ip;
         this.port = port;
         this.sc = sc;
-
-
     }
 
     public void connect()
@@ -60,27 +59,45 @@ public class TCPClient {
             try {
                 socket_client = new Socket(ip, port);
                 is_connect = true;
-                sc.on_connect_success();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        sc.on_connect_success();
+                    }});
+
 
                 inputStream = socket_client.getInputStream();
                 outputStream = socket_client.getOutputStream();
 
-                socket_send("hello server!".getBytes(),13);
+                //socket_send("hello server!".getBytes(),13);
 
                 while ((receive_len = inputStream.read(receive_buffer)) != -1) {
                     Log.e("DEBUG",new String(receive_buffer, 0, receive_len));
                 }
+
                 socket_client = null;
                 is_connect = false;
-                sc.on_disconnect();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        sc.on_disconnect();
+                    }});
+
+
             }catch (IOException e) {
                 socket_client = null;
                 if(is_connect)
                 {
                     is_connect = false;
-                    sc.on_disconnect();
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            sc.on_disconnect();
+                        }});
                 }else{
-                    sc.on_connect_fail();
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            sc.on_connect_fail();
+                        }});
                 }
                 e.printStackTrace();
             }
@@ -100,18 +117,23 @@ public class TCPClient {
         }
     }
 
-    public void socket_send(byte[] buffer,int len)
+    public void socket_send(final byte[] buffer, final int len)
     {
         if(socket_client != null)
         {
             if(socket_client.isConnected())
             {
-                try {
-                    outputStream.write(buffer,0,len);
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            outputStream.write(buffer,0,len);
+                            outputStream.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         }
     }
