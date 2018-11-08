@@ -128,8 +128,8 @@ public class BuleDevice {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 //避免重复添加已经绑定过的设备
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    if(!blue_device_list.contains(device)) {
-                        Log.e("DEBUG",device.getName());
+                    if(!blue_device_list.contains(device) && device.getName() != null) {
+                        Log.i("DEBUG",device.getName());
                         blue_device_list.add(device);
                         blue_adapter = new BluelistAdapter(context,blue_device_list);
                         listView.setAdapter(blue_adapter);
@@ -150,7 +150,7 @@ public class BuleDevice {
             @Override
             public void run() {
 
-                    Log.e("DEBUG","开始连接"+connect_device.getName());
+                    Log.i("DEBUG","开始连接"+connect_device.getName());
                     if(mBluetoothGatt != null)
                     {
                         mBluetoothGatt.close();
@@ -165,17 +165,17 @@ public class BuleDevice {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
-            //Log.e("DEBUG", "oldStatus=" + status + " NewStates=" + newState);
+            //Log.i("DEBUG", "oldStatus=" + status + " NewStates=" + newState);
             if(status == BluetoothGatt.GATT_SUCCESS)
             {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    Log.e("DEBUG", "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
+                    Log.i("DEBUG", "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
 
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     intentAction = ACTION_GATT_DISCONNECTED;
                     mBluetoothGatt.close();
                     mBluetoothGatt = null;
-                    Log.e("DEBUG", "Disconnected from GATT server.");
+                    Log.i("DEBUG", "Disconnected from GATT server.");
                 }
             }
         }
@@ -183,12 +183,12 @@ public class BuleDevice {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e("DEBUG", "onServicesDiscovered received: " + status);
+                Log.i("DEBUG", "onServicesDiscovered received: " + status);
                 findService(gatt.getServices());
                 blue_cb.on_connect();
             } else {
                 if(mBluetoothGatt.getDevice().getUuids() == null)
-                    Log.e("DEBUG", "onServicesDiscovered received: " + status);
+                    Log.i("DEBUG", "onServicesDiscovered received: " + status);
             }
         }
 
@@ -216,33 +216,33 @@ public class BuleDevice {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic,
                                           int status)
         {
-            Log.e("DEBUG", "OnCharacteristicWrite2");
+            Log.i("DEBUG", "OnCharacteristicWrite2");
         }
 
         @Override
         public void onDescriptorRead(BluetoothGatt gatt,
                                      BluetoothGattDescriptor bd,
                                      int status) {
-            Log.e("DEBUG", "onDescriptorRead");
+            Log.i("DEBUG", "onDescriptorRead");
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt,
                                       BluetoothGattDescriptor bd,
                                       int status) {
-            Log.e("DEBUG", "onDescriptorWrite");
+            Log.i("DEBUG", "onDescriptorWrite");
         }
 
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int a, int b)
         {
-            Log.e("DEBUG", "onReadRemoteRssi");
+            Log.i("DEBUG", "onReadRemoteRssi");
         }
 
         @Override
         public void onReliableWriteCompleted(BluetoothGatt gatt, int a)
         {
-            Log.e("DEBUG", "onReliableWriteCompleted");
+            Log.i("DEBUG", "onReliableWriteCompleted");
         }
 
     };
@@ -250,23 +250,23 @@ public class BuleDevice {
 
     public void findService(List<BluetoothGattService> gattServices)
     {
-        //Log.e("DEBUG", "Count is:" + gattServices.size());
+        //Log.i("DEBUG", "Count is:" + gattServices.size());
         for (BluetoothGattService gattService : gattServices)
         {
-            //Log.e("DEBUG", gattService.getUuid().toString());
-            //Log.e("DEBUG", UUID_SERVICE.toString());
+            //Log.i("DEBUG", gattService.getUuid().toString());
+            //Log.i("DEBUG", UUID_SERVICE.toString());
             if(gattService.getUuid().toString().equalsIgnoreCase(UUID_SERVICE.toString()))
             {
                 List<BluetoothGattCharacteristic> gattCharacteristics =
                         gattService.getCharacteristics();
-                //Log.e("DEBUG", "Count is:" + gattCharacteristics.size());
+                //Log.i("DEBUG", "Count is:" + gattCharacteristics.size());
                 for (BluetoothGattCharacteristic gattCharacteristic :
                         gattCharacteristics)
                 {
                     if(gattCharacteristic.getUuid().toString().equalsIgnoreCase(UUID_NOTIFY.toString()))
                     {
-                        //Log.e("DEBUG", gattCharacteristic.getUuid().toString());
-                        //Log.e("DEBUG", UUID_NOTIFY.toString());
+                        //Log.i("DEBUG", gattCharacteristic.getUuid().toString());
+                        //Log.i("DEBUG", UUID_NOTIFY.toString());
                         mNotifyCharacteristic = gattCharacteristic;
                         setCharacteristicNotification(gattCharacteristic, true);
                         //ACTION_GATT_SERVICES_DISCOVERED
@@ -281,7 +281,7 @@ public class BuleDevice {
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
         if (mBtAdapter == null || mBluetoothGatt == null) {
-            Log.e("DEBUG", "BluetoothAdapter not initialized");
+            Log.i("DEBUG", "BluetoothAdapter not initialized");
             return;
         }
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);

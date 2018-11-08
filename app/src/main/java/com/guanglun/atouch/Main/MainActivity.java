@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -20,12 +21,14 @@ import android.support.v4.content.ContextCompat;
 import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
+import android.widget.TextView;
 
 import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.Bluetooth.BluetoothLeService;
 import com.guanglun.atouch.Bluetooth.BuleDevice;
 import com.guanglun.atouch.Bluetooth.ScanBlueActivity;
 import com.guanglun.atouch.DBManager.DBControl;
+import com.guanglun.atouch.DBManager.DBManager;
 import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.DBManager.KeyMouse;
@@ -48,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
     private MainHandler blue_handler;
 
     private BlueScanAlertDialog blueScanAlertDialog;
+    private DBManager mDBManager;
 
+    private TextView tv_use_keymap_now;
 
+    private List<KeyMouse> keyMouseListUseNow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,10 +103,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 add_plan();
+                moveTaskToBack(true);
             }
         });
-
-
 
         blue_init();
 
@@ -115,10 +120,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        DBControl dbControl = new DBControl(this);
-
-        List<KeyMouse> keyMouseList = dbControl.LoadTableList(DatabaseStatic.TABLE_NAME);
+        tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
+        ListView lv_table = (ListView)findViewById(R.id.lv_table);
+        mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
+            @Override
+            public void on_update_use_table_now(String table,List<KeyMouse> list) {
+                tv_use_keymap_now.setText("使用映射：" + table);
+                keyMouseListUseNow = list;
+            }
+        });
     }
+
+
 
     public void add_plan()
     {
@@ -200,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Log.e("DEBUG", "We are in onResume");
+        mDBManager.LoadTableList();
     }
 
     @Override

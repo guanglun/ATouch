@@ -1,82 +1,98 @@
 package com.guanglun.atouch.Floating;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.view.Gravity;
+import android.util.DisplayMetrics;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.guanglun.atouch.R;
+import com.guanglun.atouch.DBManager.DBControl;
+import com.guanglun.atouch.DBManager.DBManager;
+import com.guanglun.atouch.DBManager.KeyMouse;
 
-public class FloatButton {
+import java.util.ArrayList;
+import java.util.List;
+
+public class FloatButtonManager {
 
     private Context mContext;
     private FloatingManager mFloatingManager;
     private RelativeLayout mRelativeLayout;
-
     private WindowManager.LayoutParams mParams;
+    private int ScreenWidth,ScreenHigh;
 
-    public FloatButton(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout,WindowManager.LayoutParams params)
+    List<FloatButton> FloatButtonList =  new ArrayList<FloatButton>();
+    List<KeyMouse> KeyMouseList =  new ArrayList<KeyMouse>();
+
+    public FloatButtonManager(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params)
     {
         mContext = context;
         mFloatingManager = floatingmanager;
         mRelativeLayout = relativeLayout;
         mParams = params;
+
+        WindowManager mWindowManager  = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        mWindowManager.getDefaultDisplay().getMetrics(metrics);
+        ScreenWidth = metrics.widthPixels;//获取到的是px，像素，绝对像素，需要转化为dpi
+        ScreenHigh = metrics.heightPixels;
     }
 
-    public void Add()
+    public void Add(KeyMouse mKeyMouse)
     {
+        for(int i=0;i<KeyMouseList.size();i++)
+        {
+            if(KeyMouseList.get(i).Name.equals(mKeyMouse.Name))
+            {
+                return;
+            }
+        }
 
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        FloatButton mFloatButton = new FloatButton(mContext,mFloatingManager,mRelativeLayout,mParams,
+                mKeyMouse,ScreenWidth/2,ScreenHigh/2);
 
-        final Button bt_test = new Button(mContext);
-
-        //lp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-        //lp.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        lp.width = dip2px(mContext,30);
-        lp.height  = dip2px(mContext,30);
-
-
-        bt_test.setBackground(mContext.getResources().getDrawable(R.drawable.round_button));
-
-        //ib_test.setBackgroundColor(0x00FFFFFF);
-
-        bt_test.setX(500);
-        bt_test.setY(500);
-        bt_test.setText("A");
-        bt_test.setPadding(0,0,0,0);
-        bt_test.setLayoutParams(lp);   ////设置按钮的布局属性
-        mRelativeLayout.addView(bt_test);
-
-        mFloatingManager.updateView(mRelativeLayout,mParams);
+        KeyMouseList.add(mKeyMouse);
+        FloatButtonList.add(mFloatButton);
 
 
     }
 
-    public void Show(){
+    public void RemoveAll()
+    {
+        for(int i = 0; i < FloatButtonList.size();i++)
+        {
+            FloatButton fb = FloatButtonList.get(i);
+            fb.Remove();
+        }
 
+        FloatButtonList.clear();
+        KeyMouseList.clear();
+    }
+
+    public void Save(String TableName,DBControl mDBControl){
+
+        for(int i = 0;i < KeyMouseList.size();i++)
+        {
+            FloatButton fb = FloatButtonList.get(i);
+            KeyMouse km = KeyMouseList.get(i);
+            km.SetPosition(fb.PositionX,fb.PositionY);
+            mDBControl.InsertDatabase(TableName,km);
+        }
 
     }
 
+    public void Load(String TableName,DBControl mDBControl){
 
-    /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
+        KeyMouseList = mDBControl.LoadTableDatabaseList(TableName);
+
+        for(int i = 0;i < KeyMouseList.size();i++)
+        {
+            KeyMouse km = KeyMouseList.get(i);
+            FloatButton mFloatButton = new FloatButton(mContext,mFloatingManager,mRelativeLayout,mParams,
+                    km,km.PX,km.PY);
+            FloatButtonList.add(mFloatButton);
+        }
+
     }
 
-    /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
-     */
-    public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale + 0.5f);
-    }
 
 }

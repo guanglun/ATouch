@@ -4,21 +4,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.AnimationDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.DBManager.KeyMouse;
@@ -29,81 +26,70 @@ import java.util.List;
 /**
  * 悬浮窗view
  */
-public class FloatingView extends FrameLayout {
+public class FloatingView extends FrameLayout implements View.OnClickListener {
     private Context mContext;
     private View select_view;
-    private Button bt_float_manager,bt_float_add;
+    private Button bt_float_manager,bt_float_add,bt_float_save,bt_float_close;
+
     private int mTouchStartX, mTouchStartY;//手指按下时坐标
-    private WindowManager.LayoutParams mParams;
-    private FloatingManager mWindowManager;
+
+    private FloatingManager mFloatingManager;
     private FloatSelectAlertDialog floatSelectAlertDialog;
     private ListView select_listview;
 
-    private RelativeLayout relativeLayout;
+    private RelativeLayout mRelativeLayout;
 
     private List<KeyMouse> keyMouseList;
 
+    private FloatButtonManager mFloatButtonManager;
+    private WindowManager.LayoutParams mParams;
+    private DBControl dbControl;
+    private boolean isChange = false;
+    private String ChangeTableName;
+
+    public enum WindowStatus {
+        CLOSE,
+        OPEN
+    }
+
+    private WindowStatus mWindowStatus = WindowStatus.CLOSE;
+
+
+
     public FloatingView(Context context) {
+
         super(context);
 
         mContext = context.getApplicationContext();
 
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
 
-        relativeLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.floating_view, null);
+        mRelativeLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.floating_view, null);
 
         select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
         floatSelectAlertDialog = new FloatSelectAlertDialog(mContext,select_view);
 
-        DBControl dbControl = new DBControl(context);
-        keyMouseList = dbControl.LoadTableList(DatabaseStatic.TABLE_NAME);
+        dbControl = new DBControl(context);
+        keyMouseList = dbControl.LoadTableDatabaseList(DatabaseStatic.TABLE_NAME);
 
         FloatListAdapter floatListAdapter = new FloatListAdapter(context,keyMouseList);
         select_listview.setAdapter(floatListAdapter);
 
-        select_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                KeyMouse keyMouse = keyMouseList.get(i);
+        select_listview.setOnItemClickListener(OnItemClickListenerItem);
 
-                final Button bt_save = new Button(mContext);
-                bt_save.setText("保存");
+        bt_float_manager = (Button) mRelativeLayout.findViewById(R.id.bt_float_manager);
+        bt_float_add = (Button) mRelativeLayout.findViewById(R.id.bt_float_add);
+        bt_float_save = (Button) mRelativeLayout.findViewById(R.id.bt_float_save);
+        bt_float_close = (Button) mRelativeLayout.findViewById(R.id.bt_float_close);
 
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        bt_float_manager.setOnClickListener(this);
+        bt_float_add.setOnClickListener(this);
+        bt_float_save.setOnClickListener(this);
+        bt_float_close.setOnClickListener(this);
 
-                lp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-                lp.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-                bt_save.setLayoutParams(lp);   ////设置按钮的布局属性
-                relativeLayout.addView(bt_save);
-
-                mWindowManager.addView(relativeLayout,mParams);
-
-                floatSelectAlertDialog.Cancel();
-            }
-        });
-
-        bt_float_manager = (Button) relativeLayout.findViewById(R.id.bt_float_manager);
-        bt_float_manager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("DEBUG","bt_float_manager");
-            }
-        });
-
-        //bt_float_manager.setOnTouchListener(mOnTouchListener);
-
-        bt_float_add = (Button) relativeLayout.findViewById(R.id.bt_float_add);
-        bt_float_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("DEBUG","bt_float_add");
-
-                SelectKey();
-            }
-        });
-
-        mWindowManager = FloatingManager.getInstance(mContext);
+        mFloatingManager = FloatingManager.getInstance(mContext);
+        mFloatButtonManager = new FloatButtonManager(mContext,mFloatingManager,mRelativeLayout,mParams);
     }
 
     void SelectKey()
@@ -113,47 +99,195 @@ public class FloatingView extends FrameLayout {
         floatSelectAlertDialog.Show();
     }
 
-    public void show() {
+    public void show(String TableName) {
+
+        hide();
 
         mParams = new WindowManager.LayoutParams();
-        mParams.gravity = Gravity.TOP | Gravity.LEFT;
-        mParams.x = 0;
-        mParams.y = 100;
+        mParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+
         //总是出现在应用程序窗口之上
         mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         //设置图片格式，效果为背景透明
         mParams.format = PixelFormat.RGBA_8888;
-        mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+        mParams.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+
         mParams.width = LayoutParams.MATCH_PARENT;
-        mParams.height = LayoutParams.WRAP_CONTENT;
-        mWindowManager.addView(relativeLayout, mParams);
+        mParams.height = 200;//LayoutParams.WRAP_CONTENT;
 
+        mRelativeLayout.setBackgroundColor(0x00FFFFFF);
+        mFloatingManager.addView(mRelativeLayout, mParams);
 
+        bt_float_manager.setText("管理");
+        bt_float_add.setVisibility(GONE);
+        bt_float_save.setVisibility(GONE);
+        bt_float_close.setVisibility(GONE);
+
+        mWindowStatus = WindowStatus.CLOSE;
+        isChange = false;
+        if(TableName != null){
+            isChange = true;
+            mParams.height = LayoutParams.MATCH_PARENT;
+            mRelativeLayout.setBackgroundColor(0x60ebebeb);
+            mFloatingManager.updateView(mRelativeLayout, mParams);
+            bt_float_manager.setText("取消");
+            bt_float_add.setVisibility(VISIBLE);
+            bt_float_save.setVisibility(VISIBLE);
+            bt_float_close.setVisibility(VISIBLE);
+
+            mWindowStatus = WindowStatus.OPEN;
+
+            mFloatButtonManager.Load(TableName,dbControl);
+            ChangeTableName = TableName;
+        }
     }
 
     public void hide() {
-        mWindowManager.removeView(relativeLayout);
+        mFloatButtonManager.RemoveAll();
+        mFloatingManager.removeView(mRelativeLayout);
+
     }
 
-    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+
+//    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+//        @Override
+//        public boolean onTouch(View view, MotionEvent event) {
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    mTouchStartX = (int) event.getRawX();
+//                    mTouchStartY = (int) event.getRawY();
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    mParams.x += (int) event.getRawX() - mTouchStartX;
+//                    mParams.y += (int) event.getRawY() - mTouchStartY;//相对于屏幕左上角的位置
+//                    mWindowManager.updateView(relativeLayout, mParams);
+//                    break;
+//                case MotionEvent.ACTION_UP:
+//                    break;
+//            }
+//            return true;
+//        }
+//    };
+
+    private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override
-        public boolean onTouch(View view, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mTouchStartX = (int) event.getRawX();
-                    mTouchStartY = (int) event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    mParams.x += (int) event.getRawX() - mTouchStartX;
-                    mParams.y += (int) event.getRawY() - mTouchStartY;//相对于屏幕左上角的位置
-                    mWindowManager.updateView(relativeLayout, mParams);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    break;
-            }
-            return true;
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            KeyMouse keyMouse = keyMouseList.get(i);
+
+            mFloatButtonManager.Add(keyMouse);
+
+            floatSelectAlertDialog.Cancel();
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_float_manager:
+                //Log.e("DEBUG","bt_float_manager");
+
+                if(mWindowStatus == WindowStatus.CLOSE)
+                {
+                    mParams.height = LayoutParams.MATCH_PARENT;
+                    mRelativeLayout.setBackgroundColor(0x60ebebeb);
+                    mFloatingManager.updateView(mRelativeLayout, mParams);
+                    bt_float_manager.setText("取消");
+                    bt_float_add.setVisibility(VISIBLE);
+                    bt_float_save.setVisibility(VISIBLE);
+                    bt_float_close.setVisibility(VISIBLE);
+
+                    mWindowStatus = WindowStatus.OPEN;
+
+                }else{
+
+                    mRelativeLayout.setBackgroundColor(0x00FFFFFF);
+                    //mParams.height = LayoutParams.WRAP_CONTENT;
+
+                    mParams.width = LayoutParams.MATCH_PARENT;
+                    mParams.height = 200;//LayoutParams.WRAP_CONTENT;
+
+                    mFloatingManager.updateView(mRelativeLayout, mParams);
+                    bt_float_manager.setText("管理");
+                    bt_float_add.setVisibility(GONE);
+                    bt_float_save.setVisibility(GONE);
+                    bt_float_close.setVisibility(GONE);
+
+                    mWindowStatus = WindowStatus.CLOSE;
+                }
+
+                break;
+            case R.id.bt_float_add:
+                Log.e("DEBUG","bt_float_add");
+                SelectKey();
+                break;
+            case R.id.bt_float_save:
+                Log.e("DEBUG","bt_float_save");
+
+
+                SaveKeyMap();
+
+                break;
+            case R.id.bt_float_close:
+                Log.e("DEBUG","bt_float_close");
+                hide();
+
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    private void SaveKeyMap(){
+
+        if(!isChange)
+        {
+            final EditText editText = new EditText(mContext);
+            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    //.setIcon(R.mipmap.icon)//设置标题的图片
+                    .setTitle("请输入名称")//设置对话框的标题
+                    .setView(editText)
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String TableName = editText.getText().toString();
+
+                            if(!dbControl.CreatTable(TableName))
+                            {
+                                Log.e("DEBUG","CreatTable false");
+
+                                AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("表单创建失败！请不要用特殊字符及第一个字符不要使用数字！")
+                                        .setNegativeButton("确定", null).create();
+                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                dialog2.show();
+
+                            }else
+                            {
+                                mFloatButtonManager.Save(TableName, dbControl);
+                                hide();
+                            }
+
+
+                            //Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    }).create();
+
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+        }else{
+            dbControl.ClearTable(ChangeTableName);
+            mFloatButtonManager.Save(ChangeTableName, dbControl);
+            hide();
+        }
+
+
+    }
 }

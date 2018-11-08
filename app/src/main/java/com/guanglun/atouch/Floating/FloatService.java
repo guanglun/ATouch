@@ -8,10 +8,12 @@ import com.guanglun.atouch.Floating.FloatingView;
 
 public class FloatService extends Service {
     public static final String ACTION="action";
+
     public static final String SHOW="show";
     public static final String HIDE="hide";
     private FloatingView mFloatingView;
 
+    private boolean isShow = false;
     @Override
     public void onCreate(){
         super.onCreate();
@@ -28,16 +30,26 @@ public class FloatService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
 
-            String action=intent.getStringExtra(ACTION);
+            String action = intent.getStringExtra(ACTION);
+            String TableName = intent.getStringExtra("TableName");
 
             if(SHOW.equals(action)){
 
-                mFloatingView.show();
+                //if(!isShow)
+                {
+                    mFloatingView.show(TableName);
+                    isShow = true;
+                }
+
 
             }else if(HIDE.equals(action)){
+                //if(isShow)
+                {
 
-                mFloatingView.hide();
+                    mFloatingView.hide();
+                    isShow = false;
 
+                }
             }
         }
 
