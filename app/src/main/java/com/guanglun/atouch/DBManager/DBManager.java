@@ -27,7 +27,7 @@ public class DBManager {
     private DBManagerCallBack cb;
 
     public interface DBManagerCallBack {
-        void on_update_use_table_now(String table,List<KeyMouse> list);
+        void on_update_use_table_now(String Name);
     }
 
     public DBManager(Context context,ListView listview,DBManagerCallBack cb)
@@ -40,12 +40,6 @@ public class DBManager {
 
         dbControl_pubg = new DBControlPUBG(mContext);
 
-        PUBG pubg = new PUBG();
-        pubg.SetName("Hell1");
-        pubg.SetDescription("这是一个测试用的行");
-        //dbControl_pubg.InsertDatabase(pubg);
-        //dbControl_pubg.ClearTable();
-        dbControl_pubg.LoadNameList();
         dbControl_pubg.PrintfTable();
 
 
@@ -89,14 +83,14 @@ public class DBManager {
                         switch (items[which])
                         {
                             case "使用":
-                                List<KeyMouse> list = dbControl.LoadTableDatabaseList(SelectName);
-                                cb.on_update_use_table_now(SelectName,list);
+                                //List<KeyMouse> list = dbControl.LoadTableDatabaseList(SelectName);
+                                cb.on_update_use_table_now(SelectName);
                                 break;
                             case "修改":
 
                                 Intent intent = new Intent(mContext, FloatService.class);
                                 intent.putExtra(FloatService.ACTION, FloatService.SHOW);
-                                intent.putExtra("TableName", SelectName);
+                                intent.putExtra("SelectName", SelectName);
                                 mContext.startService(intent);
 
                                 break;
@@ -131,6 +125,59 @@ public class DBManager {
         dialog.show();
     }
 
+    public byte[] GetByteFromPUBG(String Name)
+    {
+        byte[] buf = new byte[11 * 2 * 2];
+        int i = 0;
+
+        PUBG pubg = dbControl_pubg.GetRawByName(Name);
+
+        buf[i++] = (byte)(pubg.N3_AttackX>>8);
+        buf[i++] = (byte)(pubg.N3_AttackX);
+        buf[i++] = (byte)(pubg.N4_AttackY>>8);
+        buf[i++] = (byte)(pubg.N4_AttackY);
+        buf[i++] = (byte)(pubg.N5_MoveX>>8);
+        buf[i++] = (byte)(pubg.N5_MoveX);
+        buf[i++] = (byte)(pubg.N6_MoveY>>8);
+        buf[i++] = (byte)(pubg.N6_MoveY);
+        buf[i++] = (byte)(pubg.N7_JumpX>>8);
+        buf[i++] = (byte)(pubg.N7_JumpX);
+        buf[i++] = (byte)(pubg.N8_JumpY>>8);
+        buf[i++] = (byte)(pubg.N8_JumpY);
+        buf[i++] = (byte)(pubg.N9_SquatX>>8);
+        buf[i++] = (byte)(pubg.N9_SquatX);
+        buf[i++] = (byte)(pubg.N10_SquatY>>8);
+        buf[i++] = (byte)(pubg.N10_SquatY);
+        buf[i++] = (byte)(pubg.N11_LieX>>8);
+        buf[i++] = (byte)(pubg.N11_LieX);
+        buf[i++] = (byte)(pubg.N12_LieY>>8);
+        buf[i++] = (byte)(pubg.N12_LieY);
+        buf[i++] = (byte)(pubg.N13_FaceX>>8);
+        buf[i++] = (byte)(pubg.N13_FaceX);
+        buf[i++] = (byte)(pubg.N14_FaceY>>8);
+        buf[i++] = (byte)(pubg.N14_FaceY);
+        buf[i++] = (byte)(pubg.N15_WatchX>>8);
+        buf[i++] = (byte)(pubg.N15_WatchX);
+        buf[i++] = (byte)(pubg.N16_WatchY>>8);
+        buf[i++] = (byte)(pubg.N16_WatchY);
+        buf[i++] = (byte)(pubg.N17_PackageX>>8);
+        buf[i++] = (byte)(pubg.N17_PackageX);
+        buf[i++] = (byte)(pubg.N18_PackageY>>8);
+        buf[i++] = (byte)(pubg.N18_PackageY);
+        buf[i++] = (byte)(pubg.N19_ArmsLeftX>>8);
+        buf[i++] = (byte)(pubg.N19_ArmsLeftX);
+        buf[i++] = (byte)(pubg.N20_ArmsLeftY>>8);
+        buf[i++] = (byte)(pubg.N20_ArmsLeftY);
+        buf[i++] = (byte)(pubg.N21_ArmsRightX>>8);
+        buf[i++] = (byte)(pubg.N21_ArmsRightX);
+        buf[i++] = (byte)(pubg.N22_ArmsRightY>>8);
+        buf[i++] = (byte)(pubg.N22_ArmsRightY);
+        buf[i++] = (byte)(pubg.N23_MapX>>8);
+        buf[i++] = (byte)(pubg.N23_MapX);
+        buf[i++] = (byte)(pubg.N24_MapY>>8);
+        buf[i++] = (byte)(pubg.N24_MapY);
+        return buf;
+    }
 
     public byte[] GetUseTable(List<KeyMouse> list)
     {

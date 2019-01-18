@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_use_keymap_now;
     private DataProc mDataProc;
 
-    private List<KeyMouse> keyMouseListUseNow;
     private Button bt_connect_auto;
 
     @Override
@@ -144,13 +143,12 @@ public class MainActivity extends AppCompatActivity {
 
         mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
             @Override
-            public void on_update_use_table_now(String table,List<KeyMouse> list) {
+            public void on_update_use_table_now(String Name) {
 
-                tv_use_keymap_now.setText("使用映射：" + table);
+                tv_use_keymap_now.setText("使用映射：" + Name);
 
-                keyMouseListUseNow = list;
                 //Log.i("DEBUG",keyMouseListUseNow.toString());
-                byte[] temp = mDBManager.GetUseTable(keyMouseListUseNow);
+                byte[] temp = mDBManager.GetByteFromPUBG(Name);
                 temp = DataProc.Creat((byte)0x01,temp,temp.length);
                 tcpclient.socket_send(temp,temp.length);
             }

@@ -93,14 +93,57 @@ public class DBControlPUBG {
 
             //if(!name.equals("sqlite_sequence") && !name.equals("android_metadata")&& !name.equals("mousekey"))
             {
-                Log.i(DEBUG_TAG, name);
+                //Log.i(DEBUG_TAG, name);
                 NameList.add(name);
             }
 
         }
 
         return NameList;
+    }
 
+    public PUBG GetRawByName(String Name)
+    {
+
+        PUBG pubg = new PUBG();
+        Cursor cursor ;
+
+        if(database == null)
+        {
+            return null;
+        }
+
+        try{
+
+            cursor = database.query(TableName,null,"Name =?",new String[]{Name},null,null,null);
+
+            if(cursor.moveToFirst())    // 显示数据库的内容
+            {
+                pubg.SetName(cursor.getString(cursor.getColumnIndex("Name")));
+                pubg.SetDescription(cursor.getString(cursor.getColumnIndex("Description")));
+                pubg.SetAttack(cursor.getInt(cursor.getColumnIndex("AttackX")),cursor.getInt(cursor.getColumnIndex("AttackY")));
+                pubg.SetMove(cursor.getInt(cursor.getColumnIndex("MoveX")),cursor.getInt(cursor.getColumnIndex("MoveY")));
+                pubg.SetJump(cursor.getInt(cursor.getColumnIndex("JumpX")),cursor.getInt(cursor.getColumnIndex("JumpY")));
+                pubg.SetSquat(cursor.getInt(cursor.getColumnIndex("SquatX")),cursor.getInt(cursor.getColumnIndex("SquatY")));
+                pubg.SetLie(cursor.getInt(cursor.getColumnIndex("LieX")),cursor.getInt(cursor.getColumnIndex("LieY")));
+                pubg.SetFace(cursor.getInt(cursor.getColumnIndex("FaceX")),cursor.getInt(cursor.getColumnIndex("FaceY")));
+                pubg.SetWatch(cursor.getInt(cursor.getColumnIndex("WatchX")),cursor.getInt(cursor.getColumnIndex("WatchY")));
+                pubg.SetPackage(cursor.getInt(cursor.getColumnIndex("PackageX")),cursor.getInt(cursor.getColumnIndex("PackageY")));
+                pubg.SetArmsLeft(cursor.getInt(cursor.getColumnIndex("ArmsLeftX")),cursor.getInt(cursor.getColumnIndex("ArmsLeftY")));
+                pubg.SetArmsRight(cursor.getInt(cursor.getColumnIndex("ArmsRightX")),cursor.getInt(cursor.getColumnIndex("ArmsRightY")));
+                pubg.SetMap(cursor.getInt(cursor.getColumnIndex("MapX")),cursor.getInt(cursor.getColumnIndex("MapY")));
+            }
+
+            cursor.close(); // 记得关闭游标对象
+
+        }catch(SQLException e){
+
+            Log.i(DEBUG_TAG, e.toString());
+
+            return null;
+        }
+
+        return pubg;
     }
 
     public boolean ClearTable()

@@ -59,8 +59,8 @@ public class FloatButtonPUBG {
     {
         if(button != null)
         {
-            button = null;
             mRelativeLayout.removeView(button);
+            button = null;
         }
 
     }

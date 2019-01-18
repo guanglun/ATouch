@@ -31,13 +31,13 @@ public class FloatService extends Service {
         if (intent != null) {
 
             String action = intent.getStringExtra(ACTION);
-            String TableName = intent.getStringExtra("TableName");
+            String SelectName = intent.getStringExtra("SelectName");
 
             if(SHOW.equals(action)){
 
                 //if(!isShow)
                 {
-                    mFloatingView.show(TableName);
+                    mFloatingView.show(SelectName);
                     isShow = true;
                 }
 

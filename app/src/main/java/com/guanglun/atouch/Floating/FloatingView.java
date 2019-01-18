@@ -50,7 +50,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
     private DBControl dbControl;
     private DBControlPUBG dbControlPUBG;
     private boolean isChange = false;
-    private String ChangeTableName;
+    private String SelectName;
+
+    private final String DEBUG_TAG = "FloatingView";
 
     public enum WindowStatus {
         CLOSE,
@@ -109,7 +111,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
         floatSelectAlertDialog.Show();
     }
 
-    public void show(String TableName) {
+    public void show(String SelectName) {
+
+        this.SelectName = SelectName;
 
         hide();
 
@@ -137,10 +141,32 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
         mWindowStatus = WindowStatus.CLOSE;
         isChange = false;
 
-        PUBG pubg = new PUBG();
-        mFloatPUBGManager.Show(pubg);
+        PUBG pubg = null;
 
-//        if(TableName != null){
+        Log.i(DEBUG_TAG, "ShowShow");
+
+        if(SelectName != null) {
+
+            pubg = dbControlPUBG.GetRawByName(SelectName);
+
+            //isChange = true;
+            mParams.height = LayoutParams.MATCH_PARENT;
+            mRelativeLayout.setBackgroundColor(0x60ebebeb);
+            mFloatingManager.updateView(mRelativeLayout, mParams);
+            bt_float_manager.setText("取消");
+            bt_float_add.setVisibility(VISIBLE);
+            bt_float_save.setVisibility(VISIBLE);
+            bt_float_close.setVisibility(VISIBLE);
+
+            mWindowStatus = WindowStatus.OPEN;
+
+            mFloatPUBGManager.Show(pubg);
+        }else {
+            pubg = new PUBG();
+            mFloatPUBGManager.Show(pubg);
+        }
+
+
 //
 //            isChange = true;
 //            mParams.height = LayoutParams.MATCH_PARENT;
@@ -237,7 +263,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
                 break;
             case R.id.bt_float_add:
                 Log.e("DEBUG","bt_float_add");
-                SelectKey();
+                //SelectKey();
                 break;
             case R.id.bt_float_save:
                 Log.e("DEBUG","bt_float_save");
@@ -259,7 +285,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     private void SaveKeyMap(){
 
-        if(!isChange)
+        if(SelectName == null)
         {
             final EditText editText = new EditText(mContext);
             AlertDialog dialog = new AlertDialog.Builder(mContext)
@@ -275,9 +301,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String TableName = editText.getText().toString();
+                            SelectName = editText.getText().toString();
 
-                                mFloatPUBGManager.Save(TableName, dbControlPUBG);
+                                mFloatPUBGManager.Save(SelectName, dbControlPUBG);
                                 //mFloatButtonManager.Save(TableName, dbControl);
                                 hide();
 
@@ -289,8 +315,8 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             dialog.show();
         }else{
-            dbControl.ClearTable(ChangeTableName);
-            mFloatButtonManager.Save(ChangeTableName, dbControl);
+            dbControlPUBG.DeleteRaw(SelectName);
+            mFloatPUBGManager.Save(SelectName, dbControlPUBG);
             hide();
         }
 

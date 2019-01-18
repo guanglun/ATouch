@@ -2,6 +2,7 @@ package com.guanglun.atouch.Floating;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -33,6 +34,8 @@ public class FloatPUBGManager {
     public int N19_ArmsLeftX,N20_ArmsLeftY;
     public int N21_ArmsRightX,N22_ArmsRightY;
     public int N23_MapX,N24_MapY;
+
+    private final String DEBUG_TAG = "FloatPUBGManager";
 
     FloatButtonPUBG bt_attack,bt_move,bt_jump,bt_squat,bt_lie,bt_face,bt_watch,
     bt_package,bt_armsleft,bt_armsright,bt_map;
@@ -101,6 +104,7 @@ public class FloatPUBGManager {
         if(bt_attack != null)
         {
 
+            Log.i(DEBUG_TAG, "RemoveAll");
             bt_attack.Remove();
             bt_move.Remove();
             bt_jump.Remove();
@@ -122,6 +126,7 @@ public class FloatPUBGManager {
 
         PUBG pubg = new PUBG();
         pubg.SetName(Name);
+        pubg.SetDescription("NULL");
         pubg.SetAttack(bt_attack.PositionX,bt_attack.PositionY);
         pubg.SetMove(bt_move.PositionX,bt_move.PositionY);
         pubg.SetJump(bt_jump.PositionX,bt_jump.PositionY);
