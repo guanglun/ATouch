@@ -17,8 +17,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.guanglun.atouch.DBManager.DBControl;
+import com.guanglun.atouch.DBManager.DBControlPUBG;
 import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.DBManager.KeyMouse;
+import com.guanglun.atouch.DBManager.PUBG;
 import com.guanglun.atouch.R;
 
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.List;
  * 悬浮窗view
  */
 public class FloatingView extends FrameLayout implements View.OnClickListener {
+
     private Context mContext;
     private View select_view;
     private Button bt_float_manager,bt_float_add,bt_float_save,bt_float_close;
@@ -41,9 +44,11 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     private List<KeyMouse> keyMouseList;
 
+    private FloatPUBGManager mFloatPUBGManager;
     private FloatButtonManager mFloatButtonManager;
     private WindowManager.LayoutParams mParams;
     private DBControl dbControl;
+    private DBControlPUBG dbControlPUBG;
     private boolean isChange = false;
     private String ChangeTableName;
 
@@ -70,13 +75,15 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
         select_listview = select_view.findViewById(R.id.listview);
         floatSelectAlertDialog = new FloatSelectAlertDialog(mContext,select_view);
 
-        dbControl = new DBControl(context);
-        keyMouseList = dbControl.LoadTableDatabaseList(DatabaseStatic.TABLE_NAME);
+        //dbControl = new DBControl(context);
+        //keyMouseList = dbControl.LoadTableDatabaseList(DatabaseStatic.TABLE_NAME);
 
-        FloatListAdapter floatListAdapter = new FloatListAdapter(context,keyMouseList);
-        select_listview.setAdapter(floatListAdapter);
+        dbControlPUBG = new DBControlPUBG(context);
 
-        select_listview.setOnItemClickListener(OnItemClickListenerItem);
+        //FloatListAdapter floatListAdapter = new FloatListAdapter(context,keyMouseList);
+        //select_listview.setAdapter(floatListAdapter);
+
+        //select_listview.setOnItemClickListener(OnItemClickListenerItem);
 
         bt_float_manager = (Button) mRelativeLayout.findViewById(R.id.bt_float_manager);
         bt_float_add = (Button) mRelativeLayout.findViewById(R.id.bt_float_add);
@@ -90,6 +97,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
         mFloatingManager = FloatingManager.getInstance(mContext);
         mFloatButtonManager = new FloatButtonManager(mContext,mFloatingManager,mRelativeLayout,mParams);
+        mFloatPUBGManager = new FloatPUBGManager(mContext,mFloatingManager,mRelativeLayout,mParams);
+
+
     }
 
     void SelectKey()
@@ -126,25 +136,32 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
         mWindowStatus = WindowStatus.CLOSE;
         isChange = false;
-        if(TableName != null){
-            isChange = true;
-            mParams.height = LayoutParams.MATCH_PARENT;
-            mRelativeLayout.setBackgroundColor(0x60ebebeb);
-            mFloatingManager.updateView(mRelativeLayout, mParams);
-            bt_float_manager.setText("取消");
-            bt_float_add.setVisibility(VISIBLE);
-            bt_float_save.setVisibility(VISIBLE);
-            bt_float_close.setVisibility(VISIBLE);
 
-            mWindowStatus = WindowStatus.OPEN;
+        PUBG pubg = new PUBG();
+        mFloatPUBGManager.Show(pubg);
 
-            mFloatButtonManager.Load(TableName,dbControl);
-            ChangeTableName = TableName;
-        }
+//        if(TableName != null){
+//
+//            isChange = true;
+//            mParams.height = LayoutParams.MATCH_PARENT;
+//            mRelativeLayout.setBackgroundColor(0x60ebebeb);
+//            mFloatingManager.updateView(mRelativeLayout, mParams);
+//            bt_float_manager.setText("取消");
+//            bt_float_add.setVisibility(VISIBLE);
+//            bt_float_save.setVisibility(VISIBLE);
+//            bt_float_close.setVisibility(VISIBLE);
+//
+//            mWindowStatus = WindowStatus.OPEN;
+//
+//            mFloatButtonManager.Load(TableName,dbControl);
+//            ChangeTableName = TableName;
+//
+//        }
     }
 
     public void hide() {
-        mFloatButtonManager.RemoveAll();
+        mFloatPUBGManager.RemoveAll();
+        //mFloatButtonManager.RemoveAll();
         mFloatingManager.removeView(mRelativeLayout);
 
     }
@@ -173,6 +190,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
     private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
             KeyMouse keyMouse = keyMouseList.get(i);
 
             mFloatButtonManager.Add(keyMouse);
@@ -259,21 +277,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
                         public void onClick(DialogInterface dialog, int which) {
                             String TableName = editText.getText().toString();
 
-                            if(!dbControl.CreatTable(TableName))
-                            {
-                                Log.e("DEBUG","CreatTable false");
-
-                                AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("表单创建失败！请不要用特殊字符及第一个字符不要使用数字！")
-                                        .setNegativeButton("确定", null).create();
-                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                                dialog2.show();
-
-                            }else
-                            {
-                                mFloatButtonManager.Save(TableName, dbControl);
+                                mFloatPUBGManager.Save(TableName, dbControlPUBG);
+                                //mFloatButtonManager.Save(TableName, dbControl);
                                 hide();
-                            }
-
 
                             //Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
                             dialog.dismiss();

@@ -10,4 +10,5 @@ public class DatabaseStatic {
     public final static String KEY_MOUSE_KEYCODE = "KeyCode";
     public final static String KEY_MOUSE_PX = "PositionX";
     public final static String KEY_MOUSE_PY = "PositionY";
+
 }
