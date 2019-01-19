@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,6 +26,7 @@ public class DBManager {
     private DBControlPUBG dbControl_pubg;
     private ArrayAdapter<String> adapter;
     private DBManagerCallBack cb;
+    private String DEBUG_TAG = "DBManager";
 
     public interface DBManagerCallBack {
         void on_update_use_table_now(String Name);
@@ -176,6 +178,8 @@ public class DBManager {
         buf[i++] = (byte)(pubg.N23_MapX);
         buf[i++] = (byte)(pubg.N24_MapY>>8);
         buf[i++] = (byte)(pubg.N24_MapY);
+        Log.i("SetAttack", String.valueOf(buf[0])+" "+String.valueOf(buf[1])+" "+String.valueOf(buf[2])+" "+String.valueOf(buf[3]));
+        Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
         return buf;
     }
 

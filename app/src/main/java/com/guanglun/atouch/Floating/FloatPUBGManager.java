@@ -139,6 +139,9 @@ public class FloatPUBGManager {
         pubg.SetArmsRight(bt_armsright.PositionX,bt_armsright.PositionY);
         pubg.SetMap(bt_map.PositionX,bt_map.PositionY);
 
+
+        Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
+
         mDBControlPUBG.InsertDatabase(pubg);
 
     }
