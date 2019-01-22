@@ -129,14 +129,21 @@ public class MainActivity extends AppCompatActivity {
 
         blue_handler = new MainHandler(this);
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(MainActivity.this)) {
-                    Intent intent1 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                    startActivityForResult(intent1, 10);
+        try{
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        Intent intent1 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent1, 10);
+                    }
                 }
             }
+        }catch(Exception e){
+            PermissionsManager.applyCommonPermission(this);
+
         }
+
+
 
         tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
