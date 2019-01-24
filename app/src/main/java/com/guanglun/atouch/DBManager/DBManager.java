@@ -129,7 +129,7 @@ public class DBManager {
 
     public byte[] GetByteFromPUBG(String Name)
     {
-        byte[] buf = new byte[11 * 2 * 2];
+        byte[] buf = new byte[54 * 2];
         int i = 0;
 
         PUBG pubg = dbControl_pubg.GetRawByName(Name);
@@ -178,6 +178,72 @@ public class DBManager {
         buf[i++] = (byte)(pubg.N23_MapX);
         buf[i++] = (byte)(pubg.N24_MapY>>8);
         buf[i++] = (byte)(pubg.N24_MapY);
+
+        buf[i++] = (byte)(pubg.N25_AimX>>8);
+        buf[i++] = (byte)(pubg.N25_AimX);
+        buf[i++] = (byte)(pubg.N26_AimY>>8);
+        buf[i++] = (byte)(pubg.N26_AimY);
+        buf[i++] = (byte)(pubg.N27_CheckPackageX>>8);
+        buf[i++] = (byte)(pubg.N27_CheckPackageX);
+        buf[i++] = (byte)(pubg.N28_CheckPackageY>>8);
+        buf[i++] = (byte)(pubg.N28_CheckPackageY);
+        buf[i++] = (byte)(pubg.N29_DoorX>>8);
+        buf[i++] = (byte)(pubg.N29_DoorX);
+        buf[i++] = (byte)(pubg.N30_DoorY>>8);
+        buf[i++] = (byte)(pubg.N30_DoorY);
+        buf[i++] = (byte)(pubg.N31_DriveX>>8);
+        buf[i++] = (byte)(pubg.N31_DriveX);
+        buf[i++] = (byte)(pubg.N32_DriveY>>8);
+        buf[i++] = (byte)(pubg.N32_DriveY);
+        buf[i++] = (byte)(pubg.N33_GetOffX>>8);
+        buf[i++] = (byte)(pubg.N33_GetOffX);
+        buf[i++] = (byte)(pubg.N34_GetOffY>>8);
+        buf[i++] = (byte)(pubg.N34_GetOffY);
+        buf[i++] = (byte)(pubg.N35_GrenadeX>>8);
+        buf[i++] = (byte)(pubg.N35_GrenadeX);
+        buf[i++] = (byte)(pubg.N36_GrenadeY>>8);
+        buf[i++] = (byte)(pubg.N36_GrenadeY);
+        buf[i++] = (byte)(pubg.N37_MedicineX>>8);
+        buf[i++] = (byte)(pubg.N37_MedicineX);
+        buf[i++] = (byte)(pubg.N38_MedicineY>>8);
+        buf[i++] = (byte)(pubg.N38_MedicineY);
+        buf[i++] = (byte)(pubg.N39_ReloadX>>8);
+        buf[i++] = (byte)(pubg.N39_ReloadX);
+        buf[i++] = (byte)(pubg.N40_ReloadY>>8);
+        buf[i++] = (byte)(pubg.N40_ReloadY);
+        buf[i++] = (byte)(pubg.N41_SaveX>>8);
+        buf[i++] = (byte)(pubg.N41_SaveX);
+        buf[i++] = (byte)(pubg.N42_SaveY>>8);
+        buf[i++] = (byte)(pubg.N42_SaveY);
+        buf[i++] = (byte)(pubg.N43_SprintX>>8);
+        buf[i++] = (byte)(pubg.N43_SprintX);
+        buf[i++] = (byte)(pubg.N44_SprintY>>8);
+        buf[i++] = (byte)(pubg.N44_SprintY);
+        buf[i++] = (byte)(pubg.N45_FollowX>>8);
+        buf[i++] = (byte)(pubg.N45_FollowX);
+        buf[i++] = (byte)(pubg.N46_FollowY>>8);
+        buf[i++] = (byte)(pubg.N46_FollowY);
+        buf[i++] = (byte)(pubg.N47_PickX>>8);
+        buf[i++] = (byte)(pubg.N47_PickX);
+        buf[i++] = (byte)(pubg.N48_PickY>>8);
+        buf[i++] = (byte)(pubg.N48_PickY);
+        buf[i++] = (byte)(pubg.N49_RideX>>8);
+        buf[i++] = (byte)(pubg.N49_RideX);
+        buf[i++] = (byte)(pubg.N50_RideY>>8);
+        buf[i++] = (byte)(pubg.N50_RideY);
+        buf[i++] = (byte)(pubg.N51_Pick1X>>8);
+        buf[i++] = (byte)(pubg.N51_Pick1X);
+        buf[i++] = (byte)(pubg.N52_Pick1Y>>8);
+        buf[i++] = (byte)(pubg.N52_Pick1Y);
+        buf[i++] = (byte)(pubg.N53_Pick2X>>8);
+        buf[i++] = (byte)(pubg.N53_Pick2X);
+        buf[i++] = (byte)(pubg.N54_Pick2Y>>8);
+        buf[i++] = (byte)(pubg.N54_Pick2Y);
+        buf[i++] = (byte)(pubg.N55_Pick3X>>8);
+        buf[i++] = (byte)(pubg.N55_Pick3X);
+        buf[i++] = (byte)(pubg.N56_Pick3Y>>8);
+        buf[i++] = (byte)(pubg.N56_Pick3Y);
+
         Log.i("SetAttack", String.valueOf(buf[0])+" "+String.valueOf(buf[1])+" "+String.valueOf(buf[2])+" "+String.valueOf(buf[3]));
         Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
         return buf;

@@ -63,6 +63,54 @@ public class DBControlPUBG {
         cV.put("MapX",pubg.N23_MapX);
         cV.put("MapY",pubg.N24_MapY);
 
+        cV.put("AimX",pubg.N25_AimX);
+        cV.put("AimY",pubg.N26_AimY);
+
+        cV.put("CheckPackageX",pubg.N27_CheckPackageX);
+        cV.put("CheckPackageY",pubg.N28_CheckPackageY);
+
+        cV.put("DoorX",pubg.N29_DoorX);
+        cV.put("DoorY",pubg.N30_DoorY);
+
+        cV.put("DriveX",pubg.N31_DriveX);
+        cV.put("DriveY",pubg.N32_DriveY);
+
+        cV.put("GetOffX",pubg.N33_GetOffX);
+        cV.put("GetOffY",pubg.N34_GetOffY);
+
+        cV.put("GrenadeX",pubg.N35_GrenadeX);
+        cV.put("GrenadeY",pubg.N36_GrenadeY);
+
+        cV.put("MedicineX",pubg.N37_MedicineX);
+        cV.put("MedicineY",pubg.N38_MedicineY);
+
+        cV.put("ReloadX",pubg.N39_ReloadX);
+        cV.put("ReloadY",pubg.N40_ReloadY);
+
+        cV.put("SaveX",pubg.N41_SaveX);
+        cV.put("SaveY",pubg.N42_SaveY);
+
+        cV.put("SprintX",pubg.N43_SprintX);
+        cV.put("SprintY",pubg.N44_SprintY);
+
+        cV.put("FollowX",pubg.N45_FollowX);
+        cV.put("FollowY",pubg.N46_FollowY);
+
+        cV.put("PickX",pubg.N47_PickX);
+        cV.put("PickY",pubg.N48_PickY);
+
+        cV.put("RideX",pubg.N49_RideX);
+        cV.put("RideY",pubg.N50_RideY);
+
+        cV.put("Pick1X",pubg.N51_Pick1X);
+        cV.put("Pick1Y",pubg.N52_Pick1Y);
+
+        cV.put("Pick2X",pubg.N53_Pick2X);
+        cV.put("Pick2Y",pubg.N54_Pick2Y);
+
+        cV.put("Pick3X",pubg.N55_Pick3X);
+        cV.put("Pick3Y",pubg.N56_Pick3Y);
+
         return cV;
     }
 
@@ -132,6 +180,23 @@ public class DBControlPUBG {
                 pubg.SetArmsLeft(cursor.getInt(cursor.getColumnIndex("ArmsLeftX")),cursor.getInt(cursor.getColumnIndex("ArmsLeftY")));
                 pubg.SetArmsRight(cursor.getInt(cursor.getColumnIndex("ArmsRightX")),cursor.getInt(cursor.getColumnIndex("ArmsRightY")));
                 pubg.SetMap(cursor.getInt(cursor.getColumnIndex("MapX")),cursor.getInt(cursor.getColumnIndex("MapY")));
+
+                pubg.SetAim(cursor.getInt(cursor.getColumnIndex("AimX")),cursor.getInt(cursor.getColumnIndex("AimY")));
+                pubg.SetCheckPackage(cursor.getInt(cursor.getColumnIndex("CheckPackageX")),cursor.getInt(cursor.getColumnIndex("CheckPackageY")));
+                pubg.SetDoor(cursor.getInt(cursor.getColumnIndex("DoorX")),cursor.getInt(cursor.getColumnIndex("DoorY")));
+                pubg.SetDrive(cursor.getInt(cursor.getColumnIndex("DriveX")),cursor.getInt(cursor.getColumnIndex("DriveY")));
+                pubg.SetGetOff(cursor.getInt(cursor.getColumnIndex("GetOffX")),cursor.getInt(cursor.getColumnIndex("GetOffY")));
+                pubg.SetGrenade(cursor.getInt(cursor.getColumnIndex("GrenadeX")),cursor.getInt(cursor.getColumnIndex("GrenadeY")));
+                pubg.SetMedicine(cursor.getInt(cursor.getColumnIndex("MedicineX")),cursor.getInt(cursor.getColumnIndex("MedicineY")));
+                pubg.SetReload(cursor.getInt(cursor.getColumnIndex("ReloadX")),cursor.getInt(cursor.getColumnIndex("ReloadY")));
+                pubg.SetSave(cursor.getInt(cursor.getColumnIndex("SaveX")),cursor.getInt(cursor.getColumnIndex("SaveY")));
+                pubg.SetSprint(cursor.getInt(cursor.getColumnIndex("SprintX")),cursor.getInt(cursor.getColumnIndex("SprintY")));
+                pubg.SetFollow(cursor.getInt(cursor.getColumnIndex("FollowX")),cursor.getInt(cursor.getColumnIndex("FollowY")));
+                pubg.SetPick(cursor.getInt(cursor.getColumnIndex("PickX")),cursor.getInt(cursor.getColumnIndex("PickY")));
+                pubg.SetRide(cursor.getInt(cursor.getColumnIndex("RideX")),cursor.getInt(cursor.getColumnIndex("RideY")));
+                pubg.SetPick1(cursor.getInt(cursor.getColumnIndex("Pick1X")),cursor.getInt(cursor.getColumnIndex("Pick1Y")));
+                pubg.SetPick2(cursor.getInt(cursor.getColumnIndex("Pick2X")),cursor.getInt(cursor.getColumnIndex("Pick2Y")));
+                pubg.SetPick3(cursor.getInt(cursor.getColumnIndex("Pick3X")),cursor.getInt(cursor.getColumnIndex("Pick3Y")));
             }
 
             cursor.close(); // 记得关闭游标对象

@@ -15,6 +15,22 @@ public class PUBG {
     public int N19_ArmsLeftX = 400,N20_ArmsLeftY = 400;
     public int N21_ArmsRightX = 400,N22_ArmsRightY = 400;
     public int N23_MapX = 400,N24_MapY = 400;
+    public int N25_AimX = 400,N26_AimY = 400;
+    public int N27_CheckPackageX = 400,N28_CheckPackageY = 400;
+    public int N29_DoorX = 400,N30_DoorY = 400;
+    public int N31_DriveX = 400,N32_DriveY = 400;
+    public int N33_GetOffX = 400,N34_GetOffY = 400;
+    public int N35_GrenadeX = 400,N36_GrenadeY = 400;
+    public int N37_MedicineX = 400,N38_MedicineY = 400;
+    public int N39_ReloadX = 400,N40_ReloadY = 400;
+    public int N41_SaveX = 400,N42_SaveY = 400;
+    public int N43_SprintX = 400,N44_SprintY = 400;
+    public int N45_FollowX = 400,N46_FollowY = 400;
+    public int N47_PickX = 400,N48_PickY = 400;
+    public int N49_RideX = 400,N50_RideY = 400;
+    public int N51_Pick1X = 400,N52_Pick1Y = 400;
+    public int N53_Pick2X = 400,N54_Pick2Y = 400;
+    public int N55_Pick3X = 400,N56_Pick3Y = 400;
 
     public void SetName(String name)
     {
@@ -35,5 +51,20 @@ public class PUBG {
     public void SetArmsLeft(int px,int py) { this.N19_ArmsLeftX = px;this.N20_ArmsLeftY = py; }
     public void SetArmsRight(int px,int py) { this.N21_ArmsRightX = px;this.N22_ArmsRightY = py; }
     public void SetMap(int px,int py) { this.N23_MapX = px;this.N24_MapY = py; }
-
+    public void SetAim(int px,int py) { this.N25_AimX = px;this.N26_AimY = py; }
+    public void SetCheckPackage(int px,int py) { this.N27_CheckPackageX = px;this.N28_CheckPackageY = py; }
+    public void SetDoor(int px,int py) { this.N29_DoorX = px;this.N30_DoorY = py; }
+    public void SetDrive(int px,int py) { this.N31_DriveX = px;this.N32_DriveY = py; }
+    public void SetGetOff(int px,int py) { this.N33_GetOffX = px;this.N34_GetOffY = py; }
+    public void SetGrenade(int px,int py) { this.N35_GrenadeX = px;this.N36_GrenadeY = py; }
+    public void SetMedicine(int px,int py) { this.N37_MedicineX = px;this.N38_MedicineY = py; }
+    public void SetReload(int px,int py) { this.N39_ReloadX = px;this.N40_ReloadY = py; }
+    public void SetSave(int px,int py) { this.N41_SaveX = px;this.N42_SaveY = py; }
+    public void SetSprint(int px,int py) { this.N43_SprintX = px;this.N44_SprintY = py; }
+    public void SetFollow(int px,int py) { this.N45_FollowX = px;this.N46_FollowY = py; }
+    public void SetPick(int px,int py) { this.N47_PickX = px;this.N48_PickY = py; }
+    public void SetRide(int px,int py) { this.N49_RideX = px;this.N50_RideY = py; }
+    public void SetPick1(int px,int py) { this.N51_Pick1X = px;this.N52_Pick1Y = py; }
+    public void SetPick2(int px,int py) { this.N53_Pick2X = px;this.N54_Pick2Y = py; }
+    public void SetPick3(int px,int py) { this.N55_Pick3X = px;this.N56_Pick3Y = py; }
 }

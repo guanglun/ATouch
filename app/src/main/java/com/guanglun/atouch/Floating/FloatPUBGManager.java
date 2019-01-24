@@ -38,7 +38,9 @@ public class FloatPUBGManager {
     private final String DEBUG_TAG = "FloatPUBGManager";
 
     FloatButtonPUBG bt_attack,bt_move,bt_jump,bt_squat,bt_lie,bt_face,bt_watch,
-    bt_package,bt_armsleft,bt_armsright,bt_map;
+    bt_package,bt_armsleft,bt_armsright,bt_map,bt_aim,bt_checkpackage,bt_door,bt_drive,
+    bt_getoff,bt_grenade,bt_medicine,bt_reload,bt_save,bt_sprint,bt_follow,bt_pick,bt_pick1,
+    bt_pick2,bt_pick3,bt_ride;
 
 
     public FloatPUBGManager(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params)
@@ -97,6 +99,70 @@ public class FloatPUBGManager {
         //右武器
         bt_map = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
                 pubg.N23_MapX,pubg.N24_MapY,R.drawable.pubg_map);
+/****/
+        //瞄准
+        bt_aim = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N25_AimX,pubg.N26_AimY,R.drawable.pubg_aim);
+
+        //舔包
+        bt_checkpackage = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N27_CheckPackageX,pubg.N28_CheckPackageY,R.drawable.pubg_checkpackage);
+
+        //开门
+        bt_door = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N29_DoorX,pubg.N30_DoorY,R.drawable.pubg_door);
+
+        //驾驶
+        bt_drive = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N31_DriveX,pubg.N32_DriveY,R.drawable.pubg_drive);
+
+        //下车
+        bt_getoff = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N33_GetOffX,pubg.N34_GetOffY,R.drawable.pubg_getoff);
+
+        //手雷
+        bt_grenade = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N35_GrenadeX,pubg.N36_GrenadeY,R.drawable.pubg_grenade);
+
+        //用药
+        bt_medicine = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N37_MedicineX,pubg.N38_MedicineY,R.drawable.pubg_medicine);
+
+        //重装
+        bt_reload = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N39_ReloadX,pubg.N40_ReloadY,R.drawable.pubg_reload);
+
+        //救援
+        bt_save = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N41_SaveX,pubg.N42_SaveY,R.drawable.pubg_save);
+
+        //冲刺
+        bt_sprint = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N43_SprintX,pubg.N44_SprintY,R.drawable.pubg_sprint);
+        //跳伞跟随
+        bt_follow = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N45_FollowX,pubg.N46_FollowY,R.drawable.pubg_follow);
+
+        //拾取
+        bt_pick = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N47_PickX,pubg.N48_PickY,R.drawable.pubg_pick);
+
+        //拾取
+        bt_ride = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N49_RideX,pubg.N50_RideY,R.drawable.pubg_ride);
+
+        //拾取1
+        bt_pick1 = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N51_Pick1X,pubg.N52_Pick1Y,R.drawable.pubg_pick1);
+
+        //拾取2
+        bt_pick2 = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N53_Pick2X,pubg.N54_Pick2Y,R.drawable.pubg_pick2);
+
+        //拾取3
+        bt_pick3 = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
+                pubg.N55_Pick3X,pubg.N56_Pick3Y,R.drawable.pubg_pick3);
+
     }
 
     public void RemoveAll()
@@ -116,6 +182,24 @@ public class FloatPUBGManager {
             bt_armsleft.Remove();
             bt_armsright.Remove();
             bt_map.Remove();
+
+
+            bt_aim.Remove();
+            bt_checkpackage.Remove();
+            bt_door.Remove();
+            bt_drive.Remove();
+            bt_getoff.Remove();
+            bt_grenade.Remove();
+            bt_medicine.Remove();
+            bt_reload.Remove();
+            bt_save.Remove();
+            bt_sprint.Remove();
+            bt_follow.Remove();
+            bt_pick.Remove();
+            bt_pick1.Remove();
+            bt_pick2.Remove();
+            bt_pick3.Remove();
+            bt_ride.Remove();
 
             bt_attack = null;
         }
@@ -138,6 +222,22 @@ public class FloatPUBGManager {
         bt_armsright.Hide();
         bt_map.Hide();
 
+        bt_aim.Hide();
+        bt_checkpackage.Hide();
+        bt_door.Hide();
+        bt_drive.Hide();
+        bt_getoff.Hide();
+        bt_grenade.Hide();
+        bt_medicine.Hide();
+        bt_reload.Hide();
+        bt_save.Hide();
+        bt_sprint.Hide();
+        bt_follow.Hide();
+        bt_pick.Hide();
+        bt_pick1.Hide();
+        bt_pick2.Hide();
+        bt_pick3.Hide();
+        bt_ride.Hide();
     }
 
     public void ShowAll()
@@ -155,6 +255,23 @@ public class FloatPUBGManager {
         bt_armsleft.Show();
         bt_armsright.Show();
         bt_map.Show();
+
+        bt_aim.Show();
+        bt_checkpackage.Show();
+        bt_door.Show();
+        bt_drive.Show();
+        bt_getoff.Show();
+        bt_grenade.Show();
+        bt_medicine.Show();
+        bt_reload.Show();
+        bt_save.Show();
+        bt_sprint.Show();
+        bt_follow.Show();
+        bt_pick.Show();
+        bt_pick1.Show();
+        bt_pick2.Show();
+        bt_pick3.Show();
+        bt_ride.Show();
 
     }
 
@@ -174,6 +291,40 @@ public class FloatPUBGManager {
         pubg.SetArmsLeft(bt_armsleft.PositionX,bt_armsleft.PositionY);
         pubg.SetArmsRight(bt_armsright.PositionX,bt_armsright.PositionY);
         pubg.SetMap(bt_map.PositionX,bt_map.PositionY);
+
+        bt_aim.Show();
+        bt_checkpackage.Show();
+        bt_door.Show();
+        bt_drive.Show();
+        bt_getoff.Show();
+        bt_grenade.Show();
+        bt_medicine.Show();
+        bt_reload.Show();
+        bt_save.Show();
+        bt_sprint.Show();
+        bt_follow.Show();
+        bt_pick.Show();
+        bt_pick1.Show();
+        bt_pick2.Show();
+        bt_pick3.Show();
+        bt_ride.Show();
+
+        pubg.SetAim(bt_aim.PositionX,bt_aim.PositionY);
+        pubg.SetCheckPackage(bt_checkpackage.PositionX,bt_checkpackage.PositionY);
+        pubg.SetDoor(bt_door.PositionX,bt_door.PositionY);
+        pubg.SetDrive(bt_drive.PositionX,bt_drive.PositionY);
+        pubg.SetGetOff(bt_getoff.PositionX,bt_getoff.PositionY);
+        pubg.SetGrenade(bt_grenade.PositionX,bt_grenade.PositionY);
+        pubg.SetMedicine(bt_medicine.PositionX,bt_medicine.PositionY);
+        pubg.SetReload(bt_reload.PositionX,bt_reload.PositionY);
+        pubg.SetSave(bt_save.PositionX,bt_save.PositionY);
+        pubg.SetSprint(bt_sprint.PositionX,bt_sprint.PositionY);
+        pubg.SetFollow(bt_follow.PositionX,bt_follow.PositionY);
+        pubg.SetPick(bt_pick.PositionX,bt_pick.PositionY);
+        pubg.SetRide(bt_ride.PositionX,bt_ride.PositionY);
+        pubg.SetPick1(bt_pick1.PositionX,bt_pick1.PositionY);
+        pubg.SetPick2(bt_pick2.PositionX,bt_pick2.PositionY);
+        pubg.SetPick3(bt_pick3.PositionX,bt_pick3.PositionY);
 
 
         Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
