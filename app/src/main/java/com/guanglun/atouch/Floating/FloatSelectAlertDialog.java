@@ -12,19 +12,29 @@ public class FloatSelectAlertDialog {
 
     private View select_view;
     private AlertDialog alertDialog;
+    private FloatSelectAlertDialogCallBack cb;
 
+    public interface FloatSelectAlertDialogCallBack {
+        void NewCreat();
+    }
 
-    public FloatSelectAlertDialog(Context context,View blue_view)
+    public FloatSelectAlertDialog(Context context,View blue_view,FloatSelectAlertDialogCallBack cb)
     {
         this.context = context;
         this.select_view = blue_view;
-
+        this.cb = cb;
 
 
         alertDialog = new AlertDialog.Builder(context)
                 //.setTitle("正在扫描蓝牙...")
                 //.setIcon(R.mipmap.ic_launcher)
                 .setView(select_view)
+                .setNegativeButton("新建", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Creat();
+                    }
+                })
                 .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface paramAnonymousDialogInterface,
                                         int paramAnonymousInt) {
@@ -43,5 +53,10 @@ public class FloatSelectAlertDialog {
     public void Cancel()
     {
         alertDialog.cancel();
+    }
+
+    public void Creat()
+    {
+        cb.NewCreat();
     }
 }

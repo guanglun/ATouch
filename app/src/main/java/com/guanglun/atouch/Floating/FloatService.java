@@ -18,7 +18,12 @@ public class FloatService extends Service {
     public void onCreate(){
         super.onCreate();
 
-        mFloatingView = new FloatingView(this);
+        mFloatingView = new FloatingView(this, new FloatingView.FloatingViewCallBack() {
+            @Override
+            public void ChoseName(String Name) {
+                SendBroadcast(Name);
+            }
+        });
     }
 
     @Override
@@ -32,12 +37,12 @@ public class FloatService extends Service {
 
             String action = intent.getStringExtra(ACTION);
             String SelectName = intent.getStringExtra("SelectName");
-
+            String IsStartUp = intent.getStringExtra("IsStartUp");
             if(SHOW.equals(action)){
 
                 //if(!isShow)
                 {
-                    mFloatingView.show(SelectName);
+                    mFloatingView.show(SelectName,IsStartUp);
                     isShow = true;
                 }
 
@@ -56,4 +61,13 @@ public class FloatService extends Service {
         return super.onStartCommand(intent, flags, startId);
 
     }
+
+    public void SendBroadcast(String str)
+    {
+        Intent mintent = new Intent("com.guanglun.atouch.RECEIVER");
+        mintent.putExtra("Name", str);
+        sendBroadcast(mintent);
+    }
+
+
 }

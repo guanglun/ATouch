@@ -19,16 +19,15 @@
         android:text="管理" />
 
 
-
     <Button
-        android:id="@+id/bt_float_add"
+        android:id="@+id/bt_float_chose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:minWidth="0dp"
         android:minHeight="0dp"
-        android:text="添加" />
+        android:text="选择" />
 
     <Button
         android:id="@+id/bt_float_save"

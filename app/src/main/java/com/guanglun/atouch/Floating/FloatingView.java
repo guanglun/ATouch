@@ -3,7 +3,10 @@ package com.guanglun.atouch.Floating;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DBControlPUBG;
@@ -32,7 +36,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     private Context mContext;
     private View select_view;
-    private Button bt_float_manager,bt_float_add,bt_float_save,bt_float_close;
+    private Button bt_float_manager,bt_float_chose,bt_float_save,bt_float_close;
 
     private int mTouchStartX, mTouchStartY;//手指按下时坐标
 
@@ -51,8 +55,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
     private DBControlPUBG dbControlPUBG;
     private boolean isChange = false;
     private String SelectName;
-
+    private List<String> NameList;
     private final String DEBUG_TAG = "FloatingView";
+    private FloatingViewCallBack cb;
 
     public enum WindowStatus {
         CLOSE,
@@ -61,11 +66,15 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     private WindowStatus mWindowStatus = WindowStatus.CLOSE;
 
+    public interface FloatingViewCallBack {
+        void ChoseName(String Name);
+    }
 
-
-    public FloatingView(Context context) {
+    public FloatingView(Context context,FloatingViewCallBack cb) {
 
         super(context);
+
+        this.cb = cb;
 
         mContext = context.getApplicationContext();
 
@@ -75,25 +84,27 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
         select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
-        floatSelectAlertDialog = new FloatSelectAlertDialog(mContext,select_view);
+        floatSelectAlertDialog = new FloatSelectAlertDialog(mContext, select_view, new FloatSelectAlertDialog.FloatSelectAlertDialogCallBack() {
+            @Override
+            public void NewCreat() {
+                SelectName = null;
+                mFloatPUBGManager.RemoveAll();
+                mFloatPUBGManager.Show(new PUBG());
+            }
+        });
 
         //dbControl = new DBControl(context);
         //keyMouseList = dbControl.LoadTableDatabaseList(DatabaseStatic.TABLE_NAME);
 
         dbControlPUBG = new DBControlPUBG(context);
 
-        //FloatListAdapter floatListAdapter = new FloatListAdapter(context,keyMouseList);
-        //select_listview.setAdapter(floatListAdapter);
-
-        //select_listview.setOnItemClickListener(OnItemClickListenerItem);
-
         bt_float_manager = (Button) mRelativeLayout.findViewById(R.id.bt_float_manager);
-        bt_float_add = (Button) mRelativeLayout.findViewById(R.id.bt_float_add);
+        bt_float_chose = (Button) mRelativeLayout.findViewById(R.id.bt_float_chose);
         bt_float_save = (Button) mRelativeLayout.findViewById(R.id.bt_float_save);
         bt_float_close = (Button) mRelativeLayout.findViewById(R.id.bt_float_close);
 
         bt_float_manager.setOnClickListener(this);
-        bt_float_add.setOnClickListener(this);
+        bt_float_chose.setOnClickListener(this);
         bt_float_save.setOnClickListener(this);
         bt_float_close.setOnClickListener(this);
 
@@ -104,14 +115,17 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     }
 
-    void SelectKey()
+    void SelectName()
     {
+        NameList = dbControlPUBG.LoadNameList();
+        FloatListAdapter floatListAdapter = new FloatListAdapter(mContext,NameList);
 
-
+        select_listview.setAdapter(floatListAdapter);
+        select_listview.setOnItemClickListener(OnItemClickListenerItem);
         floatSelectAlertDialog.Show();
     }
 
-    public void show(String SelectName) {
+    public void show(String SelectName,String IsStartUp) {
 
         this.SelectName = SelectName;
 
@@ -134,7 +148,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
         mFloatingManager.addView(mRelativeLayout, mParams);
 
         bt_float_manager.setText("管理");
-        bt_float_add.setVisibility(GONE);
+        bt_float_chose.setVisibility(GONE);
         bt_float_save.setVisibility(GONE);
         bt_float_close.setVisibility(GONE);
 
@@ -154,72 +168,32 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
             mRelativeLayout.setBackgroundColor(0x60ebebeb);
             mFloatingManager.updateView(mRelativeLayout, mParams);
             bt_float_manager.setText("取消");
-            bt_float_add.setVisibility(VISIBLE);
+            bt_float_chose.setVisibility(VISIBLE);
             bt_float_save.setVisibility(VISIBLE);
             bt_float_close.setVisibility(VISIBLE);
 
             mWindowStatus = WindowStatus.OPEN;
 
             mFloatPUBGManager.Show(pubg);
+
         }else {
             pubg = new PUBG();
             mFloatPUBGManager.Show(pubg);
         }
 
-
-//
-//            isChange = true;
-//            mParams.height = LayoutParams.MATCH_PARENT;
-//            mRelativeLayout.setBackgroundColor(0x60ebebeb);
-//            mFloatingManager.updateView(mRelativeLayout, mParams);
-//            bt_float_manager.setText("取消");
-//            bt_float_add.setVisibility(VISIBLE);
-//            bt_float_save.setVisibility(VISIBLE);
-//            bt_float_close.setVisibility(VISIBLE);
-//
-//            mWindowStatus = WindowStatus.OPEN;
-//
-//            mFloatButtonManager.Load(TableName,dbControl);
-//            ChangeTableName = TableName;
-//
-//        }
     }
 
     public void hide() {
         mFloatPUBGManager.RemoveAll();
-        //mFloatButtonManager.RemoveAll();
         mFloatingManager.removeView(mRelativeLayout);
 
     }
 
 
-//    private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-//        @Override
-//        public boolean onTouch(View view, MotionEvent event) {
-//            switch (event.getAction()) {
-//                case MotionEvent.ACTION_DOWN:
-//                    mTouchStartX = (int) event.getRawX();
-//                    mTouchStartY = (int) event.getRawY();
-//                    break;
-//                case MotionEvent.ACTION_MOVE:
-//                    mParams.x += (int) event.getRawX() - mTouchStartX;
-//                    mParams.y += (int) event.getRawY() - mTouchStartY;//相对于屏幕左上角的位置
-//                    mWindowManager.updateView(relativeLayout, mParams);
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                    break;
-//            }
-//            return true;
-//        }
-//    };
-
     private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            KeyMouse keyMouse = keyMouseList.get(i);
-
-            mFloatButtonManager.Add(keyMouse);
+            DialogShow(NameList.get(i));
 
             floatSelectAlertDialog.Cancel();
         }
@@ -237,13 +211,13 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
                     mRelativeLayout.setBackgroundColor(0x60ebebeb);
                     mFloatingManager.updateView(mRelativeLayout, mParams);
                     bt_float_manager.setText("取消");
-                    bt_float_add.setVisibility(VISIBLE);
+                    bt_float_chose.setVisibility(VISIBLE);
                     bt_float_save.setVisibility(VISIBLE);
                     bt_float_close.setVisibility(VISIBLE);
-
+                    mFloatPUBGManager.ShowAll();
                     mWindowStatus = WindowStatus.OPEN;
 
-                }else{
+                } else {
 
                     mRelativeLayout.setBackgroundColor(0x00FFFFFF);
                     //mParams.height = LayoutParams.WRAP_CONTENT;
@@ -253,17 +227,19 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
                     mFloatingManager.updateView(mRelativeLayout, mParams);
                     bt_float_manager.setText("管理");
-                    bt_float_add.setVisibility(GONE);
+                    bt_float_chose.setVisibility(GONE);
                     bt_float_save.setVisibility(GONE);
                     bt_float_close.setVisibility(GONE);
-
+                    mFloatPUBGManager.HideAll();
                     mWindowStatus = WindowStatus.CLOSE;
                 }
 
                 break;
-            case R.id.bt_float_add:
-                Log.e("DEBUG","bt_float_add");
-                //SelectKey();
+            case R.id.bt_float_chose:
+                Log.e("DEBUG","bt_float_chose");
+                SelectName();
+
+
                 break;
             case R.id.bt_float_save:
                 Log.e("DEBUG","bt_float_save");
@@ -305,7 +281,7 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
                                 mFloatPUBGManager.Save(SelectName, dbControlPUBG);
                                 //mFloatButtonManager.Save(TableName, dbControl);
-                                hide();
+                                //hide();
 
                             //Toast.makeText(MainActivity.this, content, Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
@@ -315,11 +291,110 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             dialog.show();
         }else{
-            dbControlPUBG.DeleteRaw(SelectName);
-            mFloatPUBGManager.Save(SelectName, dbControlPUBG);
-            hide();
+            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    //.setIcon(R.mipmap.icon)//设置标题的图片
+                    .setTitle("确认保存？")//设置对话框的标题
+                    .setNeutralButton("保存并使用", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dbControlPUBG.DeleteRaw(SelectName);
+                            mFloatPUBGManager.Save(SelectName, dbControlPUBG);
+                            cb.ChoseName(SelectName);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dbControlPUBG.DeleteRaw(SelectName);
+                            mFloatPUBGManager.Save(SelectName, dbControlPUBG);
+
+                            dialog.dismiss();
+                        }
+                    }).create();
+
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+
         }
 
+
+    }
+
+    private void DialogShow(final String DialogSelectName){
+
+        final String items[] = {"使用", "修改", "删除"};
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                //.setIcon(R.mipmap.icon)//设置标题的图片
+                .setTitle("选择对\"" + DialogSelectName + "\"的操作")//设置对话框的标题
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (items[which])
+                        {
+                            case "使用":
+                                cb.ChoseName(DialogSelectName);
+                                break;
+                            case "修改":
+
+                                SelectName = DialogSelectName;
+                                mFloatPUBGManager.RemoveAll();
+                                mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(SelectName));
+
+                                break;
+                            case "删除":
+
+                                AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("确认删除\"" + DialogSelectName + "\"?")
+                                        .setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dbControlPUBG.DeleteRaw(DialogSelectName);
+                                                if(DialogSelectName.equals(SelectName))
+                                                {
+                                                    SelectName = null;
+                                                    mFloatPUBGManager.RemoveAll();
+                                                    mFloatPUBGManager.Show(new PUBG());
+                                                }
+
+
+                                            }
+                                        }).create();
+
+                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                dialog2.show();
+
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
+    }
+
+    private void showToast(String str)
+    {
+
+        Toast.makeText(mContext, str,
+                Toast.LENGTH_SHORT).show();
 
     }
 }

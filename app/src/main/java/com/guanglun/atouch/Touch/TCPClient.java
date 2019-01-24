@@ -26,7 +26,7 @@ public class TCPClient {
 
     private socket_callback sc = null;
 
-    private boolean is_connect = false;
+    private boolean is_connect = false,is_auto_connect = true;
 
     public interface socket_callback {
         public void on_connect_success();
@@ -39,13 +39,16 @@ public class TCPClient {
         this.ip = ip;
         this.port = port;
         this.sc = sc;
+
+        connect();
     }
 
     public void connect()
     {
-        if(socket_client == null )
+        if(socket_client == null && thread_client == null)
         {
-            thread_client= new Thread(socket_runnable);
+            is_auto_connect = true;
+            thread_client = new Thread(socket_runnable);
             thread_client.start();
         }
     }
@@ -56,51 +59,64 @@ public class TCPClient {
             byte receive_buffer[] = new byte[4 * 1024];
             int receive_len = 0;
 
-            try {
-                socket_client = new Socket(ip, port);
-                is_connect = true;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        sc.on_connect_success();
-                    }});
+            while(is_auto_connect)
+            {
 
 
-                inputStream = socket_client.getInputStream();
-                outputStream = socket_client.getOutputStream();
-
-                //socket_send("hello server!".getBytes(),13);
-
-                while ((receive_len = inputStream.read(receive_buffer)) != -1) {
-                    Log.e("DEBUG",new String(receive_buffer, 0, receive_len));
-                }
-
-                socket_client = null;
-                is_connect = false;
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        sc.on_disconnect();
-                    }});
+                try {
+                    socket_client = new Socket(ip, port);
+                    is_connect = true;
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            sc.on_connect_success();
+                        }});
 
 
-            }catch (IOException e) {
-                socket_client = null;
-                if(is_connect)
-                {
+                    inputStream = socket_client.getInputStream();
+                    outputStream = socket_client.getOutputStream();
+
+                    //socket_send("hello server!".getBytes(),13);
+
+                    while ((receive_len = inputStream.read(receive_buffer)) != -1) {
+                        Log.e("DEBUG",new String(receive_buffer, 0, receive_len));
+                    }
+
+                    socket_client = null;
                     is_connect = false;
-
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             sc.on_disconnect();
                         }});
-                }else{
 
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            sc.on_connect_fail();
-                        }});
+
+                }catch (IOException e) {
+                    socket_client = null;
+                    if(is_connect)
+                    {
+                        is_connect = false;
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            public void run() {
+                                sc.on_disconnect();
+                            }});
+                    }else{
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            public void run() {
+                                sc.on_connect_fail();
+                            }});
+                    }
+                    e.printStackTrace();
                 }
-                e.printStackTrace();
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
+            thread_client = null;
         }
     };
 

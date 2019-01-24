@@ -11,6 +11,8 @@ import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.Main.EasyTool;
 import com.guanglun.atouch.R;
 
+import static android.view.View.VISIBLE;
+
 public class FloatButtonPUBG {
     private final int ROUNDD = 30;
 
@@ -62,7 +64,26 @@ public class FloatButtonPUBG {
             mRelativeLayout.removeView(button);
             button = null;
         }
+    }
 
+    public void Show()
+    {
+        if(button != null)
+        {
+            button.setVisibility(VISIBLE);
+            //mRelativeLayout.up(button);
+            //button = null;
+        }
+    }
+
+    public void Hide()
+    {
+        if(button != null)
+        {
+            button.setVisibility(View.GONE);
+            //mRelativeLayout.removeView(button);
+            //button = null;
+        }
     }
 
     View.OnTouchListener ButtonOnTouchListener = new View.OnTouchListener() {

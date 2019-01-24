@@ -15,25 +15,24 @@ import java.util.List;
 public class FloatListAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
-    private List<KeyMouse> keyMouseList;
+    private List<String> NameList;
 
-
-    public FloatListAdapter(Context context, List<KeyMouse> keyMouseList) {
+    public FloatListAdapter(Context context, List<String> NameList) {
 
         mInflater = LayoutInflater.from(context);
-        this.keyMouseList = keyMouseList;
+        this.NameList = NameList;
 
     }
 
     //返回数据集的长度
     @Override
     public int getCount() {
-        return keyMouseList.size();
+        return NameList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return keyMouseList.get(position);
+        return NameList.get(position);
     }
 
     @Override
@@ -57,9 +56,8 @@ public class FloatListAdapter extends BaseAdapter {
             holder = (FloatListAdapter.ViewHolder) convertView.getTag();
         }
 
-        KeyMouse keyMouse = keyMouseList.get(position);
-        holder.tv_float_select_key_name.setText(keyMouse.Name);
-        holder.tv_float_select_key_description.setText(keyMouse.Description);
+        holder.tv_float_select_key_name.setText(NameList.get(position));
+        holder.tv_float_select_key_description.setText("NULL");
 
         return convertView;
     }

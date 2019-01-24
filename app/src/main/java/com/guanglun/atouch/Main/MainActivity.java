@@ -3,9 +3,15 @@ package com.guanglun.atouch.Main;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +28,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
 import com.guanglun.atouch.Bluetooth.BluetoothLeService;
@@ -58,10 +65,13 @@ public class MainActivity extends AppCompatActivity {
     private BlueScanAlertDialog blueScanAlertDialog;
     private DBManager mDBManager;
 
-    private TextView tv_use_keymap_now;
+    private TextView tv_use_keymap_now,tv_auto_status;
     private DataProc mDataProc;
 
     private Button bt_connect_auto;
+    private String pubg_now_use = null;
+
+    private MsgReceiver msgReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,18 +87,28 @@ public class MainActivity extends AppCompatActivity {
             public void on_connect_success() {
                 Log.e("DEBUG","socket creat success");
                 bt_connect_auto.setText("断开");
+                tv_auto_status.setText("映射已连接");
+
+                if(pubg_now_use != null)
+                {
+                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                    temp = DataProc.Creat((byte)0x01,temp,temp.length);
+                    tcpclient.socket_send(temp,temp.length);
+                }
             }
 
             @Override
             public void on_connect_fail() {
                 Log.e("DEBUG","socket creat fail");
                 bt_connect_auto.setText("连接");
+                tv_auto_status.setText("映射未连接");
             }
 
             @Override
             public void on_disconnect() {
                 Log.e("DEBUG","socket disconnect");
                 bt_connect_auto.setText("连接");
+                tv_auto_status.setText("映射未连接");
             }
 
         });
@@ -143,8 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
+        tv_auto_status = (TextView)findViewById(R.id.tv_auto_status);
         tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
 
@@ -153,16 +172,30 @@ public class MainActivity extends AppCompatActivity {
             public void on_update_use_table_now(String Name) {
 
                 tv_use_keymap_now.setText("使用映射：" + Name);
-
+                pubg_now_use = Name;
                 //Log.i("DEBUG",keyMouseListUseNow.toString());
-                byte[] temp = mDBManager.GetByteFromPUBG(Name);
-                temp = DataProc.Creat((byte)0x01,temp,temp.length);
-                tcpclient.socket_send(temp,temp.length);
+
+                if(pubg_now_use != null)
+                {
+                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                    temp = DataProc.Creat((byte)0x01,temp,temp.length);
+                    tcpclient.socket_send(temp,temp.length);
+                }
             }
         });
+
+
+        Intent intent = new Intent(this, FloatService.class);
+        intent.putExtra(FloatService.ACTION, FloatService.SHOW);
+        intent.putExtra("IsStartUp", "true");
+        startService(intent);
+
+        //动态注册广播接收器
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.guanglun.atouch.RECEIVER");
+        registerReceiver(msgReceiver, intentFilter);
     }
-
-
 
     public void add_plan()
     {
@@ -170,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
         startService(intent);
     }
+
 
     public void blue_init()
     {
@@ -179,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
         blueScanAlertDialog = new BlueScanAlertDialog(this,blue_view);
 
         bule_device = new BuleDevice(new BuleDevice.blue_callback(){
-
 
             @Override
             public void on_connect() {
@@ -259,8 +292,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        //Log.e("DEBUG", "We are in onDestroy");
+        //注销广播
+        unregisterReceiver(msgReceiver);
     }
 
     private void showToast(String str)
@@ -273,6 +306,30 @@ public class MainActivity extends AppCompatActivity {
         msg.setData(bundle);
         blue_handler.sendMessage(msg);
 
+
+    }
+
+    /**
+     * 广播接收器
+     * @author len
+     *
+     */
+    public class MsgReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //拿到进度，更新UI
+
+            pubg_now_use = intent.getStringExtra("Name");
+            tv_use_keymap_now.setText("使用映射：" + pubg_now_use);
+
+            if(pubg_now_use != null)
+            {
+                byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                temp = DataProc.Creat((byte)0x01,temp,temp.length);
+                tcpclient.socket_send(temp,temp.length);
+            }
+        }
 
     }
 

@@ -122,6 +122,42 @@ public class FloatPUBGManager {
 
     }
 
+    public void HideAll()
+    {
+
+        Log.i(DEBUG_TAG, "HideAll");
+        bt_attack.Hide();
+        bt_move.Hide();
+        bt_jump.Hide();
+        bt_squat.Hide();
+        bt_lie.Hide();
+        bt_face.Hide();
+        bt_watch.Hide();
+        bt_package.Hide();
+        bt_armsleft.Hide();
+        bt_armsright.Hide();
+        bt_map.Hide();
+
+    }
+
+    public void ShowAll()
+    {
+
+        Log.i(DEBUG_TAG, "HideAll");
+        bt_attack.Show();
+        bt_move.Show();
+        bt_jump.Show();
+        bt_squat.Show();
+        bt_lie.Show();
+        bt_face.Show();
+        bt_watch.Show();
+        bt_package.Show();
+        bt_armsleft.Show();
+        bt_armsright.Show();
+        bt_map.Show();
+
+    }
+
     public void Save(String Name,DBControlPUBG mDBControlPUBG){
 
         PUBG pubg = new PUBG();
