@@ -80,7 +80,9 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
 
-        mRelativeLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.floating_view, null);
+        //mRelativeLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.floating_view, null);
+
+        mRelativeLayout = new RelativeLayout(mContext);
 
         select_view = mLayoutInflater.inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
@@ -98,21 +100,22 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
         dbControlPUBG = new DBControlPUBG(context);
 
-        bt_float_manager = (Button) mRelativeLayout.findViewById(R.id.bt_float_manager);
-        bt_float_chose = (Button) mRelativeLayout.findViewById(R.id.bt_float_chose);
-        bt_float_save = (Button) mRelativeLayout.findViewById(R.id.bt_float_save);
-        bt_float_close = (Button) mRelativeLayout.findViewById(R.id.bt_float_close);
-
-        bt_float_manager.setOnClickListener(this);
-        bt_float_chose.setOnClickListener(this);
-        bt_float_save.setOnClickListener(this);
-        bt_float_close.setOnClickListener(this);
+//        bt_float_manager = (Button) mRelativeLayout.findViewById(R.id.bt_float_manager);
+//        bt_float_chose = (Button) mRelativeLayout.findViewById(R.id.bt_float_chose);
+//        bt_float_save = (Button) mRelativeLayout.findViewById(R.id.bt_float_save);
+//        bt_float_close = (Button) mRelativeLayout.findViewById(R.id.bt_float_close);
+//
+//        bt_float_manager.setOnClickListener(this);
+//        bt_float_chose.setOnClickListener(this);
+//        bt_float_save.setOnClickListener(this);
+//        bt_float_close.setOnClickListener(this);
 
         mFloatingManager = FloatingManager.getInstance(mContext);
         mFloatButtonManager = new FloatButtonManager(mContext,mFloatingManager,mRelativeLayout,mParams);
         mFloatPUBGManager = new FloatPUBGManager(mContext,mFloatingManager,mRelativeLayout,mParams);
 
 
+        FloatMenu mFloatMenu = new FloatMenu(mContext,mFloatingManager,mRelativeLayout,mParams);
     }
 
     void SelectName()
@@ -127,59 +130,59 @@ public class FloatingView extends FrameLayout implements View.OnClickListener {
 
     public void show(String SelectName,String IsStartUp) {
 
-        this.SelectName = SelectName;
-
-        hide();
-
-        mParams = new WindowManager.LayoutParams();
-        mParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
-
-        //总是出现在应用程序窗口之上
-        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        //设置图片格式，效果为背景透明
-        mParams.format = PixelFormat.RGBA_8888;
-        mParams.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
-
-        mParams.width = LayoutParams.MATCH_PARENT;
-        mParams.height = 200;//LayoutParams.WRAP_CONTENT;
-
-        mRelativeLayout.setBackgroundColor(0x00FFFFFF);
-        mFloatingManager.addView(mRelativeLayout, mParams);
-
-        bt_float_manager.setText("管理");
-        bt_float_chose.setVisibility(GONE);
-        bt_float_save.setVisibility(GONE);
-        bt_float_close.setVisibility(GONE);
-
-        mWindowStatus = WindowStatus.CLOSE;
-        isChange = false;
-
-        PUBG pubg = null;
-
-        Log.i(DEBUG_TAG, "ShowShow");
-
-        if(SelectName != null) {
-
-            pubg = dbControlPUBG.GetRawByName(SelectName);
-
-            //isChange = true;
-            mParams.height = LayoutParams.MATCH_PARENT;
-            mRelativeLayout.setBackgroundColor(0x60ebebeb);
-            mFloatingManager.updateView(mRelativeLayout, mParams);
-            bt_float_manager.setText("取消");
-            bt_float_chose.setVisibility(VISIBLE);
-            bt_float_save.setVisibility(VISIBLE);
-            bt_float_close.setVisibility(VISIBLE);
-
-            mWindowStatus = WindowStatus.OPEN;
-
-            mFloatPUBGManager.Show(pubg);
-
-        }else {
-            pubg = new PUBG();
-            mFloatPUBGManager.Show(pubg);
-        }
+//        this.SelectName = SelectName;
+//
+//        hide();
+//
+//        mParams = new WindowManager.LayoutParams();
+//        mParams.gravity = Gravity.BOTTOM | Gravity.LEFT;
+//
+//        //总是出现在应用程序窗口之上
+//        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+//        //设置图片格式，效果为背景透明
+//        mParams.format = PixelFormat.RGBA_8888;
+//        mParams.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+//                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+//
+//        mParams.width = LayoutParams.MATCH_PARENT;
+//        mParams.height = 200;//LayoutParams.WRAP_CONTENT;
+//
+//        mRelativeLayout.setBackgroundColor(0x00FFFFFF);
+//        mFloatingManager.addView(mRelativeLayout, mParams);
+//
+//        bt_float_manager.setText("管理");
+//        bt_float_chose.setVisibility(GONE);
+//        bt_float_save.setVisibility(GONE);
+//        bt_float_close.setVisibility(GONE);
+//
+//        mWindowStatus = WindowStatus.CLOSE;
+//        isChange = false;
+//
+//        PUBG pubg = null;
+//
+//        Log.i(DEBUG_TAG, "ShowShow");
+//
+//        if(SelectName != null) {
+//
+//            pubg = dbControlPUBG.GetRawByName(SelectName);
+//
+//            //isChange = true;
+//            mParams.height = LayoutParams.MATCH_PARENT;
+//            mRelativeLayout.setBackgroundColor(0x60ebebeb);
+//            mFloatingManager.updateView(mRelativeLayout, mParams);
+//            bt_float_manager.setText("取消");
+//            bt_float_chose.setVisibility(VISIBLE);
+//            bt_float_save.setVisibility(VISIBLE);
+//            bt_float_close.setVisibility(VISIBLE);
+//
+//            mWindowStatus = WindowStatus.OPEN;
+//
+//            mFloatPUBGManager.Show(pubg);
+//
+//        }else {
+//            pubg = new PUBG();
+//            mFloatPUBGManager.Show(pubg);
+//        }
 
     }
 
