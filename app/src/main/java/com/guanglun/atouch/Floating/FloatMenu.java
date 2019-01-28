@@ -79,7 +79,8 @@ public class FloatMenu {
                 case MotionEvent.ACTION_MOVE:
                         if(!isMoveTouch)
                         {
-                            if((int)event.getRawX() != temp_x || (int)event.getRawY() != temp_y)
+                            if(Math.abs((int)event.getRawX() - temp_x) > 20 ||
+                                    Math.abs((int)event.getRawY() - temp_y) > 20)
                             {
                                 isMoveTouch = true;
                                 mParams.x += ((int)event.getRawX() - temp_x);
@@ -119,6 +120,8 @@ public class FloatMenu {
         {
             isMenuClick = false;
 
+            fmb_menu.startRotateAnimation(0,45);
+
             fmb1 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_menu.id);
             fmb2 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb1.id);
             fmb3 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb2.id);
@@ -133,6 +136,7 @@ public class FloatMenu {
 
         }else{
             isMenuClick = true;
+            fmb_menu.startRotateAnimation(45,0);
 
             fmb1.Remove();
             fmb2.Remove();

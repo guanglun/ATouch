@@ -1,9 +1,14 @@
 package com.guanglun.atouch.Floating;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.guanglun.atouch.Main.EasyTool;
@@ -19,7 +24,7 @@ public class FloatMenuButton {
 
     private final int ROUNDD = 40;
     public int id = 0;
-    private Button mButton = null;
+    private ImageButton mButton = null;
     private RelativeLayout mRelativeLayout;
 
     public FloatMenuButton(Context mContext,RelativeLayout mRelativeLayout,int Type,int align_id){
@@ -28,7 +33,7 @@ public class FloatMenuButton {
 
         this.mRelativeLayout = mRelativeLayout;
 
-        mButton = new Button(mContext);
+        mButton = new ImageButton(mContext);
 
         if(Type == MENU_MAIN_BUTTON)
         {
@@ -57,11 +62,15 @@ public class FloatMenuButton {
 
         mButton.setPadding(0,0,0,0);
         mButton.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
+        //mButton.setBackground(mContext.getResources().getDrawable(R.drawable.float_menu_main));
 
-        mButton.setText("+");
-        mButton.setTextColor(0xFFFFFFFF);
-        mButton.setBackground(mContext.getResources().getDrawable(R.drawable.round_button_red));
+        GradientDrawable mDrawable = new GradientDrawable();
+        mDrawable.setCornerRadius(EasyTool.dip2px(mContext,ROUNDD));
+        mDrawable.setColor(Color.parseColor("#ff0000"));
 
+        mButton.setScaleType(ImageButton.ScaleType.FIT_CENTER);
+        mButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.float_menu_add));
+        mButton.setBackground(mDrawable);
         mButton.setId(View.generateViewId());
 
 
@@ -79,9 +88,7 @@ public class FloatMenuButton {
 //        int pivotYType：Y轴的伸缩模式，可以取值为ABSOLUTE、RELATIVE_TO_SELF、RELATIVE_TO_PARENT。
 //        float pivotYValue：Y坐标的伸缩值。
 
-        RotateAnimation rotateAnimation = new RotateAnimation(0,45,ABSOLUTE,ABSOLUTE);
-        rotateAnimation.setDuration(3000);
-        mButton.startAnimation(rotateAnimation);
+
 
     }
 
@@ -93,5 +100,14 @@ public class FloatMenuButton {
     public void SetOnTouchListener(View.OnTouchListener mOnTouchListener)
     {
         mButton.setOnTouchListener(mOnTouchListener);
+    }
+
+    public void startRotateAnimation(int start,int end)
+    {
+        RotateAnimation rotateAnimation = new RotateAnimation(start,end,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(500);
+        rotateAnimation.setFillAfter(true);
+        mButton.startAnimation(rotateAnimation);
     }
 }

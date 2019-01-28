@@ -3,24 +3,17 @@
     package="com.guanglun.atouch">
 
     <!-- 允许应用程序改变网络状态 -->
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <!-- 允许应用程序改变WIFI连接状态 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!-- 允许应用程序访问有关的网络信息 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 允许应用程序访问WIFI网卡的网络信息 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 允许应用程序完全使用网络 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许应用程序改变WIFI连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许应用程序访问有关的网络信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 允许应用程序访问WIFI网卡的网络信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许应用程序完全使用网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -30,6 +23,7 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".Main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,13 +33,12 @@
         </activity>
         <activity
             android:name=".Bluetooth.ScanBlueActivity"
-            android:label="@string/title_activity_scan_blue">
+            android:label="@string/title_activity_scan_blue"></activity>
 
-        </activity>
-        <service android:name=".Bluetooth.BluetoothLeService" android:enabled="true"/>
-        <service android:name=".Floating.FloatService"/>
+        <service
+            android:name=".Bluetooth.BluetoothLeService"
+            android:enabled="true" />
+        <service android:name=".Floating.FloatService" />
     </application>
-
-
 
 </manifest>
