@@ -21,6 +21,7 @@ public class SQLdm {
     private String DEBUG_TAG = "SQLdm";
 
     private final boolean isReloadDB = false;
+    //private final boolean isReloadDB = true;
 
     //数据库存储路径
     private final String filePath = "/ATouch";

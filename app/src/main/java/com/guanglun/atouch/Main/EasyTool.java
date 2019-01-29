@@ -76,4 +76,13 @@ public class EasyTool {
         return sbar;
     }
 
+    public static void delay_ms(int time_ms)
+    {
+        try {
+            Thread.sleep(time_ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

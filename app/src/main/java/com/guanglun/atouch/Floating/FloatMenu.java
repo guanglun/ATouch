@@ -1,66 +1,123 @@
 package com.guanglun.atouch.Floating;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.guanglun.atouch.DBManager.DBControlPUBG;
+import com.guanglun.atouch.DBManager.PUBG;
+import com.guanglun.atouch.Floating.FloatMenuButton;
 import com.guanglun.atouch.Main.EasyTool;
 import com.guanglun.atouch.R;
+
+import java.util.List;
 
 public class FloatMenu {
 
     private Button button;
     private Context mContext;
     private FloatingManager mFloatingManager;
-    private RelativeLayout mRelativeLayout;
-    private WindowManager.LayoutParams mParams;
+    private RelativeLayout mRelativeLayoutMenu,mRelativeLayoutEdit;
+    private WindowManager.LayoutParams mParamsMenu,mParamsEdit;
     private final int ROUNDD = 50;
     private int StartX = 0,StartY = 0;
-    private FloatMenuButton fmb_menu,fmb1,fmb2,fmb3;
+    private FloatMenuButton fmb_menu,fmb_config,fmb_database,fmb_revise,fmb_save;
+    private FloatPUBGManager mFloatPUBGManager;
+    private DBControlPUBG dbControlPUBG;
+    private FloatSelectAlertDialog floatSelectAlertDialog;
 
+    private ListView select_listview;
+
+    private FloatingView.FloatingViewCallBack cb;
     @SuppressLint("ResourceType")
-    public FloatMenu(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params)
+    public FloatMenu(Context context,FloatingView.FloatingViewCallBack cb)
     {
         mContext = context;
-        mFloatingManager = floatingmanager;
-        mRelativeLayout = relativeLayout;
-        mParams = params;
+        this.cb = cb;
+        mRelativeLayoutMenu = new RelativeLayout(mContext);
+        mRelativeLayoutEdit = new RelativeLayout(mContext);
+        mParamsMenu = new WindowManager.LayoutParams();
+        mParamsEdit = new WindowManager.LayoutParams();
+        mFloatingManager = FloatingManager.getInstance(mContext);
+        /****/
 
-        mParams = new WindowManager.LayoutParams();
-        mParams.gravity = Gravity.LEFT|Gravity.TOP;
+        dbControlPUBG = new DBControlPUBG(mContext);
+        mFloatPUBGManager = new FloatPUBGManager(mContext,mFloatingManager,mRelativeLayoutEdit,mParamsEdit);
+        View select_view = LayoutInflater.from(mContext).inflate(R.layout.float_controller_volume, null);
+        select_listview = select_view.findViewById(R.id.listview);
+        floatSelectAlertDialog = new FloatSelectAlertDialog(mContext, select_view, new FloatSelectAlertDialog.FloatSelectAlertDialogCallBack() {
+            @Override
+            public void NewCreat() {
 
-        mParams.x = (StartX);
-        mParams.y = (StartY + EasyTool.getStatusBarHeight(mContext));
+                mFloatPUBGManager.RemoveAll();
+                mFloatPUBGManager.Show(new PUBG());
+            }
+        });
+
+        /****/
+
+
+
+        mRelativeLayoutEdit.setBackgroundColor(0x60ebebeb);
+
+
+        mParamsEdit.gravity = Gravity.LEFT|Gravity.TOP;
+        //总是出现在应用程序窗口之上
+        mParamsEdit.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        //设置图片格式，效果为背景透明
+        mParamsEdit.format = PixelFormat.RGBA_8888;
+        mParamsEdit.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+        mParamsEdit.width = 0;
+        mParamsEdit.height = 0;
+        mFloatingManager.addView(mRelativeLayoutEdit, mParamsEdit);
+
+
+        ////////////////////////////////////////////////////////////
+
+
+        mParamsMenu = new WindowManager.LayoutParams();
+        mParamsMenu.gravity = Gravity.LEFT|Gravity.TOP;
+
+        mParamsMenu.x = (StartX);
+        mParamsMenu.y = (StartY + EasyTool.getStatusBarHeight(mContext));
 
         //总是出现在应用程序窗口之上
-        mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        mParamsMenu.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         //设置图片格式，效果为背景透明
-        mParams.format = PixelFormat.RGBA_8888;
-        mParams.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        mParamsMenu.format = PixelFormat.RGBA_8888;
+        mParamsMenu.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
-        mParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;//MATCH_PARENT;
-        mParams.height = FrameLayout.LayoutParams.WRAP_CONTENT;//MATCH_PARENT;
+        mParamsMenu.width = FrameLayout.LayoutParams.WRAP_CONTENT;//MATCH_PARENT;
+        mParamsMenu.height = FrameLayout.LayoutParams.WRAP_CONTENT;//MATCH_PARENT;
 
         //mParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
         //mParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
 
-        mRelativeLayout.setBackgroundColor(0x60ebebeb);
+        //mRelativeLayoutMenu.setBackgroundColor(0x60FF0000);
+        mRelativeLayoutMenu.setBackgroundColor(0x00000000);
 
-
-        fmb_menu = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_MAIN_BUTTON,1);
+        fmb_menu = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_MAIN_BUTTON,1,R.drawable.float_menu_add);
         fmb_menu.SetOnTouchListener(mOnTouchListener);
 
-        mFloatingManager.addView(mRelativeLayout, mParams);
+        mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
+
     }
 
     private int temp_x = 0,temp_y = 0;
@@ -79,22 +136,22 @@ public class FloatMenu {
                 case MotionEvent.ACTION_MOVE:
                         if(!isMoveTouch)
                         {
-                            if(Math.abs((int)event.getRawX() - temp_x) > 20 ||
-                                    Math.abs((int)event.getRawY() - temp_y) > 20)
+                            if(Math.abs((int)event.getRawX() - temp_x) > 80 ||
+                                    Math.abs((int)event.getRawY() - temp_y) > 80)
                             {
                                 isMoveTouch = true;
-                                mParams.x += ((int)event.getRawX() - temp_x);
-                                mParams.y += ((int)event.getRawY() - temp_y);
+                                mParamsMenu.x += ((int)event.getRawX() - temp_x);
+                                mParamsMenu.y += ((int)event.getRawY() - temp_y);
                                 temp_x = (int)event.getRawX();
                                 temp_y = (int)event.getRawY();
-                                mFloatingManager.updateView(mRelativeLayout, mParams);
+                                mFloatingManager.updateView(mRelativeLayoutMenu, mParamsMenu);
                             }
                         }else{
-                            mParams.x += ((int)event.getRawX() - temp_x);
-                            mParams.y += ((int)event.getRawY() - temp_y);
+                            mParamsMenu.x += ((int)event.getRawX() - temp_x);
+                            mParamsMenu.y += ((int)event.getRawY() - temp_y);
                             temp_x = (int)event.getRawX();
                             temp_y = (int)event.getRawY();
-                            mFloatingManager.updateView(mRelativeLayout, mParams);
+                            mFloatingManager.updateView(mRelativeLayoutMenu, mParamsMenu);
                         }
 
                     break;
@@ -108,7 +165,7 @@ public class FloatMenu {
 
 
 
-            Log.i("DEBUG","touch "+(int)event.getRawX()+" "+(int)event.getRawY());
+            //Log.i("DEBUG","touch "+(int)event.getRawX()+" "+(int)event.getRawY());
             return false;
         }
     };
@@ -122,28 +179,209 @@ public class FloatMenu {
 
             fmb_menu.startRotateAnimation(0,45);
 
-            fmb1 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_menu.id);
-            fmb2 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb1.id);
-            fmb3 = new FloatMenuButton(mContext,mRelativeLayout,FloatMenuButton.MENU_RIGHT_BUTTON,fmb2.id);
+            fmb_config = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_menu.id,R.drawable.float_menu_config);
+            fmb_database = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_config.id,R.drawable.float_menu_database);
+            fmb_revise = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_database.id,R.drawable.float_menu_revise);
+            fmb_save = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_revise.id,R.drawable.float_menu_save);
 
+            fmb_config.SetOnClickListener(FloatMenuConfigOnClickListener);
+            fmb_database.SetOnClickListener(FloatMenuDatabaseOnClickListener);
+            fmb_revise.SetOnClickListener(FloatMenuReviseOnClickListener);
+            fmb_save.SetOnClickListener(FloatMenuSaveOnClickListener);
 
+            fmb_config.startScaleAnimationAnimation(0,1);
+            fmb_database.startScaleAnimationAnimation(0,1);
+            fmb_revise.startScaleAnimationAnimation(0,1);
+            fmb_save.startScaleAnimationAnimation(0,1);
 
-            mFloatingManager.updateView(mRelativeLayout, mParams);
-
-
-
-
+            mFloatingManager.updateView(mRelativeLayoutMenu, mParamsMenu);
 
         }else{
+
             isMenuClick = true;
+
             fmb_menu.startRotateAnimation(45,0);
 
-            fmb1.Remove();
-            fmb2.Remove();
-            fmb3.Remove();
-            mFloatingManager.updateView(mRelativeLayout, mParams);
+            fmb_config.startScaleAnimationAnimation(1,0);
+            fmb_database.startScaleAnimationAnimation(1,0);
+            fmb_revise.startScaleAnimationAnimation(1,0);
+            fmb_save.startScaleAnimationAnimation(1,0);
+
+            mFloatPUBGManager.HideWindow();
+            mFloatingManager.updateView(mRelativeLayoutEdit, mParamsEdit);
+            mFloatingManager.updateView(mRelativeLayoutMenu, mParamsMenu);
+
         }
     }
 
+    View.OnClickListener FloatMenuConfigOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
+        }
+    };
+
+    View.OnClickListener FloatMenuDatabaseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            mFloatPUBGManager.DBNameList = dbControlPUBG.LoadNameList();
+            FloatListAdapter floatListAdapter = new FloatListAdapter(mContext,mFloatPUBGManager.DBNameList);
+
+            select_listview.setAdapter(floatListAdapter);
+            select_listview.setOnItemClickListener(OnItemClickListenerItem);
+            floatSelectAlertDialog.Show();
+        }
+    };
+
+    View.OnClickListener FloatMenuReviseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(mFloatPUBGManager.isShowEditWindow)
+            {
+                mFloatPUBGManager.HideWindow();
+            }else{
+                mFloatPUBGManager.ShowWindow();
+            }
+        }
+    };
+
+    View.OnClickListener FloatMenuSaveOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SaveKeyMap();
+        }
+    };
+
+    private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            DialogShow(mFloatPUBGManager.DBNameList.get(i));
+
+            floatSelectAlertDialog.Cancel();
+        }
+    };
+
+
+    private void DialogShow(final String DialogSelectName){
+
+
+        final String items[] = {"使用", "修改", "删除"};
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                //.setIcon(R.mipmap.icon)//设置标题的图片
+                .setTitle("选择对\"" + DialogSelectName + "\"的操作")//设置对话框的标题
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (items[which])
+                        {
+                            case "使用":
+                                cb.ChoseName(DialogSelectName);
+                                break;
+                            case "修改":
+                                mFloatPUBGManager.RemoveAll();
+                                mFloatPUBGManager.SelectName = DialogSelectName;
+                                mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(mFloatPUBGManager.SelectName));
+
+                                break;
+                            case "删除":
+
+                                AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("确认删除\"" + DialogSelectName + "\"?")
+                                        .setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dbControlPUBG.DeleteRaw(DialogSelectName);
+                                            }
+                                        }).create();
+
+                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                dialog2.show();
+
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        dialog.show();
+    }
+
+    private void SaveKeyMap(){
+
+        if(!mFloatPUBGManager.isShow)
+            return;
+
+        if(mFloatPUBGManager.SelectName == null )
+        {
+            final EditText editText = new EditText(mContext);
+            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    //.setIcon(R.mipmap.icon)//设置标题的图片
+                    .setTitle("请输入名称")//设置对话框的标题
+                    .setView(editText)
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mFloatPUBGManager.SelectName = editText.getText().toString();
+
+                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+                            dialog.dismiss();
+                        }
+                    }).create();
+
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+        }else{
+            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    //.setIcon(R.mipmap.icon)//设置标题的图片
+                    .setTitle("确认保存？")//设置对话框的标题
+                    .setNeutralButton("保存并使用", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
+                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+                            cb.ChoseName(mFloatPUBGManager.SelectName);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
+                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+
+                            dialog.dismiss();
+                        }
+                    }).create();
+
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+
+        }
+
+
+    }
 }

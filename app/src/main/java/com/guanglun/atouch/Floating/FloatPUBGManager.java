@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.guanglun.atouch.DBManager.DBControl;
@@ -23,6 +24,7 @@ public class FloatPUBGManager {
     private WindowManager.LayoutParams mParams;
     private int ScreenWidth,ScreenHigh;
 
+    public boolean isShow = false;
     public int N3_AttackX,N4_AttackY;
     public int N5_MoveX,N6_MoveY;
     public int N7_JumpX,N8_JumpY;
@@ -42,6 +44,9 @@ public class FloatPUBGManager {
     bt_getoff,bt_grenade,bt_medicine,bt_reload,bt_save,bt_sprint,bt_follow,bt_pick,bt_pick1,
     bt_pick2,bt_pick3,bt_ride;
 
+    public String SelectName = null;
+    public List<String> DBNameList = null;
+    public boolean isShowEditWindow = false;
 
     public FloatPUBGManager(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params)
     {
@@ -163,6 +168,8 @@ public class FloatPUBGManager {
         bt_pick3 = new FloatButtonPUBG(mContext,mFloatingManager,mRelativeLayout,mParams,
                 pubg.N55_Pick3X,pubg.N56_Pick3Y,R.drawable.pubg_pick3);
 
+        ShowWindow();
+        isShow = true;
     }
 
     public void RemoveAll()
@@ -203,6 +210,9 @@ public class FloatPUBGManager {
 
             bt_attack = null;
         }
+        isShow = false;
+        SelectName = null;
+
 
     }
 
@@ -238,6 +248,10 @@ public class FloatPUBGManager {
         bt_pick2.Hide();
         bt_pick3.Hide();
         bt_ride.Hide();
+
+        HideWindow();
+
+        isShow = false;
     }
 
     public void ShowAll()
@@ -273,6 +287,9 @@ public class FloatPUBGManager {
         bt_pick3.Show();
         bt_ride.Show();
 
+
+        ShowWindow();
+        isShow = true;
     }
 
     public void Save(String Name,DBControlPUBG mDBControlPUBG){
@@ -333,4 +350,19 @@ public class FloatPUBGManager {
 
     }
 
+    public void ShowWindow()
+    {
+        mParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        mParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+        mFloatingManager.updateView(mRelativeLayout, mParams);
+        isShowEditWindow = true;
+    }
+
+    public void HideWindow()
+    {
+        mParams.width = 0;
+        mParams.height = 0;
+        mFloatingManager.updateView(mRelativeLayout, mParams);
+        isShowEditWindow = false;
+    }
 }

@@ -2,10 +2,14 @@ package com.guanglun.atouch.Floating;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,7 +31,7 @@ public class FloatMenuButton {
     private ImageButton mButton = null;
     private RelativeLayout mRelativeLayout;
 
-    public FloatMenuButton(Context mContext,RelativeLayout mRelativeLayout,int Type,int align_id){
+    public FloatMenuButton(Context mContext,RelativeLayout mRelativeLayout,int Type,int align_id,int image){
 
         RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
@@ -45,7 +49,7 @@ public class FloatMenuButton {
         {
             mLayoutParams.width = EasyTool.dip2px(mContext,ROUNDD - 4);
             mLayoutParams.height  = EasyTool.dip2px(mContext,ROUNDD - 4);
-            mLayoutParams.setMargins(20,0,0,0);
+            mLayoutParams.setMargins(40,0,0,0);
             mLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
             mLayoutParams.addRule(RelativeLayout.RIGHT_OF, align_id );
 
@@ -53,7 +57,7 @@ public class FloatMenuButton {
         {
             mLayoutParams.width = EasyTool.dip2px(mContext,ROUNDD - 4);
             mLayoutParams.height  = EasyTool.dip2px(mContext,ROUNDD - 4);
-            mLayoutParams.setMargins(0,0,20,0);
+            mLayoutParams.setMargins(0,0,40,0);
             mLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
             mLayoutParams.addRule(RelativeLayout.LEFT_OF, align_id);
         }
@@ -64,32 +68,29 @@ public class FloatMenuButton {
         mButton.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
         //mButton.setBackground(mContext.getResources().getDrawable(R.drawable.float_menu_main));
 
-        GradientDrawable mDrawable = new GradientDrawable();
-        mDrawable.setCornerRadius(EasyTool.dip2px(mContext,ROUNDD));
-        mDrawable.setColor(Color.parseColor("#ff0000"));
+//        GradientDrawable mDrawable = new GradientDrawable();
+//        mDrawable.setCornerRadius(EasyTool.dip2px(mContext,ROUNDD));
+//        mDrawable.setColor(Color.parseColor("#ff0000"));
+//        mDrawable.setShape(GradientDrawable.RECTANGLE);
 
-        mButton.setScaleType(ImageButton.ScaleType.FIT_CENTER);
-        mButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.float_menu_add));
-        mButton.setBackground(mDrawable);
+        mButton.setScaleType(ImageButton.ScaleType.FIT_XY);
+        mButton.setScrollX(1);
+        mButton.setScrollY(1);
+        mButton.setImageDrawable(mContext.getResources().getDrawable(image));
+        //mButton.setBackground(mDrawable);
+        mButton.setBackground(mContext.getResources().getDrawable(R.drawable.shadow));
         mButton.setId(View.generateViewId());
 
 
         id = mButton.getId();
 
         mRelativeLayout.addView(mButton);
+    }
 
-
-//        RotateAnimation (float fromDegrees, float toDegrees, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue)
-//        参数说明：
-//        float fromDegrees：旋转的开始角度。
-//        float toDegrees：旋转的结束角度。
-//        int pivotXType：X轴的伸缩模式，可以取值为ABSOLUTE、RELATIVE_TO_SELF、RELATIVE_TO_PARENT。
-//        float pivotXValue：X坐标的伸缩值。
-//        int pivotYType：Y轴的伸缩模式，可以取值为ABSOLUTE、RELATIVE_TO_SELF、RELATIVE_TO_PARENT。
-//        float pivotYValue：Y坐标的伸缩值。
-
-
-
+    public void SetXY(float x,float y)
+    {
+        mButton.setX(x);
+        mButton.setY(y);
     }
 
     public void Remove()
@@ -106,8 +107,45 @@ public class FloatMenuButton {
     {
         RotateAnimation rotateAnimation = new RotateAnimation(start,end,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(500);
+        rotateAnimation.setDuration(400);
         rotateAnimation.setFillAfter(true);
         mButton.startAnimation(rotateAnimation);
     }
+
+    public void startScaleAnimationAnimation(float start,float end)
+    {
+        ScaleAnimation mScaleAnimation = new ScaleAnimation(start, end, start, end,
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mScaleAnimation.setDuration(400);
+        mScaleAnimation.setFillAfter(true);
+        if(start == 1 && end == 0)
+        {
+            mScaleAnimation.setAnimationListener(mAnimationListener);
+        }
+
+        mButton.startAnimation(mScaleAnimation);
+    }
+
+    public void SetOnClickListener(View.OnClickListener mOnClickListener)
+    {
+        mButton.setOnClickListener(mOnClickListener);
+    }
+
+    Animation.AnimationListener mAnimationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            Remove();
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    };
+
 }
