@@ -49,7 +49,7 @@ public class FloatListAdapter extends BaseAdapter {
             holder = new FloatListAdapter.ViewHolder();
 
             holder.tv_float_select_key_name = (TextView) convertView.findViewById(R.id.tv_float_select_key_name);
-            holder.tv_float_select_key_description = (TextView) convertView.findViewById(R.id.tv_float_select_key_description);
+            //holder.tv_float_select_key_description = (TextView) convertView.findViewById(R.id.tv_float_select_key_description);
 
             convertView.setTag(holder);
         } else {   //else里面说明，convertView已经被复用了，说明convertView中已经设置过tag了，即holder
@@ -57,7 +57,7 @@ public class FloatListAdapter extends BaseAdapter {
         }
 
         holder.tv_float_select_key_name.setText(NameList.get(position));
-        holder.tv_float_select_key_description.setText("NULL");
+        //holder.tv_float_select_key_description.setText("NULL");
 
         return convertView;
     }
@@ -65,6 +65,6 @@ public class FloatListAdapter extends BaseAdapter {
     //这个ViewHolder只能服务于当前这个特定的adapter，因为ViewHolder里会指定item的控件，不同的ListView，item可能不同，所以ViewHolder写成一个私有的类
     private class ViewHolder {
         TextView tv_float_select_key_name;
-        TextView tv_float_select_key_description;
+        //TextView tv_float_select_key_description;
     }
 }

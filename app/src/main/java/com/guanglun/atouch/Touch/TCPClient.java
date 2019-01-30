@@ -6,6 +6,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.guanglun.atouch.Main.EasyTool;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,9 +31,10 @@ public class TCPClient {
     private boolean is_connect = false,is_auto_connect = true;
 
     public interface socket_callback {
-        public void on_connect_success();
-        public void on_connect_fail();
-        public void on_disconnect();
+        void on_connect_success();
+        void on_connect_fail();
+        void on_disconnect();
+        void on_receive(byte[] buf,int len);
     }
 
     public TCPClient(String ip,int port,socket_callback sc)
@@ -75,10 +78,14 @@ public class TCPClient {
                     inputStream = socket_client.getInputStream();
                     outputStream = socket_client.getOutputStream();
 
-                    //socket_send("hello server!".getBytes(),13);
+                    byte[] buf = new byte[]{0x01,0x02,0x03};
+                    byte[] buf2 = DataProc.Creat((byte)0x00,buf,3);
+                    socket_send(buf2,buf2.length);
 
                     while ((receive_len = inputStream.read(receive_buffer)) != -1) {
-                        Log.e("DEBUG",new String(receive_buffer, 0, receive_len));
+                        sc.on_receive(receive_buffer, receive_len);
+
+                        //Log.e("DEBUG",new String(receive_buffer, 0, receive_len));
                     }
 
                     socket_client = null;
@@ -153,4 +160,6 @@ public class TCPClient {
             }
         }
     }
+
+
 }

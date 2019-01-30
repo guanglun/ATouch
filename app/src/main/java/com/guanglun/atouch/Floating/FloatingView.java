@@ -58,6 +58,7 @@ public class FloatingView extends FrameLayout{
     private List<String> NameList;
     private final String DEBUG_TAG = "FloatingView";
 
+    public FloatMenu mFloatMenu;
 
     public enum WindowStatus {
         CLOSE,
@@ -75,7 +76,7 @@ public class FloatingView extends FrameLayout{
         super(context);
 
         mContext = context.getApplicationContext();
-        FloatMenu mFloatMenu = new FloatMenu(mContext,cb);
+        mFloatMenu = new FloatMenu(mContext,cb);
     }
 
     public void show(String SelectName,String IsStartUp) {

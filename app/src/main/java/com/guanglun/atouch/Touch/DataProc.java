@@ -3,25 +3,27 @@ package com.guanglun.atouch.Touch;
 import android.util.Log;
 
 import com.guanglun.atouch.DBManager.KeyMouse;
+import com.guanglun.atouch.Main.ActivityServiceMessage;
 import com.guanglun.atouch.Main.EasyTool;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class DataProc {
 
-    public interface DataProcCallBack {
-        void OnSetKeyMap(List<KeyMouse> list);
+    public boolean isADBConnect = false,isADBHeart = true;
+    ActivityServiceMessage mActivityServiceMessage;
 
-    }
-
-    private DataProcCallBack dp_cb;
-
-    public void DataProc(DataProcCallBack dp_cb)
+    public DataProc(ActivityServiceMessage mActivityServiceMessage)
     {
-        this.dp_cb = dp_cb;
+
+        Timer timer = new Timer();
+        timer.schedule(task_2s, 2000,2000);
+
+        this.mActivityServiceMessage = mActivityServiceMessage;
     }
 
     public void OnBlueReceive(byte[] buf)
@@ -105,5 +107,113 @@ public class DataProc {
 
         return temp;
     }
+
+    int receive_flag = 0,data_len = 0;
+    byte[] data_buffer = new byte[200];
+    byte check = 0;
+    public boolean OnATouchReceive(byte[] buf,int len)
+    {
+        boolean isSuccess = false;
+
+        for(int i=0; i<len; i++)
+        {
+            if(receive_flag == 0 && buf[i] == (byte)0xCC)
+            {
+                receive_flag = 1;
+            }else if(receive_flag == 1 && buf[i] == (byte)0xDD)
+            {
+                data_len = 0;
+                check = 0;
+                receive_flag = 2;
+
+            }else if(receive_flag == 2)
+            {
+                data_len = ((buf[i] << 8) & 0xffff);
+
+                receive_flag = 3;
+                check += buf[i];
+
+            }else if(receive_flag == 3)
+            {
+
+                data_len |= (buf[i] & 0x00ff);
+                receive_flag = 4;
+                check += buf[i];
+            }else if((receive_flag >= 4) && (receive_flag < (data_len + 4)))
+            {
+
+                data_buffer[receive_flag-4] = buf[i];
+                receive_flag++;
+                check += buf[i];
+            }else if((receive_flag == (data_len + 4)) && (check == buf[i]))
+            {
+                isSuccess = true;
+                DataControl_ATouch(data_buffer,data_len);
+                receive_flag = 0;
+            }else if(buf[i] == 0xCC)
+            {
+                receive_flag = 1;
+            }else{
+                receive_flag = 0;
+            }
+        }
+
+        return isSuccess;
+    }
+
+    public void DataControl_ATouch(byte[] buf,int len)
+    {
+        switch (buf[0])
+        {
+            case 0x00:
+
+                isADBConnect = true;
+                isADBHeart = true;
+                mActivityServiceMessage.SendToServiceADBStatus(true);
+
+                if(buf[2] == (byte)0x00)
+                {
+                    mActivityServiceMessage.SendToServiceKeyBoardStatus(false);
+                }else{
+                    mActivityServiceMessage.SendToServiceKeyBoardStatus(true);
+                }
+
+                if(buf[3] == (byte)0x00)
+                {
+                    mActivityServiceMessage.SendToServiceMouseStatus(false);
+                }else{
+
+                    mActivityServiceMessage.SendToServiceMouseStatus(true);
+                }
+
+
+                break;
+
+
+            default:
+                break;
+        }
+    }
+
+    TimerTask task_2s = new TimerTask(){
+        public void run() {
+
+            if(isADBConnect)
+            {
+                if(!isADBHeart)
+                {
+                    isADBConnect = false;
+                    mActivityServiceMessage.SendToServiceADBStatus(false);
+                    mActivityServiceMessage.SendToServiceKeyBoardStatus(false);
+                    mActivityServiceMessage.SendToServiceMouseStatus(false);
+                }else{
+                    isADBHeart = false;
+                }
+
+            }
+
+        }
+
+    };
 
 }

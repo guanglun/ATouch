@@ -11,8 +11,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TCPClient tcpclient = null;
     private BluetoothLeService mBluetoothLeService = null;
-    private boolean mConnected = false;
 
     private View blue_view = null;
     private ListView blue_listview;
@@ -70,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button bt_connect_auto;
     private String pubg_now_use = null;
-
-    private MsgReceiver msgReceiver;
+    private ActivityServiceMessage mActivityServiceMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,22 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionsManager.DSPermissions(this);
 
-        mDataProc = new DataProc();
+        mActivityServiceMessage = new ActivityServiceMessage(new ActivityServiceMessage.MessengerCallback() {
+            @Override
+            public void on_use(String name) {
+                pubg_now_use = name;
+                tv_use_keymap_now.setText("使用映射：" + pubg_now_use);
+
+                if(pubg_now_use != null)
+                {
+                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                    temp = DataProc.Creat((byte)0x01,temp,temp.length);
+                    tcpclient.socket_send(temp,temp.length);
+                }
+            }
+        });
+
+        mDataProc = new DataProc(mActivityServiceMessage);
 
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
@@ -95,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                     temp = DataProc.Creat((byte)0x01,temp,temp.length);
                     tcpclient.socket_send(temp,temp.length);
                 }
+
+                mActivityServiceMessage.mUiautoStatus = true;
+                mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
             }
 
             @Override
@@ -102,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("DEBUG","socket creat fail");
                 bt_connect_auto.setText("连接");
                 tv_auto_status.setText("映射未连接");
+                mActivityServiceMessage.mUiautoStatus = false;
+                mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
             }
 
             @Override
@@ -109,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("DEBUG","socket disconnect");
                 bt_connect_auto.setText("连接");
                 tv_auto_status.setText("映射未连接");
+                mActivityServiceMessage.mUiautoStatus = false;
+                mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
+            }
+
+            @Override
+            public void on_receive(byte[] buf, int len) {
+
+                //Log.e("DEBUG","on_receive");
+                mDataProc.OnATouchReceive(buf,len);
             }
 
         });
@@ -184,24 +214,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         Intent intent = new Intent(this, FloatService.class);
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
         intent.putExtra("IsStartUp", "true");
-        startService(intent);
+        bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
 
-        //动态注册广播接收器
-        msgReceiver = new MsgReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.guanglun.atouch.RECEIVER");
-        registerReceiver(msgReceiver, intentFilter);
     }
 
     public void add_plan()
     {
         Intent intent = new Intent(this, FloatService.class);
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
-        startService(intent);
+        intent.putExtra("IsStartUp", "true");
+        bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
 
@@ -271,9 +296,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void new_activity()
     {
-        Intent intent = new Intent();
-        intent.setClass(this, ScanBlueActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, FloatService.class);
+        intent.putExtra(FloatService.ACTION, FloatService.SHOW);
+        intent.putExtra("IsStartUp", "true");
+        bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -292,8 +318,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //注销广播
-        unregisterReceiver(msgReceiver);
+
     }
 
     private void showToast(String str)
@@ -309,32 +334,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * 广播接收器
-     * @author len
-     *
-     */
-    public class MsgReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //拿到进度，更新UI
-
-            pubg_now_use = intent.getStringExtra("Name");
-            tv_use_keymap_now.setText("使用映射：" + pubg_now_use);
-
-            if(pubg_now_use != null)
-            {
-                byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
-                temp = DataProc.Creat((byte)0x01,temp,temp.length);
-                tcpclient.socket_send(temp,temp.length);
-            }
-        }
-
-    }
-
     private void printf(String str)
     {
         System.out.printf(str);
     }
+
+
+
+
+
+
+
 }

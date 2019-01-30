@@ -2,9 +2,16 @@ package com.guanglun.atouch.Floating;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
+import android.util.Log;
 
 import com.guanglun.atouch.Floating.FloatingView;
+import com.guanglun.atouch.Main.ActivityServiceMessage;
 
 public class FloatService extends Service {
     public static final String ACTION="action";
@@ -14,21 +21,24 @@ public class FloatService extends Service {
     private FloatingView mFloatingView;
 
     private boolean isShow = false;
+
+    private Messenger sMessenger = null,cMessenger = null;
+
     @Override
     public void onCreate(){
         super.onCreate();
-
+        sMessenger = new Messenger(mHandler);
         mFloatingView = new FloatingView(this, new FloatingView.FloatingViewCallBack() {
             @Override
             public void ChoseName(String Name) {
-                SendBroadcast(Name);
+                SendToActivityUseName(1,Name);
             }
         });
     }
 
     @Override
     public IBinder onBind(Intent intent){
-        return null;
+        return sMessenger.getBinder();
     }
 
     @Override
@@ -62,12 +72,60 @@ public class FloatService extends Service {
 
     }
 
-    public void SendBroadcast(String str)
+    // 定义Handler，重载Handler的消息处理方法
+    private Handler mHandler = new Handler() {
+        // 处理消息内容的具体方法定义
+        @Override
+        public void handleMessage(Message msg) {
+            Log.i("DEBUG", "----->Service Receive From Activity");
+            // 定义反馈给客户端的消息内容
+            switch (msg.what) {
+                case 0:
+                    Log.i("DEBUG", "----->获取Activity Messager成功！");
+                    cMessenger = msg.replyTo;
+                case ActivityServiceMessage
+                        .STATUS_UIAUTO:
+                    boolean is_map_connect = msg.getData().getBoolean("STATUS_UIAUTO");
+                    mFloatingView.mFloatMenu.mFloatMenuStatus.SetMapStatus(is_map_connect);
+                    break;
+                case ActivityServiceMessage
+                        .STATUS_KEYBOARD:
+                    boolean is_keyboard_connect = msg.getData().getBoolean("STATUS_KEYBOARD");
+                    mFloatingView.mFloatMenu.mFloatMenuStatus.SetKeyBoardStatus(is_keyboard_connect);
+                    break;
+                case ActivityServiceMessage
+                        .STATUS_MOUSE:
+                    boolean is_mouse_connect = msg.getData().getBoolean("STATUS_MOUSE");
+                    mFloatingView.mFloatMenu.mFloatMenuStatus.SetMouseStatus(is_mouse_connect);
+                    break;
+                case ActivityServiceMessage
+                        .STATUS_ADB:
+                    boolean is_adb_connect = msg.getData().getBoolean("STATUS_ADB");
+                    mFloatingView.mFloatMenu.mFloatMenuStatus.SetADBStatus(is_adb_connect);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private void SendToActivityUseName(int what,String name)
     {
-        Intent mintent = new Intent("com.guanglun.atouch.RECEIVER");
-        mintent.putExtra("Name", str);
-        sendBroadcast(mintent);
+        if(cMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = what;
+            Bundle bundle = new Bundle();
+            bundle.putString("use_name",name);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                cMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
     }
-
-
 }

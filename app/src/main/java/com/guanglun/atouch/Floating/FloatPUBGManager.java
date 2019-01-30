@@ -3,6 +3,7 @@ package com.guanglun.atouch.Floating;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -354,6 +355,7 @@ public class FloatPUBGManager {
     {
         mParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
         mParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+        mRelativeLayout.setVisibility(View.VISIBLE);
         mFloatingManager.updateView(mRelativeLayout, mParams);
         isShowEditWindow = true;
     }
@@ -362,6 +364,7 @@ public class FloatPUBGManager {
     {
         mParams.width = 0;
         mParams.height = 0;
+        mRelativeLayout.setVisibility(View.INVISIBLE);
         mFloatingManager.updateView(mRelativeLayout, mParams);
         isShowEditWindow = false;
     }

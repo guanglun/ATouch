@@ -85,4 +85,9 @@ public class EasyTool {
         }
     }
 
+    public static int byte2int(byte byte_h,byte byte_l)
+    {
+        return (((byte_h << 8) & 0xffff) | (byte_l & 0x00ff));
+    }
+
 }

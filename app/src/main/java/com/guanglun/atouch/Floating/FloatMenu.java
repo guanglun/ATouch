@@ -43,8 +43,10 @@ public class FloatMenu {
     private FloatSelectAlertDialog floatSelectAlertDialog;
 
     private ListView select_listview;
-
+    public FloatMenuStatus mFloatMenuStatus;
     private FloatingView.FloatingViewCallBack cb;
+
+
     @SuppressLint("ResourceType")
     public FloatMenu(Context context,FloatingView.FloatingViewCallBack cb)
     {
@@ -113,9 +115,12 @@ public class FloatMenu {
         //mRelativeLayoutMenu.setBackgroundColor(0x60FF0000);
         mRelativeLayoutMenu.setBackgroundColor(0x00000000);
 
-        fmb_menu = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_MAIN_BUTTON,1,R.drawable.float_menu_add);
-        fmb_menu.SetOnTouchListener(mOnTouchListener);
+        //fmb_menu = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_MAIN_BUTTON,1,R.drawable.float_menu_add);
+        //fmb_menu.SetOnTouchListener(mOnTouchListener);
 
+
+
+        mFloatMenuStatus = new FloatMenuStatus(mContext,mFloatingManager,mRelativeLayoutMenu,mOnTouchListener);
         mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
 
     }
@@ -175,11 +180,13 @@ public class FloatMenu {
     {
         if(isMenuClick)
         {
+            Log.i("DEBUG","MenuClick");
             isMenuClick = false;
+            mFloatMenuStatus.startRotateAnimation(0,45);
 
-            fmb_menu.startRotateAnimation(0,45);
-
-            fmb_config = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_menu.id,R.drawable.float_menu_config);
+//            fmb_menu.startRotateAnimation(0,45);
+//
+            fmb_config = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,mFloatMenuStatus.id,R.drawable.float_menu_config);
             fmb_database = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_config.id,R.drawable.float_menu_database);
             fmb_revise = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_database.id,R.drawable.float_menu_revise);
             fmb_save = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_RIGHT_BUTTON,fmb_revise.id,R.drawable.float_menu_save);
@@ -193,14 +200,14 @@ public class FloatMenu {
             fmb_database.startScaleAnimationAnimation(0,1);
             fmb_revise.startScaleAnimationAnimation(0,1);
             fmb_save.startScaleAnimationAnimation(0,1);
-
+//
             mFloatingManager.updateView(mRelativeLayoutMenu, mParamsMenu);
 
         }else{
 
             isMenuClick = true;
-
-            fmb_menu.startRotateAnimation(45,0);
+            mFloatMenuStatus.startRotateAnimation(45,0);
+//            fmb_menu.startRotateAnimation(45,0);
 
             fmb_config.startScaleAnimationAnimation(1,0);
             fmb_database.startScaleAnimationAnimation(1,0);
@@ -381,7 +388,6 @@ public class FloatMenu {
             dialog.show();
 
         }
-
 
     }
 }
