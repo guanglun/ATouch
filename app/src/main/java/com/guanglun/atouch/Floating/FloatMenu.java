@@ -45,17 +45,19 @@ public class FloatMenu {
     private ListView select_listview;
     public FloatMenuStatus mFloatMenuStatus;
     private FloatingView.FloatingViewCallBack cb;
-
+    public FloatMouse mFloatMouse;
 
     @SuppressLint("ResourceType")
     public FloatMenu(Context context,FloatingView.FloatingViewCallBack cb)
     {
         mContext = context;
         this.cb = cb;
+
         mRelativeLayoutMenu = new RelativeLayout(mContext);
         mRelativeLayoutEdit = new RelativeLayout(mContext);
         mParamsMenu = new WindowManager.LayoutParams();
         mParamsEdit = new WindowManager.LayoutParams();
+
         mFloatingManager = FloatingManager.getInstance(mContext);
         /****/
 
@@ -88,6 +90,7 @@ public class FloatMenu {
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mParamsEdit.width = 0;
         mParamsEdit.height = 0;
+
         mFloatingManager.addView(mRelativeLayoutEdit, mParamsEdit);
 
 
@@ -115,13 +118,17 @@ public class FloatMenu {
         //mRelativeLayoutMenu.setBackgroundColor(0x60FF0000);
         mRelativeLayoutMenu.setBackgroundColor(0x00000000);
 
+
         //fmb_menu = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_MAIN_BUTTON,1,R.drawable.float_menu_add);
         //fmb_menu.SetOnTouchListener(mOnTouchListener);
 
 
-
         mFloatMenuStatus = new FloatMenuStatus(mContext,mFloatingManager,mRelativeLayoutMenu,mOnTouchListener);
         mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
+
+
+        mFloatMouse = new FloatMouse(mContext,mFloatingManager);
+
 
     }
 

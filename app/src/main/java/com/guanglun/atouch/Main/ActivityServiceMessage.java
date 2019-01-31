@@ -22,7 +22,8 @@ public class ActivityServiceMessage {
     public static final int STATUS_BLUE     = 3;
     public static final int STATUS_KEYBOARD = 4;
     public static final int STATUS_MOUSE    = 5;
-
+    public static final int STATUS_MOUSE_DATA    = 6;
+    public static final int STATUS_MOUSE_SHOW    = 7;
     private Messenger sMessenger;
 
     private MessengerCallback cb;
@@ -168,5 +169,46 @@ public class ActivityServiceMessage {
 
     }
 
+    public void SendToServiceMouseData(int x,int y)
+    {
+        if(sMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = STATUS_MOUSE_DATA;
+            Bundle bundle = new Bundle();
+            bundle.putInt("STATUS_MOUSE_DATA_X",x);
+            bundle.putInt("STATUS_MOUSE_DATA_Y",y);
+            msg.setData(bundle);//mes利用Bundle传递数据
 
+            try {
+                sMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void SendToServiceMouseIsShow(boolean isshow)
+    {
+        if(sMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = STATUS_MOUSE_SHOW;
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("STATUS_MOUSE_SHOW",isshow);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                sMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

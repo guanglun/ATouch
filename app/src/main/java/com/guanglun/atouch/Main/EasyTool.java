@@ -1,6 +1,9 @@
 package com.guanglun.atouch.Main;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.guanglun.atouch.DBManager.KeyMouse;
 
@@ -88,6 +91,51 @@ public class EasyTool {
     public static int byte2int(byte byte_h,byte byte_l)
     {
         return (((byte_h << 8) & 0xffff) | (byte_l & 0x00ff));
+    }
+
+    /**
+     * 获取屏幕的宽
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        //DisplayMetrics dm = new DisplayMetrics();
+        //wm.getDefaultDisplay().getMetrics(dm);
+        //return dm.widthPixels;
+
+
+        Point outPoint = new Point();
+        wm.getDefaultDisplay().getRealSize(outPoint);
+        return outPoint.x;
+
+    }
+
+    /**
+     * 获取屏幕的高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+//        DisplayMetrics dm = new DisplayMetrics();
+//        wm.getDefaultDisplay().getMetrics(dm);
+//        return dm.heightPixels;
+
+        Point outPoint = new Point();
+        wm.getDefaultDisplay().getRealSize(outPoint);
+        return outPoint.y;
+    }
+
+    public static int limit(int input, int min, int max) {
+        if (input > max)
+            return max;
+        else if (input < min)
+            return min;
+        else
+            return input;
     }
 
 }

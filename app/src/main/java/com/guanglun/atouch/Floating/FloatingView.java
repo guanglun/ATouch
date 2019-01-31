@@ -112,4 +112,9 @@ public class FloatingView extends FrameLayout{
         mFloatingManager.removeView(mRelativeLayout);
 
     }
+
+    public void MouseDataRecv(int x,int y)
+    {
+        mFloatMenu.mFloatMouse.SetMouse(x,y);
+    }
 }

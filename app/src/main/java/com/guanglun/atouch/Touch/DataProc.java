@@ -1,5 +1,6 @@
 package com.guanglun.atouch.Touch;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.guanglun.atouch.DBManager.KeyMouse;
@@ -14,15 +15,16 @@ import java.util.TimerTask;
 
 public class DataProc {
 
+    private TCPClient mTCPClient;
     public boolean isADBConnect = false,isADBHeart = true;
     ActivityServiceMessage mActivityServiceMessage;
-
-    public DataProc(ActivityServiceMessage mActivityServiceMessage)
+    private MousePointer mMousePointer;
+    public DataProc(Context mContext,TCPClient mTCPClient,ActivityServiceMessage mActivityServiceMessage)
     {
-
+        this.mTCPClient = mTCPClient;
         Timer timer = new Timer();
         timer.schedule(task_2s, 2000,2000);
-
+        mMousePointer = new MousePointer(mContext,mTCPClient);
         this.mActivityServiceMessage = mActivityServiceMessage;
     }
 
@@ -56,7 +58,7 @@ public class DataProc {
             }else if(receive_flag == data_len+3 && check == buf[i])
             {
                 DataControl(data_buffer,data_len);
-                Log.i("DEBUG",EasyTool.bytes2hex(data_buffer,data_len));
+                //Log.i("DEBUG",EasyTool.bytes2hex(data_buffer,data_len));
                 receive_flag = 0;
             }else if(buf[i] == 0xAA)
             {
@@ -189,7 +191,21 @@ public class DataProc {
 
                 break;
 
+            case 0x01:
+                mMousePointer.MouseDataProc(buf,len);
+                mActivityServiceMessage.SendToServiceMouseData(mMousePointer.mouse_x,mMousePointer.mouse_y);
+                //Log.i("DEBUG",EasyTool.bytes2hex(buf,len));
+                break;
+            case 0x02:
+                if(buf[1] == 0x00)
+                {
+                    mActivityServiceMessage.SendToServiceMouseIsShow(false);
+                }else{
+                    mActivityServiceMessage.SendToServiceMouseIsShow(true);
+                }
 
+                //Log.i("DEBUG",EasyTool.bytes2hex(buf,len));
+                break;
             default:
                 break;
         }
@@ -215,5 +231,7 @@ public class DataProc {
         }
 
     };
+
+
 
 }

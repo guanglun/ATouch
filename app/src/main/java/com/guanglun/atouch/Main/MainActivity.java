@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mDataProc = new DataProc(mActivityServiceMessage);
+
 
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+        mDataProc = new DataProc(this,tcpclient,mActivityServiceMessage);
 
         bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
         bt_connect_auto.setOnClickListener(new View.OnClickListener() {

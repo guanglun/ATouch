@@ -77,7 +77,7 @@ public class FloatService extends Service {
         // 处理消息内容的具体方法定义
         @Override
         public void handleMessage(Message msg) {
-            Log.i("DEBUG", "----->Service Receive From Activity");
+            //Log.i("DEBUG", "----->Service Receive From Activity");
             // 定义反馈给客户端的消息内容
             switch (msg.what) {
                 case 0:
@@ -102,6 +102,23 @@ public class FloatService extends Service {
                         .STATUS_ADB:
                     boolean is_adb_connect = msg.getData().getBoolean("STATUS_ADB");
                     mFloatingView.mFloatMenu.mFloatMenuStatus.SetADBStatus(is_adb_connect);
+                    break;
+                case ActivityServiceMessage
+                        .STATUS_MOUSE_DATA:
+                    int x = msg.getData().getInt("STATUS_MOUSE_DATA_X");
+                    int y = msg.getData().getInt("STATUS_MOUSE_DATA_Y");
+                    mFloatingView.MouseDataRecv(x,y);
+                    break;
+                case ActivityServiceMessage
+                        .STATUS_MOUSE_SHOW:
+                    boolean isshow = msg.getData().getBoolean("STATUS_MOUSE_SHOW");
+                    if(isshow)
+                    {
+                        mFloatingView.mFloatMenu.mFloatMouse.Show();
+                    }else{
+                        mFloatingView.mFloatMenu.mFloatMouse.Hide();
+                    }
+
                     break;
             }
             super.handleMessage(msg);
