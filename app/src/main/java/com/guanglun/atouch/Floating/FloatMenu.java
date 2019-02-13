@@ -59,6 +59,8 @@ public class FloatMenu {
         mParamsEdit = new WindowManager.LayoutParams();
 
         mFloatingManager = FloatingManager.getInstance(mContext);
+
+
         /****/
 
         dbControlPUBG = new DBControlPUBG(mContext);

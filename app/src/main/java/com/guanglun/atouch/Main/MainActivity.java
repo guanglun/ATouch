@@ -10,7 +10,9 @@ import android.content.Intent;
 
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -20,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 
 import android.widget.ArrayAdapter;
@@ -74,12 +78,31 @@ public class MainActivity extends AppCompatActivity {
     private String pubg_now_use = null;
     private ActivityServiceMessage mActivityServiceMessage;
 
+    private OrientationEventListener mOrientationListener;
+    static private int orientation_last = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**禁止翻转**/
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         PermissionsManager.DSPermissions(this);
+
+//        ExeCommand cmd = new ExeCommand(false).run("am instrument -w -r -e package com.guanglun.uiatuomatordemo -e debug false com.guanglun.uiatuomatordemo.test/android.support.test.runner.AndroidJUnitRunner &", 60000);
+//        while(cmd.isRunning())
+//        {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (Exception e) {
+//
+//            }
+//            String buf = cmd.getResult();
+//            Log.i("auto",buf);
+//            //do something
+//        }
 
         mActivityServiceMessage = new ActivityServiceMessage(new ActivityServiceMessage.MessengerCallback() {
             @Override
@@ -93,6 +116,18 @@ public class MainActivity extends AppCompatActivity {
                     temp = DataProc.Creat((byte)0x01,temp,temp.length);
                     tcpclient.socket_send(temp,temp.length);
                 }
+            }
+
+            @Override
+            public void on_rotation(int ro, int w, int h) {
+                byte[] temp = new byte[5];
+                temp[0] = (byte)ro;
+                temp[1] = (byte)(w>>8);
+                temp[2] = (byte)(w);
+                temp[3] = (byte)(h>>8);
+                temp[4] = (byte)(h);
+                byte[] temp2 = DataProc.Creat((byte)0x03,temp,temp.length);
+                tcpclient.socket_send(temp2,temp2.length);
             }
         });
 
@@ -114,6 +149,20 @@ public class MainActivity extends AppCompatActivity {
 
                 mActivityServiceMessage.mUiautoStatus = true;
                 mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        try {
+                            Thread.sleep(1000); // 休眠1秒
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        mActivityServiceMessage.SendToServiceGetRotation();
+                    }
+                }).start();
+
             }
 
             @Override
@@ -340,11 +389,5 @@ public class MainActivity extends AppCompatActivity {
     {
         System.out.printf(str);
     }
-
-
-
-
-
-
 
 }

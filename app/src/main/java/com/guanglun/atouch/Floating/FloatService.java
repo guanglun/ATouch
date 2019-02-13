@@ -9,11 +9,16 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.Surface;
 
 import com.guanglun.atouch.Floating.FloatingView;
 import com.guanglun.atouch.Main.ActivityServiceMessage;
 
 public class FloatService extends Service {
+
+    public static final int MESSAGE_USE_NAME = 1;
+    public static final int MESSAGE_ROTATION = 2;
+
     public static final String ACTION="action";
 
     public static final String SHOW="show";
@@ -27,14 +32,17 @@ public class FloatService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+
         sMessenger = new Messenger(mHandler);
         mFloatingView = new FloatingView(this, new FloatingView.FloatingViewCallBack() {
             @Override
             public void ChoseName(String Name) {
-                SendToActivityUseName(1,Name);
+                SendToActivityUseName(Name);
             }
         });
     }
+
+
 
     @Override
     public IBinder onBind(Intent intent){
@@ -120,20 +128,49 @@ public class FloatService extends Service {
                     }
 
                     break;
+                case ActivityServiceMessage
+                        .STATUS_GET_ROTATION:
+                    mFloatingView.mRotationLast = -1;
+
+                    break;
+
             }
             super.handleMessage(msg);
         }
     };
 
-    private void SendToActivityUseName(int what,String name)
+    private void SendToActivityUseName(String name)
     {
         if(cMessenger != null)
         {
             // 初始化发送给Service的消息，并将cMessenger传递给Service
             Message msg = new Message();
-            msg.what = what;
+            msg.what = MESSAGE_USE_NAME;
             Bundle bundle = new Bundle();
             bundle.putString("use_name",name);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                cMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void SendToActivityRotation(int ro,int w,int h)
+    {
+        if(cMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = MESSAGE_ROTATION;
+            Bundle bundle = new Bundle();
+            bundle.putInt("MESSAGE_ROTATION_RO",ro);
+            bundle.putInt("MESSAGE_ROTATION_W",w);
+            bundle.putInt("MESSAGE_ROTATION_H",h);
             msg.setData(bundle);//mes利用Bundle传递数据
 
             try {

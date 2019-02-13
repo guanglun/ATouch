@@ -10,6 +10,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.Touch.DataProc;
 
 import java.util.Timer;
@@ -24,6 +25,8 @@ public class ActivityServiceMessage {
     public static final int STATUS_MOUSE    = 5;
     public static final int STATUS_MOUSE_DATA    = 6;
     public static final int STATUS_MOUSE_SHOW    = 7;
+    public static final int STATUS_GET_ROTATION    = 8;
+
     private Messenger sMessenger;
 
     private MessengerCallback cb;
@@ -34,6 +37,7 @@ public class ActivityServiceMessage {
 
     public interface MessengerCallback {
         void on_use(String name);
+        void on_rotation(int ro,int w,int h);
     }
 
     public ActivityServiceMessage(MessengerCallback cb)
@@ -49,8 +53,16 @@ public class ActivityServiceMessage {
         public void handleMessage(Message msg) {
             Log.i("DEBUG", "----->Activity Receive From Service");
             switch (msg.what) {
-                case 1:
+                case FloatService
+                        .MESSAGE_USE_NAME:
                     cb.on_use(msg.getData().getString("use_name"));
+
+                    break;
+                case FloatService
+                        .MESSAGE_ROTATION:
+                    cb.on_rotation(msg.getData().getInt("MESSAGE_ROTATION_RO"),
+                            msg.getData().getInt("MESSAGE_ROTATION_W"),
+                            msg.getData().getInt("MESSAGE_ROTATION_H"));
 
                     break;
             }
@@ -200,6 +212,26 @@ public class ActivityServiceMessage {
             msg.what = STATUS_MOUSE_SHOW;
             Bundle bundle = new Bundle();
             bundle.putBoolean("STATUS_MOUSE_SHOW",isshow);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                sMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public void SendToServiceGetRotation()
+    {
+        if(sMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = STATUS_GET_ROTATION;
+            Bundle bundle = new Bundle();
             msg.setData(bundle);//mes利用Bundle传递数据
 
             try {

@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -111,9 +115,26 @@ public class FloatMenuStatus {
         id = mRelativeLayoutStatus.getId();
         mRelativeLayoutStatus.setClickable(true);
         mRelativeLayoutStatus.setOnTouchListener(mOnTouchListener);
-
-
-
+        mRelativeLayoutStatus.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                Log.i("SCREEN","RO");
+            }
+        });
+        mRelativeLayoutStatus.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                Log.i("SCREEN","RO");
+                return false;
+            }
+        });
+//        mRelativeLayoutStatus.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+//            @Override
+//            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+//                Log.i("SCREEN","RO");
+//                return null;
+//            }
+//        });
 
         mRelativeLayout.addView(mRelativeLayoutStatus);
     }

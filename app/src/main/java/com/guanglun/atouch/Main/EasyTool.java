@@ -3,6 +3,8 @@ package com.guanglun.atouch.Main;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Surface;
 import android.view.WindowManager;
 
 import com.guanglun.atouch.DBManager.KeyMouse;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EasyTool {
+
+    static final String TAG = "EasyTool";
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
@@ -136,6 +140,30 @@ public class EasyTool {
             return min;
         else
             return input;
+    }
+
+    public static void get_screen(Context mContext)
+    {
+
+        int angle = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
+        switch (angle) {
+            case Surface.ROTATION_0:
+                Log.d(TAG, "Rotation_0");
+                break;
+            case Surface.ROTATION_90:
+                Log.d(TAG, "ROTATION_90");
+                break;
+            case Surface.ROTATION_180:
+                Log.d(TAG, "ROTATION_180");
+                break;
+            case Surface.ROTATION_270:
+                Log.d(TAG, "ROTATION_270");
+                break;
+            default:
+                Log.d(TAG, "Default Rotation!");
+                break;
+        }
+
     }
 
 }
