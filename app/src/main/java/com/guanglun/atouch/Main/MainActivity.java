@@ -3,30 +3,18 @@ package com.guanglun.atouch.Main;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.hardware.SensorManager;
-import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.OrientationEventListener;
-import android.view.Surface;
 import android.view.View;
 
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -35,31 +23,18 @@ import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
-import com.guanglun.atouch.Bluetooth.BluetoothLeService;
 import com.guanglun.atouch.Bluetooth.BuleDevice;
-import com.guanglun.atouch.Bluetooth.ScanBlueActivity;
-import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DBManager;
-import com.guanglun.atouch.DBManager.DatabaseStatic;
 import com.guanglun.atouch.Floating.FloatService;
-import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
 import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private TCPClient tcpclient = null;
-    private BluetoothLeService mBluetoothLeService = null;
 
     private View blue_view = null;
     private ListView blue_listview;
@@ -389,5 +364,7 @@ public class MainActivity extends AppCompatActivity {
     {
         System.out.printf(str);
     }
+
+
 
 }

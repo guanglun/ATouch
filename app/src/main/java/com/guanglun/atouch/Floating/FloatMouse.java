@@ -2,6 +2,7 @@ package com.guanglun.atouch.Floating;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -59,7 +60,11 @@ public class FloatMouse {
 
         mParamsMouse.gravity = Gravity.LEFT|Gravity.TOP;
         //总是出现在应用程序窗口之上
-        mParamsMouse.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            mParamsMouse.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
+            mParamsMouse.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
         //设置图片格式，效果为背景透明
         mParamsMouse.format = PixelFormat.RGBA_8888;
         mParamsMouse.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE

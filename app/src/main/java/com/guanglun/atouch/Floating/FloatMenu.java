@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -84,8 +85,14 @@ public class FloatMenu {
 
 
         mParamsEdit.gravity = Gravity.LEFT|Gravity.TOP;
+
         //总是出现在应用程序窗口之上
-        mParamsEdit.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            mParamsEdit.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
+            mParamsEdit.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
+
         //设置图片格式，效果为背景透明
         mParamsEdit.format = PixelFormat.RGBA_8888;
         mParamsEdit.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -105,8 +112,13 @@ public class FloatMenu {
         mParamsMenu.x = (StartX);
         mParamsMenu.y = (StartY + EasyTool.getStatusBarHeight(mContext));
 
-        //总是出现在应用程序窗口之上
-        mParamsMenu.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            mParamsMenu.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else{
+            mParamsMenu.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
+
         //设置图片格式，效果为背景透明
         mParamsMenu.format = PixelFormat.RGBA_8888;
         mParamsMenu.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -311,8 +323,12 @@ public class FloatMenu {
                                                 dbControlPUBG.DeleteRaw(DialogSelectName);
                                             }
                                         }).create();
+                                if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                                    dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                                }else{
+                                    dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                                }
 
-                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
                                 dialog2.show();
 
 
@@ -328,8 +344,12 @@ public class FloatMenu {
                         dialog.dismiss();
                     }
                 }).create();
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
 
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         dialog.show();
     }
 
@@ -360,8 +380,11 @@ public class FloatMenu {
                             dialog.dismiss();
                         }
                     }).create();
-
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+            }else{
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            }
             dialog.show();
         }else{
             AlertDialog dialog = new AlertDialog.Builder(mContext)
@@ -393,7 +416,11 @@ public class FloatMenu {
                         }
                     }).create();
 
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+            }else{
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            }
             dialog.show();
 
         }

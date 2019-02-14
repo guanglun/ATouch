@@ -3,6 +3,7 @@ package com.guanglun.atouch.Floating;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -41,8 +42,11 @@ public class FloatSelectAlertDialog {
 
                     }
                 }).create();
-
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
     }
 
     public void Show()

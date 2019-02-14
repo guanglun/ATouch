@@ -33,6 +33,8 @@ public class FloatService extends Service {
     public void onCreate(){
         super.onCreate();
 
+        Log.i("DEBUG","FloatService Run");
+
         sMessenger = new Messenger(mHandler);
         mFloatingView = new FloatingView(this, new FloatingView.FloatingViewCallBack() {
             @Override
