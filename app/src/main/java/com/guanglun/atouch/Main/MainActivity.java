@@ -24,8 +24,7 @@ import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
 
-import com.guanglun.atouch.Bluetooth.BlueScanAlertDialog;
-import com.guanglun.atouch.Bluetooth.BuleDevice;
+import com.guanglun.atouch.Bluetooth.BlueDevice;
 import com.guanglun.atouch.DBManager.DBManager;
 import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.R;
@@ -34,19 +33,17 @@ import com.guanglun.atouch.Touch.TCPClient;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private TCPClient tcpclient = null;
 
-    private View blue_view = null;
-    private ListView blue_listview;
-    private AlertDialog alertDialog;
-    private BuleDevice bule_device;
+    private BlueDevice blue_device;
 
-    private MainHandler blue_handler;
+    private MainHandler mMainHandler;
 
-    private BlueScanAlertDialog blueScanAlertDialog;
     private DBManager mDBManager;
 
-    private TextView tv_use_keymap_now,tv_auto_status;
+    private TextView tv_blue_status,tv_use_keymap_now,tv_auto_status;
     private DataProc mDataProc;
 
     private Button bt_connect_auto;
@@ -124,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                 mActivityServiceMessage.mUiautoStatus = true;
                 mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
+                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
 
                 new Thread(new Runnable() {
                     @Override
@@ -169,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
         mDataProc = new DataProc(this,tcpclient,mActivityServiceMessage);
 
+
         bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
         bt_connect_auto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +186,14 @@ public class MainActivity extends AppCompatActivity {
         bt_blue_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                blue_start_check_scan();
+
+                if(!blue_device.isConnect)
+                {
+                    blue_start_check_scan();
+                }
+                else{
+                    showToast("蓝牙已连接");
+                }
 
             }
         });
@@ -203,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
         blue_init();
 
-        blue_handler = new MainHandler(this);
+        mMainHandler = new MainHandler(this);
 
         try{
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
@@ -219,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        tv_blue_status = (TextView)findViewById(R.id.tv_blue_status);
         tv_auto_status = (TextView)findViewById(R.id.tv_auto_status);
         tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
@@ -255,44 +262,56 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
-
+    long testTime, testTimeLast;
     public void blue_init()
     {
-        blue_view = getLayoutInflater().inflate(R.layout.controller_volume, null);
-        blue_listview = blue_view.findViewById(R.id.listView);
+        View blue_scan_view = getLayoutInflater().inflate(R.layout.controller_volume, null);
+        
+        blue_device = new BlueDevice(new BlueDevice.blue_callback(){
 
-        blueScanAlertDialog = new BlueScanAlertDialog(this,blue_view);
-
-        bule_device = new BuleDevice(new BuleDevice.blue_callback(){
+            @Override
+            public void on_start_connect(String blue_name) {
+                showToast("正在连接 "+blue_name);
+            }
 
             @Override
             public void on_connect() {
-
-                blueScanAlertDialog.scan_cancel();
-                showToast("连接成功");
+                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
+                tv_blue_status.setText("蓝牙已连接");
+                showToast("蓝牙连接成功");
                 //printf("连接成功");
             }
 
             @Override
             public void on_disconnect() {
-
+                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
+                tv_blue_status.setText("蓝牙未连接");
+                showToast("蓝牙已断开");
             }
 
             @Override
             public void on_receive(byte[] buffer) {
                 //showToast("接收到数据");
                 //mDataProc.OnBlueReceive(buffer);
-                Log.i("DEBUG", "BLE "+buffer.length);
+                //Log.i(TAG, "BLE Receive " + buffer.length);
+
+
                 tcpclient.socket_send(buffer,buffer.length);
+
+//                long testTime = System.currentTimeMillis(); // 获取开始时间
+//
+//                Log.e(TAG,(testTime - testTimeLast) + "ms");
+//                testTimeLast = testTime;
+
             }
         });
 
-        if(bule_device.init(this,blue_listview))
+        if(blue_device.init(this,blue_scan_view))
         {
             Log.e("DEBUG","设备初始化成功");
         }
 
-        int ret = bule_device.check_blue();
+        int ret = blue_device.check_blue();
         if(ret == -2)
         {
             Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -302,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void blue_start_check_scan()
     {
-        int ret = bule_device.check_blue();
+        int ret = blue_device.check_blue();
         if(ret == -2)
         {
             showToast("蓝牙打开后请重新扫描");
@@ -314,18 +333,10 @@ public class MainActivity extends AppCompatActivity {
             showToast("设备不支持蓝牙功能");
         }else if(ret == 0)
         {
-            blueScanAlertDialog.scan_start();
-            bule_device.start_scan();
+
+            blue_device.start_scan();
         }
 
-    }
-
-    public void new_activity()
-    {
-        Intent intent = new Intent(this, FloatService.class);
-        intent.putExtra(FloatService.ACTION, FloatService.SHOW);
-        intent.putExtra("IsStartUp", "true");
-        bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -347,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showToast(String str)
+    public void showToast(String str)
     {
 
         Message msg = new Message();
@@ -355,15 +366,10 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("Toast",str);
         msg.setData(bundle);
-        blue_handler.sendMessage(msg);
-
-
+        mMainHandler.sendMessage(msg);
+        
     }
-
-    private void printf(String str)
-    {
-        System.out.printf(str);
-    }
+    
 
 
 

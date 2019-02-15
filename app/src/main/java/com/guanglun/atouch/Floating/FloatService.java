@@ -99,6 +99,11 @@ public class FloatService extends Service {
                     mFloatingView.mFloatMenu.mFloatMenuStatus.SetMapStatus(is_map_connect);
                     break;
                 case ActivityServiceMessage
+                        .STATUS_BLUE:
+                    boolean is_blue_connect = msg.getData().getBoolean("STATUS_BLUE");
+                    mFloatingView.mFloatMenu.mFloatMenuStatus.SetBLUEStatus(is_blue_connect);
+                    break;
+                case ActivityServiceMessage
                         .STATUS_KEYBOARD:
                     boolean is_keyboard_connect = msg.getData().getBoolean("STATUS_KEYBOARD");
                     mFloatingView.mFloatMenu.mFloatMenuStatus.SetKeyBoardStatus(is_keyboard_connect);

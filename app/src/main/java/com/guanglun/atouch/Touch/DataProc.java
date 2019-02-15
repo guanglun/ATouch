@@ -171,7 +171,13 @@ public class DataProc {
 
                 isADBConnect = true;
                 isADBHeart = true;
-                mActivityServiceMessage.SendToServiceADBStatus(true);
+
+                if(buf[1] == (byte)0x00)
+                {
+                    mActivityServiceMessage.SendToServiceADBStatus(false);
+                }else{
+                    mActivityServiceMessage.SendToServiceADBStatus(true);
+                }
 
                 if(buf[2] == (byte)0x00)
                 {

@@ -115,7 +115,26 @@ public class ActivityServiceMessage {
                 e.printStackTrace();
             }
         }
+    }
 
+    public void SendToServiceBLUEStatus(boolean value)
+    {
+        if(sMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = STATUS_BLUE;
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("STATUS_BLUE",value);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                sMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public void SendToServiceADBStatus(boolean value)

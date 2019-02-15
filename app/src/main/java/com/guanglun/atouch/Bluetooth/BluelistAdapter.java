@@ -23,6 +23,7 @@ public class BluelistAdapter extends BaseAdapter {
 
         mInflater = LayoutInflater.from(context);
         this.blue_list = blue_list;
+
     }
 
     //返回数据集的长度

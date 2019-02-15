@@ -15,22 +15,10 @@ import java.util.TimerTask;
 
 public class BlueScanAlertDialog {
 
-    private Context context;
-
-    private View blue_view;
     private AlertDialog alertDialog;
-
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            //alertDialog.setTitle("正在扫描蓝牙");
-        }
-    };
 
     public BlueScanAlertDialog(Context context,View blue_view)
     {
-        this.context = context;
-        this.blue_view = blue_view;
 
         alertDialog = new AlertDialog.Builder(context)
                 //.setTitle("正在扫描蓝牙...")

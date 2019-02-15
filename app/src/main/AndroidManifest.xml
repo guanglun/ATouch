@@ -32,11 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Bluetooth.ScanBlueActivity"
-            android:label="@string/title_activity_scan_blue"></activity>
 
         <service android:name=".Floating.FloatService" />
+        <service android:name=".Bluetooth.BluetoothLeService" android:enabled="true"/>
     </application>
 
 </manifest>
