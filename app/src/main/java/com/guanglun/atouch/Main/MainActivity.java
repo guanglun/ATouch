@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
 
+import com.guanglun.atouch.Bluetooth.BTDevice;
 import com.guanglun.atouch.Bluetooth.BlueDevice;
 import com.guanglun.atouch.DBManager.DBManager;
 import com.guanglun.atouch.Floating.FloatService;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TCPClient tcpclient = null;
 
     private BlueDevice blue_device;
+    private BTDevice bt_device;
 
     private MainHandler mMainHandler;
 
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                 mActivityServiceMessage.mUiautoStatus = true;
                 mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
-                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
+                mActivityServiceMessage.SendToServiceBLUEStatus(bt_device.isConnected());
 
                 new Thread(new Runnable() {
                     @Override
@@ -187,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!blue_device.isConnect)
+                //if(!blue_device.isConnect)
                 {
                     blue_start_check_scan();
                 }
-                else{
-                    showToast("蓝牙已连接");
-                }
+                //else{
+                //    showToast("蓝牙已连接");
+                //}
 
             }
         });
@@ -266,8 +268,8 @@ public class MainActivity extends AppCompatActivity {
     public void blue_init()
     {
         View blue_scan_view = getLayoutInflater().inflate(R.layout.controller_volume, null);
-        
-        blue_device = new BlueDevice(new BlueDevice.blue_callback(){
+
+        bt_device = new BTDevice(this,new BTDevice.bt_callback(){
 
             @Override
             public void on_start_connect(String blue_name) {
@@ -276,52 +278,56 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void on_connect() {
-                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
-                tv_blue_status.setText("蓝牙已连接");
+                mActivityServiceMessage.SendToServiceBLUEStatus(bt_device.isConnected());
+                //tv_blue_status.setText("蓝牙已连接");
                 showToast("蓝牙连接成功");
                 //printf("连接成功");
             }
 
             @Override
             public void on_disconnect() {
-                mActivityServiceMessage.SendToServiceBLUEStatus(blue_device.isConnect);
+                mActivityServiceMessage.SendToServiceBLUEStatus(bt_device.isConnected());
                 tv_blue_status.setText("蓝牙未连接");
                 showToast("蓝牙已断开");
             }
 
             @Override
-            public void on_receive(byte[] buffer) {
+            public void on_receive(byte[] buffer,int len) {
                 //showToast("接收到数据");
                 //mDataProc.OnBlueReceive(buffer);
-                //Log.i(TAG, "BLE Receive " + buffer.length);
+                Log.e(TAG, EasyTool.bytes2hex(buffer, len));
 
+                tcpclient.socket_send(buffer,len);
+                //tcpclient.socket_send_not_creat_task(buffer,buffer.length);
 
-                tcpclient.socket_send(buffer,buffer.length);
+                //long testTime = System.currentTimeMillis(); // 获取开始时间
 
-//                long testTime = System.currentTimeMillis(); // 获取开始时间
-//
-//                Log.e(TAG,(testTime - testTimeLast) + "ms");
-//                testTimeLast = testTime;
+                //Log.e(TAG,(testTime - testTimeLast) + "ms");
+                //testTimeLast = testTime;
 
             }
         });
 
-        if(blue_device.init(this,blue_scan_view))
-        {
-            Log.e("DEBUG","设备初始化成功");
-        }
-
-        int ret = blue_device.check_blue();
-        if(ret == -2)
-        {
-            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enabler, 1);
-        }
+        bt_device.enableBluetooth();
+        bt_device.init(this,blue_scan_view);
+//
+//        if(blue_device.init(this,blue_scan_view))
+//        {
+//            Log.e("DEBUG","设备初始化成功");
+//        }
+//
+//        int ret = blue_device.check_blue();
+//        if(ret == -2)
+//        {
+//            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enabler, 1);
+//        }
     }
 
     public void blue_start_check_scan()
     {
-        int ret = blue_device.check_blue();
+        //int ret = blue_device.check_blue();
+        int ret = bt_device.check_blue();
         if(ret == -2)
         {
             showToast("蓝牙打开后请重新扫描");
@@ -334,7 +340,8 @@ public class MainActivity extends AppCompatActivity {
         }else if(ret == 0)
         {
 
-            blue_device.start_scan();
+            //blue_device.start_scan();
+            bt_device.start_scan();
         }
 
     }

@@ -87,7 +87,7 @@ public class BlueDevice {
 
         this.context = context;
         this.blue_device_list = new ArrayList<BluetoothDevice>();
-        this.listView = blue_scan_view.findViewById(R.id.listView);;
+        this.listView = blue_scan_view.findViewById(R.id.listView);
 
 
         blueScanAlertDialog = new BlueScanAlertDialog(context,blue_scan_view);

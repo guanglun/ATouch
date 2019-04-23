@@ -161,5 +161,21 @@ public class TCPClient {
         }
     }
 
+    public void socket_send_not_creat_task(final byte[] buffer, final int len)
+    {
+        if(socket_client != null)
+        {
+            if(socket_client.isConnected())
+            {
+                try {
+                    outputStream.write(buffer,0,len);
+                            outputStream.flush();
+                } catch (IOException e) {
+                            e.printStackTrace();
+                }
+
+            }
+        }
+    }
 
 }
