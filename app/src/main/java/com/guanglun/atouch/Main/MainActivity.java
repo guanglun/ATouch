@@ -264,6 +264,9 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent,mActivityServiceMessage.mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
+    char is_init = 1;
+    byte test_count2 = 0;
+
     long testTime, testTimeLast;
     public void blue_init()
     {
@@ -295,7 +298,23 @@ public class MainActivity extends AppCompatActivity {
             public void on_receive(byte[] buffer,int len) {
                 //showToast("接收到数据");
                 //mDataProc.OnBlueReceive(buffer);
-                Log.e(TAG, EasyTool.bytes2hex(buffer, len));
+
+
+//                Log.e(TAG, EasyTool.bytes2hex(buffer, len));
+//
+//                if(is_init == 1)
+//                {
+//                    is_init = 0;
+//                    test_count2 = buffer[len - 1];
+//                }else{
+//                    test_count2++;
+//                    if(test_count2 != buffer[len - 1])
+//                    {
+//                        test_count2 = buffer[len - 1];
+//
+//                        Log.e(TAG, "=============>ERROR");
+//                    }
+//                }
 
                 tcpclient.socket_send(buffer,len);
                 //tcpclient.socket_send_not_creat_task(buffer,buffer.length);
