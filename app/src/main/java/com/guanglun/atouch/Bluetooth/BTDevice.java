@@ -121,7 +121,8 @@ public class BTDevice {
         public void run(){
             byte[] temp = new byte[1024];
             int len;
-            while(true) {
+            boolean is_loop = true;
+            while(is_loop) {
 
                 try {
                     if(bt_input_stream.available() > 0)
@@ -135,10 +136,10 @@ public class BTDevice {
 
                 } catch (IOException e1) {
                     e1.printStackTrace();
+                    is_loop = false;
                 }
-
-
             }
+            bt_cb.on_disconnect();
 
         }
     }

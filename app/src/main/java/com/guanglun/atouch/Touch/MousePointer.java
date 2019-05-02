@@ -24,7 +24,8 @@ public class MousePointer {
         this.mTCPClient = mTCPClient;
     }
 
-    boolean ischeckdown = false;
+    private boolean ischeckdown = false;
+
     public void MouseDataProc(byte[] buf,int len)
     {
         if(((buf[1] & 0x01) == 0x01))

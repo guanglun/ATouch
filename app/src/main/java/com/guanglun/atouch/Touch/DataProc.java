@@ -163,6 +163,7 @@ public class DataProc {
         return isSuccess;
     }
 
+    private boolean isfirstconnect = true;
     public void DataControl_ATouch(byte[] buf,int len)
     {
         switch (buf[0])
@@ -198,15 +199,22 @@ public class DataProc {
                 break;
 
             case 0x01:
-                mMousePointer.MouseDataProc(buf,len);
-                mActivityServiceMessage.SendToServiceMouseData(mMousePointer.mouse_x,mMousePointer.mouse_y);
+                if(!isfirstconnect) {
+                    mMousePointer.MouseDataProc(buf, len);
+                    mActivityServiceMessage.SendToServiceMouseData(mMousePointer.mouse_x, mMousePointer.mouse_y);
+                }
                 //Log.i("DEBUG",EasyTool.bytes2hex(buf,len));
                 break;
             case 0x02:
                 if(buf[1] == 0x00)
                 {
-                    mActivityServiceMessage.SendToServiceMouseIsShow(false);
+                    if(!isfirstconnect) {
+                        mActivityServiceMessage.SendToServiceMouseIsShow(false);
+                    }
                 }else{
+                    if(isfirstconnect) {
+                        isfirstconnect = false;
+                    }
                     mActivityServiceMessage.SendToServiceMouseIsShow(true);
                 }
 

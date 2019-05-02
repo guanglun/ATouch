@@ -24,6 +24,7 @@ public class FloatMouse {
     public static final float HIGHT = 20;
 
     private int mouse_x,mouse_y;
+    private boolean is_enable = false;
 
     public FloatMouse(Context context, FloatingManager floatingmanager) {
 
@@ -65,13 +66,22 @@ public class FloatMouse {
         }else{
             mParamsMouse.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         }
+
         //设置图片格式，效果为背景透明
         mParamsMouse.format = PixelFormat.RGBA_8888;
         mParamsMouse.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
-        mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-        mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-        mRelativeLayout.setVisibility(View.VISIBLE);
+
+        /*
+        * 初始化不显示
+        * */
+        mParamsMouse.width = 0;
+        mParamsMouse.height = 0;
+        mRelativeLayout.setVisibility(View.INVISIBLE);
+
+//        mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+//        mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+//        mRelativeLayout.setVisibility(View.VISIBLE);
 
         mParamsMouse.x = mouse_x;
         mParamsMouse.y = mouse_y;
@@ -89,26 +99,34 @@ public class FloatMouse {
 
     public void Show()
     {
-
-            mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-            mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-            mRelativeLayout.setVisibility(View.VISIBLE);
-            mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
+        if(!is_enable)
+        {
+            is_enable = true;
+        }
+        mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+        mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
     }
 
     public void Hide()
     {
+        if(is_enable)
+        {
             mParamsMouse.width = 0;
             mParamsMouse.height = 0;
             mRelativeLayout.setVisibility(View.INVISIBLE);
             mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
+        }
+
     }
 
     public void SetMouse(int x,int y)
     {
+        if(is_enable) {
             mParamsMouse.x = x;
             mParamsMouse.y = y;
             mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
-
+        }
     }
 }

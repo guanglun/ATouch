@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionsManager.DSPermissions(this);
 
-//        ExeCommand cmd = new ExeCommand(false).run("am instrument -w -r -e package com.guanglun.uiatuomatordemo -e debug false com.guanglun.uiatuomatordemo.test/android.support.test.runner.AndroidJUnitRunner &", 60000);
+//        ExeCommand cmd = new ExeCommand(false).run("ls /data/local/tmp/", 60000);
 //        while(cmd.isRunning())
 //        {
 //            try {
