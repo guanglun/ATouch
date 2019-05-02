@@ -19,25 +19,27 @@ import android.util.Log;
 public class SQLdm {
 
     private String DEBUG_TAG = "SQLdm";
+    //数据库存储路径
+    private final String filePath = "/ATouch";
+    private final String DBName = "KeyboardMouse.db";
+    private final String ServerName = "ATouchService";
 
     private final boolean isReloadDB = false;
     //private final boolean isReloadDB = true;
+    private String sd_path = null;
+    private SQLiteDatabase database;
+    private Context context;
 
-    //数据库存储路径
-    private final String filePath = "/ATouch";
-    private final String fileName = "KeyboardMouse.db";
+    public SQLiteDatabase openDatabase(Context context){
+        this.context = context;
 
-    SQLiteDatabase database;
+        sd_path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-    public  SQLiteDatabase openDatabase(Context context){
-
-        String sd_path = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-        Log.i(DEBUG_TAG, "filePath: " + sd_path + filePath + "/" + fileName);
+        Log.i(DEBUG_TAG, "filePath: " + sd_path + filePath + "/" + DBName);
 
         if(isReloadDB == true){
 
-            File file = new File( sd_path + filePath + "/" + fileName);
+            File file = new File( sd_path + filePath + "/" + DBName);
 
             if(file.exists()){
                 Log.i(DEBUG_TAG, "isReloadDB == true Delet file");
@@ -45,19 +47,29 @@ public class SQLdm {
             }
         }
 
-        File jhPath = new File( sd_path + filePath + "/" + fileName);
+        check_copy(ServerName);
 
-        //查看数据库文件是否存在
-        if(jhPath.exists()){
+        File db_file = check_copy(DBName);
+        if(db_file != null)
+        {
+            return SQLiteDatabase.openOrCreateDatabase(db_file, null);
+        }
 
-            Log.i(DEBUG_TAG, "存在数据库");
+        return null;
 
-            //存在则直接返回打开的数据库
-            return SQLiteDatabase.openOrCreateDatabase(jhPath, null);
+    }
+
+    public File check_copy(String fileName)
+    {
+        File file = new File(sd_path + filePath + "/" + fileName);
+
+        if(file.exists()){
+            Log.i(DEBUG_TAG, "存在"+fileName);
+            return file;
 
         }else{
 
-            Log.i(DEBUG_TAG, "不存在数据库");
+            Log.i(DEBUG_TAG, "不存在"+fileName);
 
             //不存在先创建文件夹
             File path = new File(sd_path + filePath);
@@ -82,17 +94,17 @@ public class SQLdm {
                 //得到资源
                 AssetManager am= context.getAssets();
                 //得到数据库的输入流
-                InputStream is=am.open("KeyboardMouse.db");
+                InputStream is=am.open(fileName);
 
                 //用输出流写到SDcard上面
-                FileOutputStream fos = new FileOutputStream(jhPath);
+                FileOutputStream fos = new FileOutputStream(file);
 
-                Log.i(DEBUG_TAG, "fos=" + fos);
-                Log.i(DEBUG_TAG, "jhPath=" + jhPath);
+//                Log.i(DEBUG_TAG, "fos=" + fos);
+//                Log.i(DEBUG_TAG, "jhPath=" + file);
 
-                //创建byte数组  用于1KB写一次
-                byte[] buffer = new byte[1024];
-                int count = 0;
+                //创建byte数组  用于4KB写一次
+                byte[] buffer = new byte[4096];
+                int count;
 
                 while((count = is.read(buffer))>0){
 
@@ -104,7 +116,7 @@ public class SQLdm {
                 fos.close();
                 is.close();
 
-                return SQLiteDatabase.openOrCreateDatabase(jhPath, null);
+                return file;
 
             } catch (IOException e) {
                 // TODO Auto-generated catch block

@@ -211,7 +211,7 @@ public class DataProc {
                     if(!isfirstconnect) {
                         mActivityServiceMessage.SendToServiceMouseIsShow(false);
                     }
-                }else{
+                }else if(buf[1] == 0x01){
                     if(isfirstconnect) {
                         isfirstconnect = false;
                     }
