@@ -25,6 +25,14 @@ public class PermissionsManager {
             "android.permission.WRITE_EXTERNAL_STORAGE" };
 
 
+//    private void restartApplication()
+//    {
+//        final Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//
+//    }
+
     public static void DSPermissions(Activity activity) {
 
         try {
@@ -48,6 +56,7 @@ public class PermissionsManager {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + context.getPackageName()));
             context.startActivity(intent);
+
         } catch (Exception e) {
             Toast.makeText(context, "进入设置页面失败，请手动设置", Toast.LENGTH_LONG).show();
         }

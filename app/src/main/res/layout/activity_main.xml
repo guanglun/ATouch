@@ -73,22 +73,22 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_use_keymap_now"
+            android:id="@+id/tv_upgrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="13dp"
-            android:text="使用映射："
+            android:text="硬件升级："
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/bt_creat_plan"
+            android:id="@+id/bt_upgrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_weight="1"
-            android:text="创建映射方案" />
+            android:text="升级设备" />
 
 
     </RelativeLayout>

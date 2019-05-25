@@ -1,9 +1,12 @@
 package com.guanglun.atouch.Main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
@@ -23,6 +26,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.guanglun.atouch.Bluetooth.BTDevice;
 import com.guanglun.atouch.Bluetooth.BlueDevice;
@@ -31,6 +35,7 @@ import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.R;
 import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
+import com.guanglun.atouch.upgrade.UpgradeHardware;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DBManager mDBManager;
 
-    private TextView tv_blue_status,tv_use_keymap_now,tv_auto_status;
+    private TextView tv_blue_status,tv_upgrade,tv_auto_status;
     private DataProc mDataProc;
 
     private Button bt_connect_auto;
@@ -55,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private OrientationEventListener mOrientationListener;
     static private int orientation_last = 0;
 
+    private AlertDialog dialog_upgrade = null;
+
+    private UpgradeHardware upgradeHardware = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
         /**禁止翻转**/
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        try{
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        Intent intent1 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent1, 10);
+                    }
+                }
+            }
+        }catch(Exception e){
+            PermissionsManager.applyCommonPermission(this);
+        }
 
         PermissionsManager.DSPermissions(this);
 
@@ -78,11 +100,13 @@ public class MainActivity extends AppCompatActivity {
 //            //do something
 //        }
 
+
+
+
         mActivityServiceMessage = new ActivityServiceMessage(new ActivityServiceMessage.MessengerCallback() {
             @Override
             public void on_use(String name) {
                 pubg_now_use = name;
-                tv_use_keymap_now.setText("使用映射：" + pubg_now_use);
 
                 if(pubg_now_use != null)
                 {
@@ -200,12 +224,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button bt_creat_plan = (Button) findViewById(R.id.bt_creat_plan);
-        bt_creat_plan.setOnClickListener(new View.OnClickListener() {
+
+
+
+        final String items[] = {"下载网络升级固件", "选择本地升级固件", "开始升级设备", "检查版本"};
+        dialog_upgrade = new AlertDialog.Builder(this)
+                //.setIcon(R.mipmap.icon)//设置标题的图片
+                .setTitle("选择升级方式")//设置对话框的标题
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
+
+                        switch (items[which])
+                        {
+                            case "下载网络升级固件":
+
+                                break;
+                            case "选择本地升级固件":
+                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                intent.setType("*/*").addCategory(Intent.CATEGORY_OPENABLE);
+                                try {
+                                    startActivityForResult(Intent.createChooser(intent, "Choose File"), 0);
+                                } catch (ActivityNotFoundException e) {
+                                    showToast("亲，木有文件管理器啊-_-!!");
+                                }
+
+                                break;
+                            case "开始升级设备":
+
+
+                                break;
+                            case "检查版本":
+
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        Button bt_upgrade = (Button) findViewById(R.id.bt_upgrade);
+        bt_upgrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                add_plan();
-                moveTaskToBack(true);
+                dialog_upgrade.show();
             }
         });
 
@@ -213,30 +283,15 @@ public class MainActivity extends AppCompatActivity {
 
         mMainHandler = new MainHandler(this);
 
-        try{
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!Settings.canDrawOverlays(MainActivity.this)) {
-                        Intent intent1 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                        startActivityForResult(intent1, 10);
-                    }
-                }
-            }
-        }catch(Exception e){
-            PermissionsManager.applyCommonPermission(this);
-
-        }
-
         tv_blue_status = (TextView)findViewById(R.id.tv_blue_status);
         tv_auto_status = (TextView)findViewById(R.id.tv_auto_status);
-        tv_use_keymap_now = (TextView)findViewById(R.id.tv_use_keymap_now);
+        tv_upgrade = (TextView)findViewById(R.id.tv_upgrade);
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
 
         mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
             @Override
             public void on_update_use_table_now(String Name) {
 
-                tv_use_keymap_now.setText("使用映射：" + Name);
                 pubg_now_use = Name;
                 //Log.i("DEBUG",keyMouseListUseNow.toString());
 
@@ -395,8 +450,42 @@ public class MainActivity extends AppCompatActivity {
         mMainHandler.sendMessage(msg);
         
     }
-    
 
+    @Override
+    // 文件选择完之后，自动调用此函数
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 0) {
+                Uri uri = data.getData();
+                final String path = EasyTool.getPath(this,uri);
+                upgradeHardware = new UpgradeHardware(this, path, new UpgradeHardware.upgrade_callback() {
+                    @Override
+                    public void set_status_text(String str) {
+                        tv_upgrade.setText(str);
+                    }
+                });
+                Log.i(TAG, path);
+                new AlertDialog.Builder(this)
+                        .setTitle("开始升级？ " + EasyTool.getFileName(path))
+                        .setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
+                                        upgradeHardware.start();
+
+
+                                    }
+                                }).setNegativeButton("取消", null).create()
+                        .show();
+            }
+        } else {
+            Log.e(TAG, "onActivityResult() error, resultCode: " + resultCode);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 
 }

@@ -47,9 +47,9 @@ public class SQLdm {
             }
         }
 
-        check_copy(ServerName);
+        check_copy(ServerName,true);
 
-        File db_file = check_copy(DBName);
+        File db_file = check_copy(DBName,false);
         if(db_file != null)
         {
             return SQLiteDatabase.openOrCreateDatabase(db_file, null);
@@ -59,11 +59,11 @@ public class SQLdm {
 
     }
 
-    public File check_copy(String fileName)
+    public File check_copy(String fileName,boolean is_must_copy)
     {
         File file = new File(sd_path + filePath + "/" + fileName);
 
-        if(file.exists()){
+        if(file.exists() && !is_must_copy){
             Log.i(DEBUG_TAG, "存在"+fileName);
             return file;
 

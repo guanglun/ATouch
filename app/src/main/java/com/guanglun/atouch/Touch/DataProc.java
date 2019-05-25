@@ -195,7 +195,6 @@ public class DataProc {
                     mActivityServiceMessage.SendToServiceMouseStatus(true);
                 }
 
-
                 break;
 
             case 0x01:
@@ -245,7 +244,5 @@ public class DataProc {
         }
 
     };
-
-
 
 }
