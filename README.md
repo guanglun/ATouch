@@ -17,7 +17,7 @@ ATouch安卓后台程序源码：
 【开发环境：android-ndk-r13b】
 
 APP下载地址：   
-[https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.1.apk](https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.1.apk)
+[https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.2.apk](https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.2.apk)
 
 
 淘宝店铺：  
