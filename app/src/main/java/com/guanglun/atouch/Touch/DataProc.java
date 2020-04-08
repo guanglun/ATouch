@@ -173,6 +173,7 @@ public class DataProc {
                 isADBConnect = true;
                 isADBHeart = true;
 
+
                 if(buf[1] == (byte)0x00)
                 {
                     mActivityServiceMessage.SendToServiceADBStatus(false);
@@ -195,6 +196,14 @@ public class DataProc {
                     mActivityServiceMessage.SendToServiceMouseStatus(true);
                 }
 
+                if(buf[4] == (byte)0x00)
+                {
+                    mActivityServiceMessage.SendToServiceBLUEStatus(false);
+                }else{
+
+                    mActivityServiceMessage.SendToServiceBLUEStatus(true);
+                }
+                //Log.e("DEBUG",EasyTool.bytes2hex(buf,len));
                 break;
 
             case 0x01:
@@ -235,6 +244,7 @@ public class DataProc {
                     mActivityServiceMessage.SendToServiceADBStatus(false);
                     mActivityServiceMessage.SendToServiceKeyBoardStatus(false);
                     mActivityServiceMessage.SendToServiceMouseStatus(false);
+                    mActivityServiceMessage.SendToServiceBLUEStatus(false);
                 }else{
                     isADBHeart = false;
                 }

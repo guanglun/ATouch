@@ -11,14 +11,19 @@ import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
 
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import android.support.v4.content.ContextCompat;
@@ -36,6 +41,8 @@ import com.guanglun.atouch.R;
 import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
 import com.guanglun.atouch.upgrade.UpgradeHardware;
+
+import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,10 +71,16 @@ public class MainActivity extends AppCompatActivity {
 
     private UpgradeHardware upgradeHardware = null;
 
+    private Context context;
+
+    private boolean recv_version = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = this;
 
         /**禁止翻转**/
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -134,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         tcpclient = new TCPClient("127.0.0.1",1989,new TCPClient.socket_callback(){
             @Override
             public void on_connect_success() {
+                recv_version = false;
                 Log.e("DEBUG","socket creat success");
                 bt_connect_auto.setText("断开");
                 tv_auto_status.setText("映射已连接");
@@ -185,8 +199,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void on_receive(byte[] buf, int len) {
 
-                //Log.e("DEBUG","on_receive");
-                mDataProc.OnATouchReceive(buf,len);
+                //Log.e("DEBUG","on_receive" +len);
+                byte[] by = new byte[len];
+                if(recv_version == false)
+                {
+                    recv_version = true;
+
+                    if(len < 10)
+                    {
+                        System.arraycopy(buf, 0, by, 0, len);
+                        final String str = new String(by);
+
+                        Log.e("DEBUG","后台程序版本："+str);
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            public void run() {
+                                showToast("后台程序版本：" + str);
+                            }});
+                    }
+
+                }else{
+                    mDataProc.OnATouchReceive(buf,len);
+                }
+
             }
 
         });
@@ -224,6 +259,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button bt_wifi = (Button) findViewById(R.id.bt_wifi);
+        bt_wifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                final View view = LayoutInflater.from(context).inflate(R.layout.wifi_set, null);
+
+                final AlertDialog dialog1 = new AlertDialog.Builder(context)
+                        //.setIcon(R.mipmap.icon)//设置标题的图片
+                        .setTitle("配置ATouch连接路由器")//设置对话框的标题
+                        .setView(view)
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                EditText et_wifi_ssid = (EditText) view.findViewById(R.id.et_wifi_ssid);
+                                EditText et_wifi_passwd = (EditText) view.findViewById(R.id.et_wifi_passwd);
+                                EditText et_wifi_ip = (EditText) view.findViewById(R.id.et_wifi_ip);
+
+                                String str = "[WIFI]";
+                                str += et_wifi_ssid.getText().toString()+";";
+                                str += et_wifi_passwd.getText().toString()+";";
+                                str += et_wifi_ip.getText().toString();
+
+                                byte[] temp = DataProc.Creat((byte)0x04,str.getBytes(),str.getBytes().length);
+                                tcpclient.socket_send(temp,temp.length);
+
+                                Log.e("DEBUG","send "+str);
+
+                                dialog.dismiss();
+                            }
+                        }).create();
+                if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                    dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                }else{
+                    dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                }
+
+
+
+                dialog1.show();
+
+
+                final EditText et_wifi_ssid = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ssid);
+                final EditText et_wifi_passwd = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_passwd);
+                final EditText et_wifi_ip = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ip);
+
+                et_wifi_ssid.setText(EasyTool.getWifiSSID(context));
+                et_wifi_ip.setText(EasyTool.getWifiIP(context));
+                et_wifi_passwd.setFocusable(true);
+                et_wifi_passwd.setFocusableInTouchMode(true);
+                et_wifi_passwd.requestFocus();
+            }
+        });
 
 
 

@@ -23,6 +23,7 @@ public class SQLdm {
     private final String filePath = "/ATouch";
     private final String DBName = "KeyboardMouse.db";
     private final String ServerName = "ATouchService";
+    private final String BinName = "Atouch.bin";
 
     private final boolean isReloadDB = false;
     //private final boolean isReloadDB = true;
@@ -48,6 +49,7 @@ public class SQLdm {
         }
 
         check_copy(ServerName,true);
+        check_copy(BinName,true);
 
         File db_file = check_copy(DBName,false);
         if(db_file != null)

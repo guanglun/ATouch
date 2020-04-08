@@ -378,6 +378,34 @@ public class EasyTool {
         return routeIp;
     }
 
+    public static String getWifiSSID(Context context) {
+
+        WifiManager wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifiMgr.getConnectionInfo();
+        String wifiSSID = info != null ? info.getSSID() : null;
+
+        if (wifiSSID.startsWith("\"") && wifiSSID.endsWith("\"")) {
+
+            wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
+        }
+
+        Log.d(TAG, "wifi ssid：" + wifiSSID);
+
+        return wifiSSID;
+    }
+
+    public static String getWifiIP(Context context) {
+
+        WifiManager wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifiMgr.getConnectionInfo();
+        String wifiIP = info != null ? Formatter.formatIpAddress(info.getIpAddress()) : null;
+
+
+        Log.d(TAG, "wifi ip：" + wifiIP);
+
+        return wifiIP;
+    }
+
     private static String intIP2StringIP(int ip) {
         return (ip & 0xFF) + "." +
                 ((ip >> 8) & 0xFF) + "." +
