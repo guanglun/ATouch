@@ -65,13 +65,21 @@ public class SQLdm {
     {
         File file = new File(sd_path + filePath + "/" + fileName);
 
-        if(file.exists() && !is_must_copy){
+        if(file.exists() && is_must_copy)
+        {
+            Log.i(DEBUG_TAG, "存在"+fileName+"删除重新拷贝");
+            file.delete();
+        }else if(file.exists() && !is_must_copy){
+
             Log.i(DEBUG_TAG, "存在"+fileName);
             return file;
 
-        }else{
+        }
 
-            Log.i(DEBUG_TAG, "不存在"+fileName);
+        file = new File(sd_path + filePath + "/" + fileName);
+        {
+
+            Log.i(DEBUG_TAG, "开始拷贝"+fileName);
 
             //不存在先创建文件夹
             File path = new File(sd_path + filePath);

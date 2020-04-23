@@ -1,6 +1,7 @@
 package com.guanglun.atouch.Touch;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.guanglun.atouch.Main.EasyTool;
 
@@ -55,6 +56,9 @@ public class MousePointer {
         temp[4] = (byte)(y);
 
         byte[] temp2 = DataProc.Creat((byte)0x02,temp,5);
+
+        //Log.e("DEBUG",EasyTool.bytes2hex(temp2,temp2.length));
+
         mTCPClient.socket_send(temp2,temp2.length);
     }
 
