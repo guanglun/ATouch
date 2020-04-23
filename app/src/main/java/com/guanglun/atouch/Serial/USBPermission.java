@@ -11,6 +11,7 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -52,6 +53,9 @@ public class USBPermission {
             return;
         }
 
+        Log.e("DEBUG USB ","DEVICE NUM "+mUsbManager.getDeviceList().size());
+        int device_num = 1;
+
         //here do emulation to ask all connected usb device for permission
         for (final UsbDevice usbDevice : mUsbManager.getDeviceList().values()) {
             //add some conditional check if necessary
@@ -60,7 +64,13 @@ public class USBPermission {
                 //if has already got permission, just goto connect it
                 //that means: user has choose yes for your previously popup window asking for grant perssion for this usb device
                 //and also choose option: not ask again
-                afterGetUsbPermission(usbDevice);
+                //afterGetUsbPermission(usbDevice);
+                Log.e("DEBUG USB ",String.valueOf(device_num) + " " + usbDevice.getProductName());
+                device_num++;
+                if(serialPort.open(mUsbManager,usbDevice))
+                {
+                    break;
+                }
             }else{
                 //this line will let android popup window, ask user whether to allow this app to have permission to operate this usb device
                 mUsbManager.requestPermission(usbDevice, mPermissionIntent);
@@ -76,7 +86,7 @@ public class USBPermission {
         //call method to set up device communication
         //Toast.makeText(context, String.valueOf("Got permission for usb device: " + usbDevice), Toast.LENGTH_LONG).show();
         //Toast.makeText(context, String.valueOf("Found USB device: VID=" + usbDevice.getVendorId() + " PID=" + usbDevice.getProductId()), Toast.LENGTH_LONG).show();
-
+        Log.e("DEBUG USB ",usbDevice.getProductName());
         doYourOpenUsbDevice(usbDevice);
     }
 

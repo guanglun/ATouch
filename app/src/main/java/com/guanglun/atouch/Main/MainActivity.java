@@ -109,13 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void on_receive(byte[] buf, int len) {
-
+                //Log.e(TAG, EasyTool.bytes2hex(buf, len));
+                tcpclient.socket_send(buf,len);
             }
         });
         usbPermission = new USBPermission(this,serialPort);
-
-
-
 
         /**禁止翻转**/
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

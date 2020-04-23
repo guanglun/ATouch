@@ -227,15 +227,28 @@ public class CP2102SerialDevice {
             return false;
         }
 
-        // Default Setup
+
         if (setControlCommand(CP210x_IFC_ENABLE, CP210x_UART_ENABLE, null) < 0)
             return false;
         setBaudRate(DEFAULT_BAUDRATE);
-        if (setControlCommand(CP210x_SET_LINE_CTL, CP210x_LINE_CTL_DEFAULT, null) < 0)
-            return false;
-        setFlowControl(FLOW_CONTROL_OFF);
-        if (setControlCommand(CP210x_SET_MHS, CP210x_MHS_DEFAULT, null) < 0)
-            return false;
+
+        /**打开如下注释时串口会有一定概率出现问题**/
+////        if (setControlCommand(CP210x_SET_LINE_CTL, CP210x_LINE_CTL_DEFAULT, null) < 0)
+////            return false;
+//        setFlowControl(FLOW_CONTROL_OFF);
+//        if (setControlCommand(CP210x_SET_MHS, CP210x_MHS_DEFAULT, null) < 0)
+//            return false;
+//
+//        Log.e("CP2102", "OPEN SUCCESS");
+//
+////      setBaudRate(DEFAULT_BAUDRATE);
+//        setParity(PARITY_NONE);
+//        setFlowControl(FLOW_CONTROL_OFF);
+//        setStopBits(STOP_BITS_1);
+//        setDataBits(DATA_BITS_8);
+//        setDTR(true);
+
+//        setBaudRate(DEFAULT_BAUDRATE);
 
         return true;
     }
