@@ -31,18 +31,17 @@ import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.guanglun.atouch.Bluetooth.BTDevice;
 import com.guanglun.atouch.Bluetooth.BlueDevice;
 import com.guanglun.atouch.DBManager.DBManager;
 import com.guanglun.atouch.Floating.FloatService;
 import com.guanglun.atouch.R;
+import com.guanglun.atouch.Serial.SerialPort;
+import com.guanglun.atouch.Serial.USBPermission;
 import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
 import com.guanglun.atouch.upgrade.UpgradeHardware;
-
-import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DBManager mDBManager;
 
-    private TextView tv_blue_status,tv_upgrade,tv_auto_status;
+    private TextView tv_blue_status,tv_upgrade,tv_auto_status,tv_serial;
     private DataProc mDataProc;
 
     private Button bt_connect_auto;
@@ -75,12 +74,48 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean recv_version = false;
 
+    private SerialPort serialPort;
+    private USBPermission usbPermission;
+    private Button bt_serial;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         context = this;
+
+        serialPort = new SerialPort(this, new SerialPort.serialCallback() {
+            @Override
+            public void on_connect_success() {
+                bt_serial.setText("串口断开");
+                showToast("串口已连接");
+                tv_serial.setText("串口已连接");
+            }
+
+            @Override
+            public void on_connect_fail() {
+                bt_serial.setText("串口连接");
+                showToast("串口连接失败");
+                tv_serial.setText("串口未连接");
+            }
+
+            @Override
+            public void on_disconnect() {
+                bt_serial.setText("串口连接");
+                showToast("串口已断开");
+                tv_serial.setText("串口未连接");
+            }
+
+            @Override
+            public void on_receive(byte[] buf, int len) {
+
+            }
+        });
+        usbPermission = new USBPermission(this,serialPort);
+
+
+
 
         /**禁止翻转**/
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -259,6 +294,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bt_serial = (Button) findViewById(R.id.bt_serial);
+        bt_serial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!serialPort.isOpen)
+                {
+                    usbPermission.tryGetUsbPermission();
+                }else{
+                    serialPort.close();
+                }
+
+            }
+        });
+
         Button bt_wifi = (Button) findViewById(R.id.bt_wifi);
         bt_wifi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,6 +431,8 @@ public class MainActivity extends AppCompatActivity {
         tv_blue_status = (TextView)findViewById(R.id.tv_blue_status);
         tv_auto_status = (TextView)findViewById(R.id.tv_auto_status);
         tv_upgrade = (TextView)findViewById(R.id.tv_upgrade);
+        tv_serial = (TextView)findViewById(R.id.tv_serial);
+
         ListView lv_table = (ListView)findViewById(R.id.lv_table);
 
         mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
