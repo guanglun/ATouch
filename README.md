@@ -4,6 +4,12 @@
 
 ![效果图](https://images.gitee.com/uploads/images/2020/0408/110002_b982beff_683968.png "atouch2.png")
 
+![效果图](https://images.gitee.com/uploads/images/2020/0423/150108_a7f80fd5_683968.png "18245@1587624561@2.png")
+
+![gif](https://images.gitee.com/uploads/images/2020/0423/150126_eb0fbd7b_683968.gif "bili_v_d_1587624907338.gif")
+
+![gif](https://images.gitee.com/uploads/images/2020/0423/150325_ff6f7a4a_683968.gif "bili_v_d_1587625362445.gif")
+
 * 介绍博客
 [https://www.cnblogs.com/guanglun/p/10927196.html](https://www.cnblogs.com/guanglun/p/10927196.html)  
 
@@ -28,10 +34,11 @@
 * 演示视频
 [https://www.bilibili.com/video/av53687214](https://www.bilibili.com/video/av53687214)  
 
-<p><iframe src="//player.bilibili.com/player.html?aid=53687214&bvid=BV1T4411x76t&cid=93910781&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe><p>
+<iframe src="//player.bilibili.com/player.html?aid=53687214&bvid=BV1T4411x76t&cid=93910781&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 ![设置界面](https://images.gitee.com/uploads/images/2020/0408/110030_b23d7f55_683968.png "atouch3.png")
- 
+
+![设置界面](https://images.gitee.com/uploads/images/2020/0423/150406_ed5d95ff_683968.png "Screenshot_2020-04-23-14-51-37-628_Atouch V1.3.png")
 
 
 
