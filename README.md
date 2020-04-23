@@ -34,8 +34,6 @@
 * 演示视频
 [https://www.bilibili.com/video/av53687214](https://www.bilibili.com/video/av53687214)  
 
-<iframe src="//player.bilibili.com/player.html?aid=53687214&bvid=BV1T4411x76t&cid=93910781&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-
 ![设置界面](https://images.gitee.com/uploads/images/2020/0408/110030_b23d7f55_683968.png "atouch3.png")
 
 ![设置界面](https://images.gitee.com/uploads/images/2020/0423/150406_ed5d95ff_683968.png "Screenshot_2020-04-23-14-51-37-628_Atouch V1.3.png")
