@@ -1,5 +1,9 @@
 # ATouch
 
+## **ATouch线上文档请点击下面链接** 
+
+[ATouch线上文档](http://guanglundz.com/atouch)  
+
 ## 功能及研发进度
 | 功能 | 进度 |
 |:-----:|:-----:|
@@ -38,7 +42,7 @@
 【开发环境：android-ndk-r13b】
 
 * APP下载地址
-[https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.3.apk](https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.3.apk)
+[https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.5.apk](https://gitee.com/guanglunking/ATouch/blob/master/app/release/ATouchV1.5.apk)
 
 * 淘宝店铺
 [https://item.taobao.com/item.htm?id=595635571591](https://item.taobao.com/item.htm?id=595635571591)  
@@ -52,4 +56,5 @@
 
 
 
-
+* 2020/5/5 更新日志
+串口连接波特率修改为921600 新增版本V1.5
