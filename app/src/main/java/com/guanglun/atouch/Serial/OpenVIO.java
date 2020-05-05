@@ -7,17 +7,19 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.guanglun.atouch.Main.EasyTool;
+
 import java.util.Objects;
 
+public class OpenVIO {
 
-public class SerialPort {
+    private final static String TAG = "OPENVIO";
 
-    private final static int DEFAULT_TIMEOUT = 100;
+    private final static int DEFAULT_TIMEOUT = 1000;
 
     public boolean isOpen = false;
 
@@ -27,42 +29,52 @@ public class SerialPort {
 
     private Thread thread_client = null;
     private UsbDeviceConnection connection;
-    private CP2102SerialDevice cp2102;
+    private UsbInterface mInterface;
 
-    public serialCallback sc = null;
+    public OpenVIOCallback sc = null;
 
-    public interface serialCallback {
+    private final static int REQUEST_ATOUCH_START = 0xC0;
+    private final static int REQUEST_ATOUCH_STOP  = 0xC1;
+
+    private final static int LIBUSB_REQUEST_TYPE_VENDOR = (0x02 << 5);
+    private final static int LIBUSB_ENDPOINT_IN = 0x80;
+
+    public interface OpenVIOCallback {
         void on_connect_success();
+
         void on_connect_fail();
+
         void on_disconnect();
-        void on_receive(byte[] buf,int len);
+
+        void on_receive(byte[] buf, int len);
     }
 
-    public SerialPort(Context context,serialCallback sc)
-    {
+    public OpenVIO(Context context, OpenVIOCallback sc) {
         this.context = context;
         this.sc = sc;
     }
 
-    public boolean open(UsbManager mUsbManager, UsbDevice usbDevice)
-    {
-        if(!Objects.requireNonNull(usbDevice.getProductName()).contains("CP2102"))
-        {
+    public boolean open(UsbManager mUsbManager, UsbDevice usbDevice) {
+        if (!Objects.requireNonNull(usbDevice.getProductName()).contains("OPENVIO")) {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 public void run() {
                     sc.on_connect_fail();
-                }});
+                }
+            });
             return false;
         }
 
-        Log.e("DEBUG SERIAL",usbDevice.getProductName());
-
+        Log.i(TAG, usbDevice.getProductName());
 
         connection = mUsbManager.openDevice(usbDevice);
+        mInterface = usbDevice.getInterface(0);
 
-
-        cp2102 = new CP2102SerialDevice(usbDevice,connection);
-
+        if (connection.claimInterface(mInterface, true)) {
+            Log.i(TAG, "Interface succesfully claimed");
+        } else {
+            Log.i(TAG, "Interface could not be claimed");
+            return false;
+        }
 
         UsbInterface usbInterface = usbDevice.getInterface(0);
 
@@ -70,91 +82,87 @@ public class SerialPort {
             UsbEndpoint point = usbInterface.getEndpoint(index);
             if (point.getType() == UsbConstants.USB_ENDPOINT_XFER_BULK) {
                 if (point.getDirection() == UsbConstants.USB_DIR_IN) {
-                    usbEndpointIn = point;
+                    if(point.getAddress() == 0x81)
+                        usbEndpointIn = point;
                 } else if (point.getDirection() == UsbConstants.USB_DIR_OUT) {
                     usbEndpointOut = point;
                 }
             }
         }
 
-        cp2102.open();
+        Log.i(TAG, "[usbEndpointIn : "+usbEndpointIn+"][usbEndpointOut : "+usbEndpointOut+"]");
 
-        thread_client = new Thread(serial_runnable);
+        connection.controlTransfer(LIBUSB_REQUEST_TYPE_VENDOR+LIBUSB_ENDPOINT_IN, REQUEST_ATOUCH_START, 0, 0, null, 0, 1000);
+
+        thread_client = new Thread(openvio_runnable);
         thread_client.start();
 
         return true;
     }
 
-    public void close()
-    {
-        cp2102.close();
+    public void close() {
+        connection.controlTransfer(LIBUSB_REQUEST_TYPE_VENDOR+LIBUSB_ENDPOINT_IN, REQUEST_ATOUCH_STOP, 0, 0, null, 0, 1000);
         isOpen = false;
+
         connection.close();
     }
 
-    public void send(byte[] bytes,int len)
-    {
+    public void send(byte[] bytes, int len) {
         connection.bulkTransfer(usbEndpointOut, bytes, len, DEFAULT_TIMEOUT);
     }
 
-    private Runnable serial_runnable = new Runnable() {
+    private Runnable openvio_runnable = new Runnable() {
         @Override
         public void run() {
-
 
             int inMax = usbEndpointIn.getMaxPacketSize();
             byte[] recv_bytes = new byte[inMax];
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 public void run() {
-                    //Log.e("DEBUG SERIAL ","sc.on_connect_success();");
+                    // Log.i("DEBUG SERIAL ","sc.on_connect_success();");
                     sc.on_connect_success();
-                }});
+                }
+            });
 
             isOpen = true;
 
-            String str_open = "open";
-            send(str_open.getBytes(),str_open.getBytes().length);
+            Log.i(TAG, "OPEN SUCCESS");
 
-            Log.e("DEBUG SERIAL ","OPEN SUCCESS");
-
-            while(isOpen)
-            {
-                int ret = connection.bulkTransfer(usbEndpointIn,recv_bytes, inMax, DEFAULT_TIMEOUT);
-                if(ret > 0)
-                {
+            while (isOpen) {
+                int ret = connection.bulkTransfer(usbEndpointIn, recv_bytes, inMax, DEFAULT_TIMEOUT);
+                if (ret > 0) {
                     final byte[] bytes = new byte[ret];
                     System.arraycopy(recv_bytes, 0, bytes, 0, ret);
 
-                    //Log.e("DEBUG SERIAL",new String(bytes));
+                    // Log.i("DEBUG SERIAL",new String(bytes));
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            sc.on_receive(bytes,bytes.length);
-                        }});
-
-
-                }
-                else if(ret != -7)
-                {
+                            //Log.i(TAG, EasyTool.bytes2hex(bytes, bytes.length));
+                            sc.on_receive(bytes, bytes.length);
+                        }
+                    });
 
                 }
-                else if(ret < 0){
+//                else if(ret != -7)
+//                {
+//
+//                }
+                else if (ret < 0) {
                     isOpen = false;
-                    Log.e("DEBUG SERIAL Error ",String.valueOf(ret));
+                    Log.i(TAG, "Error " + String.valueOf(ret));
                 }
-                //Log.e("DEBUG SERIAL","wait");
             }
-
-            str_open = "clos";
-            send(str_open.getBytes(),str_open.getBytes().length);
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 public void run() {
+                    Log.i(TAG, "Disconnect Thread Gone");
                     sc.on_disconnect();
-                }});
+                }
+            });
 
-            close();
+
         }
     };
 }

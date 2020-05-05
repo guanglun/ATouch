@@ -11,23 +11,29 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class USBPermission {
 
     Context context = null;
 
     private SerialPort serialPort = null;
+    private OpenVIO openvio = null;
 
-    public USBPermission(Context context,SerialPort serialPort)
+    public USBPermission(Context context,SerialPort serialPort,OpenVIO openvio)
     {
         this.context = context;
         this.serialPort = serialPort;
+        this.openvio = openvio;
     }
+
     /**
      * 获得 usb 权限
      */
@@ -67,10 +73,21 @@ public class USBPermission {
                 //afterGetUsbPermission(usbDevice);
                 Log.e("DEBUG USB ",String.valueOf(device_num) + " " + usbDevice.getProductName());
                 device_num++;
-                if(serialPort.open(mUsbManager,usbDevice))
+
+                if(Objects.requireNonNull(usbDevice.getProductName()).contains("CP2102"))
                 {
-                    break;
+                    if(serialPort.open(mUsbManager,usbDevice))
+                    {
+                        break;
+                    }
+                }else if(Objects.requireNonNull(usbDevice.getProductName()).contains("OPENVIO"))
+                {
+                    if(openvio.open(mUsbManager,usbDevice))
+                    {
+                        break;
+                    }
                 }
+
             }else{
                 //this line will let android popup window, ask user whether to allow this app to have permission to operate this usb device
                 mUsbManager.requestPermission(usbDevice, mPermissionIntent);

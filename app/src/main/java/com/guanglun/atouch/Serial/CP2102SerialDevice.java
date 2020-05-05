@@ -77,7 +77,7 @@ public class CP2102SerialDevice {
     private static final int CP210x_MHS_ALL = 0x0011;
     private static final int CP210x_XON = 0x0000;
     private static final int CP210x_XOFF = 0x0000;
-    private static final int DEFAULT_BAUDRATE = 115200;
+    private static final int DEFAULT_BAUDRATE = 921600;
 
     /**
      * Flow control variables

@@ -39,6 +39,22 @@ public class MousePointer {
             ischeckdown = false;
         }
 
+        if(buf[2] > 100)
+        {
+            buf[2] = 100;
+        }else if(buf[2] < -100)
+        {
+            buf[2] = -100;
+        }
+
+        if(buf[3] > 100)
+        {
+            buf[3] = 100;
+        }else if(buf[3] < -100)
+        {
+            buf[3] = -100;
+        }
+
         mouse_x += buf[2]*2;
         mouse_y += buf[3]*2;
 
