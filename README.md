@@ -41,13 +41,13 @@
 [https://gitee.com/guanglunking/ATouchService](https://gitee.com/guanglunking/ATouchService)   
 【开发环境：android-ndk-r13b】
 
-APP下载地址：   
+* APP下载地址：   
 [https://gitee.com/guanglunking/ATouch/releases](https://gitee.com/guanglunking/ATouch/releases)
 
-安卓后台可执行文件下载地址：   
+* 安卓后台可执行文件下载地址：   
 [https://gitee.com/guanglunking/ATouchService/releases](https://gitee.com/guanglunking/ATouchService/releases)
 
-板子固件下载地址：   
+* 板子固件下载地址：   
 [https://gitee.com/guanglunking/ESP32_CH374U/releases](https://gitee.com/guanglunking/ESP32_CH374U/releases)
 
 * 淘宝店铺
