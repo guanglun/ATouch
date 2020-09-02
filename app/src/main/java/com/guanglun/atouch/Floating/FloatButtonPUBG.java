@@ -1,7 +1,9 @@
 package com.guanglun.atouch.Floating;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,14 +26,19 @@ public class FloatButtonPUBG {
     private Button button = null;
 
     public int PositionX,PositionY;
+    private int xtmp = 0, ytmp = 0;;
+
 
     public FloatButtonPUBG(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
-                       int StartX, int StartY,int picture)
+                       int StartX, int StartY,int picture,int xtmp,int ytmp)
     {
         mContext = context;
         mFloatingManager = floatingmanager;
         mRelativeLayout = relativeLayout;
         mParams = params;
+
+        this.xtmp = xtmp;
+        this.ytmp = ytmp;
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
@@ -42,8 +49,8 @@ public class FloatButtonPUBG {
 
         button.setBackground(mContext.getResources().getDrawable(picture));
 
-        button.setX(StartX- EasyTool.dip2px(mContext,ROUNDD/2));
-        button.setY(StartY- EasyTool.dip2px(mContext,ROUNDD/2));
+        button.setX(StartX - xtmp - EasyTool.dip2px(mContext,ROUNDD/2));
+        button.setY(StartY - ytmp - EasyTool.dip2px(mContext,ROUNDD/2));
 
         PositionX =StartX;
         PositionY = StartY;
@@ -92,8 +99,8 @@ public class FloatButtonPUBG {
 
             PositionX = (int)event.getRawX();
             PositionY = (int)event.getRawY();
-            button.setX(PositionX - EasyTool.dip2px(mContext,ROUNDD/2));
-            button.setY(PositionY - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setX(PositionX - xtmp - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setY(PositionY - ytmp - EasyTool.dip2px(mContext,ROUNDD/2));
 
             return false;
         }

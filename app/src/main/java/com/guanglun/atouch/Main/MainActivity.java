@@ -11,6 +11,7 @@ import android.content.Intent;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,9 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
 
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +36,13 @@ import android.os.Build;
 import android.provider.Settings;
 import android.net.Uri;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.guanglun.atouch.Bluetooth.BTDevice;
 import com.guanglun.atouch.Bluetooth.BlueDevice;
 import com.guanglun.atouch.DBManager.DBManager;
 import com.guanglun.atouch.Floating.FloatService;
+
 import com.guanglun.atouch.R;
 import com.guanglun.atouch.Serial.OpenVIO;
 import com.guanglun.atouch.Serial.SerialPort;
@@ -80,10 +87,17 @@ public class MainActivity extends AppCompatActivity {
     private USBPermission usbPermission;
     private Button bt_serial;
 
+    private Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        AppConfig config = new AppConfig();
+        config.init(this);
+
 
         context = this;
 
@@ -650,6 +664,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_setting:
+                Intent intent = new Intent(this , SettingActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_description:
+
+                break;
+            case R.id.menu_upgrade:
+
+                break;
+            case R.id.menu_upgradedevice:
+
+                break;
+
+        }
+        return true;
     }
 
 }

@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Atouch V1.5</string>
+    <string name="app_name">Atouch V1.6</string>
     <string name="title_activity_scan_blue">ScanBlueActivity</string>
+    <string name="title_activity_setting">设置</string>
 
 
 </resources>

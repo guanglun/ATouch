@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/float_menu_config"
+        android:title="设置"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_description"
+        android:title="说明"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_upgrade"
+        android:title="软件更新"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_upgradedevice"
+        android:title="升级设备"
+        app:showAsAction="never" />
+
+</menu>

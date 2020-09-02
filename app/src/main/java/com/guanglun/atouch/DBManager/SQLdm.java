@@ -24,6 +24,7 @@ public class SQLdm {
     private final String DBName = "KeyboardMouse.db";
     private final String ServerName = "ATouchService";
     private final String BinName = "Atouch.bin";
+    private final String SettingName = "AppConfig.properties";
 
     private final boolean isReloadDB = false;
     //private final boolean isReloadDB = true;
@@ -50,6 +51,7 @@ public class SQLdm {
 
         check_copy(ServerName,true);
         check_copy(BinName,true);
+        check_copy(SettingName,true);
 
         File db_file = check_copy(DBName,false);
         if(db_file != null)

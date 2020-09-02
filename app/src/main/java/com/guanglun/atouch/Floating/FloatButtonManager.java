@@ -2,8 +2,10 @@ package com.guanglun.atouch.Floating;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DBManager;
@@ -14,11 +16,13 @@ import java.util.List;
 
 public class FloatButtonManager {
 
+
     private Context mContext;
     private FloatingManager mFloatingManager;
     private RelativeLayout mRelativeLayout;
     private WindowManager.LayoutParams mParams;
     private int ScreenWidth,ScreenHigh;
+    private int height = 108;
 
     List<FloatButton> FloatButtonList =  new ArrayList<FloatButton>();
     List<KeyMouse> KeyMouseList =  new ArrayList<KeyMouse>();
@@ -35,6 +39,9 @@ public class FloatButtonManager {
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
         ScreenWidth = metrics.widthPixels;//获取到的是px，像素，绝对像素，需要转化为dpi
         ScreenHigh = metrics.heightPixels;
+
+
+
     }
 
     public void Add(KeyMouse mKeyMouse)
@@ -48,7 +55,7 @@ public class FloatButtonManager {
         }
 
         FloatButton mFloatButton = new FloatButton(mContext,mFloatingManager,mRelativeLayout,mParams,
-                mKeyMouse,ScreenWidth/2,ScreenHigh/2);
+                mKeyMouse,ScreenWidth/2,ScreenHigh/2,height);
 
         KeyMouseList.add(mKeyMouse);
         FloatButtonList.add(mFloatButton);
@@ -88,7 +95,7 @@ public class FloatButtonManager {
         {
             KeyMouse km = KeyMouseList.get(i);
             FloatButton mFloatButton = new FloatButton(mContext,mFloatingManager,mRelativeLayout,mParams,
-                    km,km.PX,km.PY);
+                    km,km.PX,km.PY,height);
             FloatButtonList.add(mFloatButton);
         }
 

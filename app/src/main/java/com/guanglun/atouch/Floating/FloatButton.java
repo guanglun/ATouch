@@ -2,6 +2,7 @@ package com.guanglun.atouch.Floating;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,17 +24,19 @@ public class FloatButton {
 
     private Button button;
     private KeyMouse mKeyMouse;
+    private int height = 0;
 
     public int PositionX,PositionY;
 
     public FloatButton(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
-                       KeyMouse keyMouse, int StartX, int StartY)
+                       KeyMouse keyMouse, int StartX, int StartY,int height)
     {
         mContext = context;
         mFloatingManager = floatingmanager;
         mRelativeLayout = relativeLayout;
         mParams = params;
         mKeyMouse = keyMouse;
+        this.height = height;
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
@@ -70,8 +73,8 @@ public class FloatButton {
 
             PositionX = (int)event.getRawX();
             PositionY = (int)event.getRawY();
-            button.setX(PositionX - EasyTool.dip2px(mContext,ROUNDD/2));
-            button.setY(PositionY - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setX(PositionX);// - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setY(PositionY);// - EasyTool.dip2px(mContext,ROUNDD/2));
 
             return false;
         }

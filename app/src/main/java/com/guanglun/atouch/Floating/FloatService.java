@@ -14,6 +14,8 @@ import android.view.Surface;
 import com.guanglun.atouch.Floating.FloatingView;
 import com.guanglun.atouch.Main.ActivityServiceMessage;
 
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
 public class FloatService extends Service {
 
     public static final int MESSAGE_USE_NAME = 1;
@@ -42,6 +44,8 @@ public class FloatService extends Service {
                 SendToActivityUseName(Name);
             }
         });
+
+        mFloatingView.setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
 
