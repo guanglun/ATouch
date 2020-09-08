@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         usbPermission = new USBPermission(this, serialPort, openvio);
 
         /** 禁止翻转 **/
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         try {
             if (ContextCompat.checkSelfPermission(this,
@@ -274,20 +274,21 @@ public class MainActivity extends AppCompatActivity {
         mMainHandler = new MainHandler(this);
 
 //        ListView lv_table = (ListView) findViewById(R.id.lv_table);
-//        mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
-//            @Override
-//            public void on_update_use_table_now(String Name) {
-//
-//                pubg_now_use = Name;
-//                // Log.i("DEBUG",keyMouseListUseNow.toString());
-//
-//                if (pubg_now_use != null) {
-//                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
-//                    temp = DataProc.Creat((byte) 0x01, temp, temp.length);
-//                    tcpclient.socket_send(temp, temp.length);
-//                }
-//            }
-//        });
+        ListView lv_table = new ListView(this);
+       mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
+           @Override
+           public void on_update_use_table_now(String Name) {
+
+               pubg_now_use = Name;
+               // Log.i("DEBUG",keyMouseListUseNow.toString());
+
+               if (pubg_now_use != null) {
+                   byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                   temp = DataProc.Creat((byte) 0x01, temp, temp.length);
+                   tcpclient.socket_send(temp, temp.length);
+               }
+           }
+       });
 
         Intent intent = new Intent(this, FloatService.class);
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
