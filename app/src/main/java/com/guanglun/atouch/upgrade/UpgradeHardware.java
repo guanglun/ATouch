@@ -39,6 +39,10 @@ public class UpgradeHardware {
     private upgrade_callback gc = null;
     public interface upgrade_callback {
         void set_status_text(String str);
+        void onConnect();
+        void onSuccess();
+        void onFail();
+        void onProcess(int pro);
     }
 
     public void start()
@@ -75,7 +79,7 @@ public class UpgradeHardware {
                 try {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            gc.set_status_text("开始升级");
+                            gc.set_status_text("正在连接设备....\r\n\n如果长时间连接不上设备请检查是否连接ATouch_XXXXXX热点！");
                         }});
 
                     Log.i(TAG,"socket connect to " + ip + " " + port);
@@ -84,7 +88,8 @@ public class UpgradeHardware {
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            gc.set_status_text("连接成功");
+                            gc.set_status_text("连接成功,准备升级...");
+                            gc.onConnect();
                         }});
 
                     Log.i(TAG,"socket connect success");
@@ -124,25 +129,21 @@ public class UpgradeHardware {
                                 socket_send(receive_buffer,receive_len);
                                 Log.i(TAG,"send "+receive_len + " " + EasyTool.bytes2hex(receive_buffer,10));
 
-
-
                                 receive_len = inputStream.read(receive_buffer);
                                 if(receive_len != 8)
                                 {
                                     break;
                                 }
 
-
                                 final int finalCount = count;
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     public void run() {
                                         gc.set_status_text("正在升级 " + finalCount *100/size + "%");
+                                        gc.onProcess(finalCount *100/size);
                                     }});
                             }else{
                                 break;
                             }
-
-
                         }
 
                         if(count == size)
@@ -154,6 +155,7 @@ public class UpgradeHardware {
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     public void run() {
                                         gc.set_status_text("升级完成");
+                                        gc.onSuccess();
                                     }});
                             }else if(receive_len == 4 && receive_buffer[0] == 'f' && receive_buffer[1] == 'a' && receive_buffer[2] == 'i' && receive_buffer[3] == 'l')
                             {
@@ -161,12 +163,14 @@ public class UpgradeHardware {
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     public void run() {
                                         gc.set_status_text("升级失败");
+                                        gc.onFail();
                                     }});
                             }
                         }else{
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 public void run() {
                                     gc.set_status_text("升级失败");
+                                    gc.onFail();
                                 }});
                         }
 
@@ -179,6 +183,7 @@ public class UpgradeHardware {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             public void run() {
                                 gc.set_status_text("升级失败");
+                                gc.onFail();
                             }});
 
                     }

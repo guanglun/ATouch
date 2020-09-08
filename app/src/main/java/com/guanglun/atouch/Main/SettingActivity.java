@@ -1,16 +1,14 @@
 package com.guanglun.atouch.Main;
 
-import android.content.Intent;
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -35,7 +33,7 @@ public class SettingActivity extends AppCompatActivity {
         RadioButton radioButton3 = (RadioButton)findViewById(R.id.rb_setting_offset_3);
 
 
-
+        Log.e("SETTING", " " + config.getOffsetConfig());
         switch(config.getOffsetConfig())
         {
             case 1:

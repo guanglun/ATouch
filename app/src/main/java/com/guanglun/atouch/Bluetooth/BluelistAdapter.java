@@ -45,6 +45,7 @@ public class BluelistAdapter extends BaseAdapter {
     //这个方法才是重点，我们要为它编写一个ViewHolder
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder = null;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.scan_blue_listview, parent, false); //加载布局
@@ -70,4 +71,5 @@ public class BluelistAdapter extends BaseAdapter {
         TextView blue_name;
         TextView blue_address;
     }
+
 }

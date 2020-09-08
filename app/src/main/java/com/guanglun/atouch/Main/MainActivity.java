@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -49,7 +50,10 @@ import com.guanglun.atouch.Serial.SerialPort;
 import com.guanglun.atouch.Serial.USBPermission;
 import com.guanglun.atouch.Touch.DataProc;
 import com.guanglun.atouch.Touch.TCPClient;
+import com.guanglun.atouch.upgrade.Upgrade;
 import com.guanglun.atouch.upgrade.UpgradeHardware;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,17 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
     private DBManager mDBManager;
 
-    private TextView tv_blue_status, tv_upgrade, tv_auto_status, tv_serial;
     private DataProc mDataProc;
 
-    private Button bt_connect_auto;
     private String pubg_now_use = null;
     private ActivityServiceMessage mActivityServiceMessage;
 
     private OrientationEventListener mOrientationListener;
     static private int orientation_last = 0;
-
-    private AlertDialog dialog_upgrade = null;
 
     private UpgradeHardware upgradeHardware = null;
 
@@ -85,9 +85,8 @@ public class MainActivity extends AppCompatActivity {
     private SerialPort serialPort;
     private OpenVIO openvio = null;
     private USBPermission usbPermission;
-    private Button bt_serial;
 
-    private Toolbar mToolbar;
+    private Upgrade upgrade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,29 +100,21 @@ public class MainActivity extends AppCompatActivity {
 
         context = this;
 
+        upgrade = new Upgrade(this);
         openvio = new OpenVIO(this, new OpenVIO.OpenVIOCallback() {
             @Override
             public void on_connect_success() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("OPENVIO断开");
                 showToast("OPENVIO已连接");
-                tv_serial.setText("OPENVIO已连接");
             }
 
             @Override
             public void on_connect_fail() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("OPENVIO连接");
                 showToast("OPENVIO连接失败");
-                tv_serial.setText("OPENVIO未连接");
             }
 
             @Override
             public void on_disconnect() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("OPENVIO连接");
                 showToast("OPENVIO已断开");
-                tv_serial.setText("OPENVIO未连接");
             }
 
             @Override
@@ -136,26 +127,17 @@ public class MainActivity extends AppCompatActivity {
         serialPort = new SerialPort(this, new SerialPort.serialCallback() {
             @Override
             public void on_connect_success() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("串口断开");
                 showToast("串口已连接");
-                tv_serial.setText("串口已连接");
             }
 
             @Override
             public void on_connect_fail() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("串口连接");
                 showToast("串口连接失败");
-                tv_serial.setText("串口未连接");
             }
 
             @Override
             public void on_disconnect() {
-                bt_serial.setEnabled(true);
-                bt_serial.setText("串口连接");
                 showToast("串口已断开");
-                tv_serial.setText("串口未连接");
             }
 
             @Override
@@ -167,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         usbPermission = new USBPermission(this, serialPort, openvio);
 
         /** 禁止翻转 **/
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         try {
             if (ContextCompat.checkSelfPermission(this,
@@ -185,19 +167,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         PermissionsManager.DSPermissions(this);
-
-        // ExeCommand cmd = new ExeCommand(false).run("ls /data/local/tmp/", 60000);
-        // while(cmd.isRunning())
-        // {
-        // try {
-        // Thread.sleep(1000);
-        // } catch (Exception e) {
-        //
-        // }
-        // String buf = cmd.getResult();
-        // Log.i("auto",buf);
-        // //do something
-        // }
 
         mActivityServiceMessage = new ActivityServiceMessage(new ActivityServiceMessage.MessengerCallback() {
             @Override
@@ -229,8 +198,6 @@ public class MainActivity extends AppCompatActivity {
             public void on_connect_success() {
                 recv_version = false;
                 Log.e("DEBUG", "socket creat success");
-                bt_connect_auto.setText("断开");
-                tv_auto_status.setText("映射已连接");
 
                 if (pubg_now_use != null) {
                     byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
@@ -259,9 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void on_connect_fail() {
-                Log.e("DEBUG", "socket creat fail");
-                bt_connect_auto.setText("连接");
-                tv_auto_status.setText("映射未连接");
+                //Log.e("DEBUG", "socket creat fail");
                 mActivityServiceMessage.mUiautoStatus = false;
                 mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
             }
@@ -269,8 +234,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void on_disconnect() {
                 Log.e("DEBUG", "socket disconnect");
-                bt_connect_auto.setText("连接");
-                tv_auto_status.setText("映射未连接");
                 mActivityServiceMessage.mUiautoStatus = false;
                 mActivityServiceMessage.SendToServiceUiautoStatus(mActivityServiceMessage.mUiautoStatus);
             }
@@ -306,194 +269,25 @@ public class MainActivity extends AppCompatActivity {
 
         mDataProc = new DataProc(this, tcpclient, mActivityServiceMessage);
 
-        bt_connect_auto = (Button) findViewById(R.id.bt_connect_auto);
-        bt_connect_auto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (bt_connect_auto.getText().equals("连接")) {
-                    tcpclient.connect();
-                } else {
-                    tcpclient.disconnect();
-                }
-
-            }
-        });
-
-        Button bt_blue_scan = (Button) findViewById(R.id.bt_blue_scan);
-        bt_blue_scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // if(!blue_device.isConnect)
-                {
-                    blue_start_check_scan();
-                }
-                // else{
-                // showToast("蓝牙已连接");
-                // }
-
-            }
-        });
-
-        bt_serial = (Button) findViewById(R.id.bt_serial);
-        bt_serial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                bt_serial.setEnabled(false);
-                if(!serialPort.isOpen)
-                {
-                    Log.i("OPENVIO","1");
-                    if(!openvio.isOpen)
-                    {
-                        Log.i("OPENVIO","2");
-                        usbPermission.tryGetUsbPermission();
-                        return;
-                    }
-                }
-
-                Log.i("OPENVIO","3");
-                if (serialPort.isOpen){
-                    Log.i("OPENVIO","4");
-                    serialPort.close();
-                }
-                if (openvio.isOpen){
-                    Log.i("OPENVIO","5");
-                    openvio.close();
-                }
-
-            }
-        });
-
-        Button bt_wifi = (Button) findViewById(R.id.bt_wifi);
-        bt_wifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final View view = LayoutInflater.from(context).inflate(R.layout.wifi_set, null);
-
-                final AlertDialog dialog1 = new AlertDialog.Builder(context)
-                        // .setIcon(R.mipmap.icon)//设置标题的图片
-                        .setTitle("配置ATouch连接路由器")// 设置对话框的标题
-                        .setView(view).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                EditText et_wifi_ssid = (EditText) view.findViewById(R.id.et_wifi_ssid);
-                                EditText et_wifi_passwd = (EditText) view.findViewById(R.id.et_wifi_passwd);
-                                EditText et_wifi_ip = (EditText) view.findViewById(R.id.et_wifi_ip);
-
-                                String str = "[WIFI]";
-                                str += et_wifi_ssid.getText().toString() + ";";
-                                str += et_wifi_passwd.getText().toString() + ";";
-                                str += et_wifi_ip.getText().toString();
-
-                                byte[] temp = DataProc.Creat((byte) 0x04, str.getBytes(), str.getBytes().length);
-                                tcpclient.socket_send(temp, temp.length);
-
-                                Log.e("DEBUG", "send " + str);
-
-                                dialog.dismiss();
-                            }
-                        }).create();
-                if (Build.VERSION.SDK_INT >= 26) {// 8.0新特性
-                    dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-                } else {
-                    dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                }
-
-                dialog1.show();
-
-                final EditText et_wifi_ssid = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ssid);
-                final EditText et_wifi_passwd = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_passwd);
-                final EditText et_wifi_ip = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ip);
-
-                et_wifi_ssid.setText(EasyTool.getWifiSSID(context));
-                et_wifi_ip.setText(EasyTool.getWifiIP(context));
-                et_wifi_passwd.setFocusable(true);
-                et_wifi_passwd.setFocusableInTouchMode(true);
-                et_wifi_passwd.requestFocus();
-            }
-        });
-
-        final String items[] = { "下载网络升级固件", "选择本地升级固件", "开始升级设备", "检查版本" };
-        dialog_upgrade = new AlertDialog.Builder(this)
-                // .setIcon(R.mipmap.icon)//设置标题的图片
-                .setTitle("选择升级方式")// 设置对话框的标题
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
-
-                        switch (items[which]) {
-                            case "下载网络升级固件":
-
-                                break;
-                            case "选择本地升级固件":
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("*/*").addCategory(Intent.CATEGORY_OPENABLE);
-                                try {
-                                    startActivityForResult(Intent.createChooser(intent, "Choose File"), 0);
-                                } catch (ActivityNotFoundException e) {
-                                    showToast("亲，木有文件管理器啊-_-!!");
-                                }
-
-                                break;
-                            case "开始升级设备":
-
-                                break;
-                            case "检查版本":
-
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create();
-
-        Button bt_upgrade = (Button) findViewById(R.id.bt_upgrade);
-        bt_upgrade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog_upgrade.show();
-            }
-        });
-
         blue_init();
 
         mMainHandler = new MainHandler(this);
 
-        tv_blue_status = (TextView) findViewById(R.id.tv_blue_status);
-        tv_auto_status = (TextView) findViewById(R.id.tv_auto_status);
-        tv_upgrade = (TextView) findViewById(R.id.tv_upgrade);
-        tv_serial = (TextView) findViewById(R.id.tv_serial);
-
-        ListView lv_table = (ListView) findViewById(R.id.lv_table);
-
-        mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
-            @Override
-            public void on_update_use_table_now(String Name) {
-
-                pubg_now_use = Name;
-                // Log.i("DEBUG",keyMouseListUseNow.toString());
-
-                if (pubg_now_use != null) {
-                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
-                    temp = DataProc.Creat((byte) 0x01, temp, temp.length);
-                    tcpclient.socket_send(temp, temp.length);
-                }
-            }
-        });
+//        ListView lv_table = (ListView) findViewById(R.id.lv_table);
+//        mDBManager = new DBManager(this, lv_table, new DBManager.DBManagerCallBack() {
+//            @Override
+//            public void on_update_use_table_now(String Name) {
+//
+//                pubg_now_use = Name;
+//                // Log.i("DEBUG",keyMouseListUseNow.toString());
+//
+//                if (pubg_now_use != null) {
+//                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+//                    temp = DataProc.Creat((byte) 0x01, temp, temp.length);
+//                    tcpclient.socket_send(temp, temp.length);
+//                }
+//            }
+//        });
 
         Intent intent = new Intent(this, FloatService.class);
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
@@ -527,15 +321,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void on_connect() {
                 mActivityServiceMessage.SendToServiceBLUEStatus(bt_device.isConnected());
-                // tv_blue_status.setText("蓝牙已连接");
                 showToast("蓝牙连接成功");
-                // printf("连接成功");
             }
 
             @Override
             public void on_disconnect() {
                 mActivityServiceMessage.SendToServiceBLUEStatus(bt_device.isConnected());
-                tv_blue_status.setText("蓝牙未连接");
                 showToast("蓝牙已断开");
             }
 
@@ -608,13 +399,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mDBManager.LoadTableList();
+        //mDBManager.LoadTableList();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         // Log.e("DEBUG", "We are in onPause");
     }
 
@@ -636,44 +426,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    // 文件选择完之后，自动调用此函数
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 0) {
-                Uri uri = data.getData();
-                final String path = EasyTool.getPath(this, uri);
-                upgradeHardware = new UpgradeHardware(this, path, new UpgradeHardware.upgrade_callback() {
-                    @Override
-                    public void set_status_text(String str) {
-                        tv_upgrade.setText(str);
-                    }
-                });
-                Log.i(TAG, path);
-                new AlertDialog.Builder(this).setTitle("开始升级？ " + EasyTool.getFileName(path))
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // TODO Auto-generated method stub
-                                upgradeHardware.start();
-
-                            }
-                        }).setNegativeButton("取消", null).create().show();
-            }
-        } else {
-            Log.e(TAG, "onActivityResult() error, resultCode: " + resultCode);
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu,menu);
         return true;
     }
+
+    private Handler mainHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            String path = bundle.getString("path");
+
+        }
+    };
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -681,18 +449,117 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this , SettingActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.menu_upgrade:
+                upgrade.showGetVersionDialog(this);
+                break;
             case R.id.menu_description:
 
                 break;
-            case R.id.menu_upgrade:
+            case R.id.menu_blue_scan:
+                blue_start_check_scan();
+                break;
+            case R.id.menu_wifi_connect:
+                wifi_set();
+                break;
+            case R.id.menu_uart_connect:
+                if(!serialPort.isOpen)
+                {
+                    Log.i("OPENVIO","1");
+                    if(!openvio.isOpen)
+                    {
+                        Log.i("OPENVIO","2");
+                        usbPermission.tryGetUsbPermission();
+                        break;
+                    }
+                }
 
+                Log.i("OPENVIO","3");
+                if (serialPort.isOpen){
+                    Log.i("OPENVIO","4");
+                    serialPort.close();
+                }
+                if (openvio.isOpen){
+                    Log.i("OPENVIO","5");
+                    openvio.close();
+                }
                 break;
             case R.id.menu_upgradedevice:
 
+                final String sd_path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                List<String> items = EasyTool.getFilesOnlyName(sd_path + "/ATouch/Firmware");
+                final String[] array = new String[items.size()];
+                for(int i = 0; i < items.size();i++){
+                    array[i] = items.get(i);
+                }
+                AlertDialog dialog_upgrade = new AlertDialog.Builder(this)
+                        .setTitle("选择要升级的固件")// 设置对话框的标题
+                        .setItems(array, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                upgrade.installHardware(context,array[which],sd_path + "/ATouch/Firmware/" + array[which]);
+                            }
+                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+                dialog_upgrade.show();
                 break;
+
 
         }
         return true;
     }
+    private void wifi_set()
+    {
+        final View view = LayoutInflater.from(context).inflate(R.layout.wifi_set, null);
 
+        final AlertDialog dialog1 = new AlertDialog.Builder(context)
+                // .setIcon(R.mipmap.icon)//设置标题的图片
+                .setTitle("配置ATouch连接路由器")// 设置对话框的标题
+                .setView(view).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        EditText et_wifi_ssid = (EditText) view.findViewById(R.id.et_wifi_ssid);
+                        EditText et_wifi_passwd = (EditText) view.findViewById(R.id.et_wifi_passwd);
+                        EditText et_wifi_ip = (EditText) view.findViewById(R.id.et_wifi_ip);
+
+                        String str = "[WIFI]";
+                        str += et_wifi_ssid.getText().toString() + ";";
+                        str += et_wifi_passwd.getText().toString() + ";";
+                        str += et_wifi_ip.getText().toString();
+
+                        byte[] temp = DataProc.Creat((byte) 0x04, str.getBytes(), str.getBytes().length);
+                        tcpclient.socket_send(temp, temp.length);
+
+                        Log.e("DEBUG", "send " + str);
+
+                        dialog.dismiss();
+                    }
+                }).create();
+        if (Build.VERSION.SDK_INT >= 26) {// 8.0新特性
+            dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        } else {
+            dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+
+        dialog1.show();
+
+        final EditText et_wifi_ssid = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ssid);
+        final EditText et_wifi_passwd = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_passwd);
+        final EditText et_wifi_ip = (EditText) dialog1.getWindow().findViewById(R.id.et_wifi_ip);
+
+        et_wifi_ssid.setText(EasyTool.getWifiSSID(context));
+        et_wifi_ip.setText(EasyTool.getWifiIP(context));
+        et_wifi_passwd.setFocusable(true);
+        et_wifi_passwd.setFocusableInTouchMode(true);
+        et_wifi_passwd.requestFocus();
+    }
 }

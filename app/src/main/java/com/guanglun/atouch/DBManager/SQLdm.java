@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
+import com.guanglun.atouch.Main.EasyTool;
+
 /**
  * 这个类就是实现从assets目录读取数据库文件然后写入SDcard中,如果在SDcard中存在，就打开数据库，不存在就从assets目录下复制过去
  * @author Big_Adamapple
@@ -22,8 +24,6 @@ public class SQLdm {
     //数据库存储路径
     private final String filePath = "/ATouch";
     private final String DBName = "KeyboardMouse.db";
-    private final String ServerName = "ATouchService";
-    private final String BinName = "Atouch.bin";
     private final String SettingName = "AppConfig.properties";
 
     private final boolean isReloadDB = false;
@@ -37,21 +37,43 @@ public class SQLdm {
 
         sd_path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        Log.i(DEBUG_TAG, "filePath: " + sd_path + filePath + "/" + DBName);
+        EasyTool.createDir(sd_path + filePath + "/App");
+        EasyTool.createDir(sd_path + filePath + "/Service");
+        EasyTool.createDir(sd_path + filePath + "/Firmware");
 
         if(isReloadDB == true){
 
             File file = new File( sd_path + filePath + "/" + DBName);
 
             if(file.exists()){
-                Log.i(DEBUG_TAG, "isReloadDB == true Delet file");
+                //Log.i(DEBUG_TAG, "isReloadDB == true Delet file");
                 file.delete();
             }
         }
 
-        check_copy(ServerName,true);
-        check_copy(BinName,true);
-        check_copy(SettingName,true);
+        AssetManager am= context.getAssets();
+
+        String[] nameList = null;
+
+        try {
+            nameList = am.list("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(nameList != null)
+        {
+            for(String name : nameList)
+            {
+                //Log.i(DEBUG_TAG, "find file " + name);
+                if(name.contains("atouch"))
+                {
+                    check_copy(name,false);
+                }
+            }
+        }
+
+        check_copy(SettingName,false);
 
         File db_file = check_copy(DBName,false);
         if(db_file != null)
@@ -61,6 +83,7 @@ public class SQLdm {
 
         return null;
 
+
     }
 
     public File check_copy(String fileName,boolean is_must_copy)
@@ -69,11 +92,11 @@ public class SQLdm {
 
         if(file.exists() && is_must_copy)
         {
-            Log.i(DEBUG_TAG, "存在"+fileName+"删除重新拷贝");
+            //Log.i(DEBUG_TAG, "存在"+fileName+"删除重新拷贝");
             file.delete();
         }else if(file.exists() && !is_must_copy){
 
-            Log.i(DEBUG_TAG, "存在"+fileName);
+            //Log.i(DEBUG_TAG, "存在"+fileName);
             return file;
 
         }
@@ -81,22 +104,22 @@ public class SQLdm {
         file = new File(sd_path + filePath + "/" + fileName);
         {
 
-            Log.i(DEBUG_TAG, "开始拷贝"+fileName);
+            //Log.i(DEBUG_TAG, "开始拷贝"+fileName);
 
             //不存在先创建文件夹
             File path = new File(sd_path + filePath);
 
-            Log.i(DEBUG_TAG, "pathStr= "+sd_path + filePath);
+            //Log.i(DEBUG_TAG, "pathStr= "+sd_path + filePath);
 
             if(!path.exists())
             {
                 if (path.mkdir()){
 
-                    Log.i(DEBUG_TAG, "创建成功");
+                    //Log.i(DEBUG_TAG, "创建成功");
 
                 }else{
 
-                    Log.i(DEBUG_TAG, "创建失败");
+                    //Log.i(DEBUG_TAG, "创建失败");
 
                 };
             }

@@ -24,6 +24,7 @@ import com.guanglun.atouch.DBManager.KeyMouse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
@@ -184,6 +185,26 @@ public class EasyTool {
 
     }
 
+    public static List<String> getFilesAllName(String path) {
+        File file=new File(path);
+        File[] files=file.listFiles();
+        if (files == null){Log.e("error","null");return null;}
+        List<String> s = new ArrayList<>();
+        for(int i =0;i<files.length;i++){
+            s.add(files[i].getAbsolutePath());
+        }
+        return s;
+    }
+    public static List<String> getFilesOnlyName(String path) {
+        File file=new File(path);
+        File[] files=file.listFiles();
+        if (files == null){Log.e("error","null");return null;}
+        List<String> s = new ArrayList<>();
+        for(int i =0;i<files.length;i++){
+            s.add(files[i].getName());
+        }
+        return s;
+    }
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and
@@ -436,4 +457,20 @@ public class EasyTool {
 
     }
 
+    public static void createDir (String dirPath) {
+
+        File dir = new File(dirPath);
+        //文件夹是否已经存在
+        if (dir.exists()) {
+            return;
+        }
+        if (!dirPath.endsWith(File.separator)) {//不是以 路径分隔符 "/" 结束，则添加路径分隔符 "/"
+            dirPath = dirPath + File.separator;
+        }
+        //创建文件夹
+        if (dir.mkdirs()) {
+            return;
+        }
+        return;
+    }
 }

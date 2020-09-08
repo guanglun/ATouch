@@ -113,7 +113,7 @@ public class TCPClient {
                                 sc.on_connect_fail();
                             }});
                     }
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
 
                 try {

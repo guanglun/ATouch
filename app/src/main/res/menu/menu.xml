@@ -8,17 +8,33 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/menu_upgrade"
+        android:title="软件更新"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_description"
         android:title="说明"
         app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/menu_upgrade"
-        android:title="软件更新"
+        android:id="@+id/menu_wifi_connect"
+        android:title="WIFI连接设备"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_uart_connect"
+        android:title="OTG连接设备"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_blue_scan"
+        android:title="扫描蓝牙设备"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_upgradedevice"
-        android:title="升级设备"
+        android:title="选择本地固件升级"
         app:showAsAction="never" />
 
 </menu>
