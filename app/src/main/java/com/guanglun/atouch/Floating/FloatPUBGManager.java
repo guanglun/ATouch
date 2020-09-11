@@ -73,7 +73,7 @@ public class FloatPUBGManager {
 
     }
 
-    public void Show(PUBG pubg)
+    public void Show(PUBG pubg,boolean isHide)
     {
         this.pubg = pubg;
         angle = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
@@ -254,20 +254,33 @@ public class FloatPUBGManager {
             bt_pick3 = new FloatButtonPUBG(mContext, mFloatingManager, mRelativeLayout, mParams,
                     pubg.N55_Pick3X, pubg.N56_Pick3Y, R.drawable.pubg_pick3, xtmp, ytmp);
 
-            ShowWindow();
-            isShow = true;
         }
+
+        if(isHide) {
+            HideWindow();
+        }else{
+            ShowWindow();
+        }
+        isShow = true;
+
     }
 
     public void reload()
     {
         if(isShow)
         {
-            RemoveAll();
-            Show(pubg);
+            RemoveAll(false);
+
+            if(isShowEditWindow)
+            {
+                Show(pubg,false);
+            }else{
+                Show(pubg,true);
+            }
+
         }
     }
-    public void RemoveAll()
+    public void RemoveAll(boolean isRemoveName)
     {
         if(bt_attack != null)
         {
@@ -306,8 +319,8 @@ public class FloatPUBGManager {
             bt_attack = null;
         }
         isShow = false;
-        SelectName = null;
-
+        if(isRemoveName)
+            SelectName = null;
 
     }
 

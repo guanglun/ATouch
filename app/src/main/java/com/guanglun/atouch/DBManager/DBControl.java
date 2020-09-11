@@ -139,7 +139,7 @@ public class DBControl {
             str.append("数据库为空！");
         }
 
-        Log.i(DEBUG_TAG, str.toString());
+        //Log.i(DEBUG_TAG, str.toString());
     }
 
     public List<KeyMouse> LoadTableDatabaseList(String TableName)
@@ -196,7 +196,7 @@ public class DBControl {
 
             if(!name.equals("sqlite_sequence") && !name.equals("android_metadata")&& !name.equals("mousekey"))
             {
-                Log.i(DEBUG_TAG, name);
+                //Log.i(DEBUG_TAG, name);
                 TableNameList.add(name);
             }
 

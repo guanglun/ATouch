@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         usbPermission = new USBPermission(this, serialPort, openvio);
 
         /** 禁止翻转 **/
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         try {
             if (ContextCompat.checkSelfPermission(this,
@@ -294,8 +295,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
         intent.putExtra("IsStartUp", "true");
         bindService(intent, mActivityServiceMessage.mServiceConnection, Context.BIND_AUTO_CREATE);
-
-        Log.i(TAG,"OnCreat Exit");
     }
 
     public void add_plan() {

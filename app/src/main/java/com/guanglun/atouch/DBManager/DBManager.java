@@ -42,7 +42,7 @@ public class DBManager {
 
         dbControl_pubg = new DBControlPUBG(mContext);
 
-        dbControl_pubg.PrintfTable();
+        //dbControl_pubg.PrintfTable();
 
 
 
@@ -244,8 +244,8 @@ public class DBManager {
         buf[i++] = (byte)(pubg.N56_Pick3Y>>8);
         buf[i++] = (byte)(pubg.N56_Pick3Y);
 
-        Log.i("SetAttack", String.valueOf(buf[0])+" "+String.valueOf(buf[1])+" "+String.valueOf(buf[2])+" "+String.valueOf(buf[3]));
-        Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
+        //Log.i("SetAttack", String.valueOf(buf[0])+" "+String.valueOf(buf[1])+" "+String.valueOf(buf[2])+" "+String.valueOf(buf[3]));
+        //Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
         return buf;
     }
 

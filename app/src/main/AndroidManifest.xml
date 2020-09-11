@@ -26,15 +26,17 @@
         android:sharedUserId="android.uid.system"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:configChanges="keyboardHidden|orientation|screenSize"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Main.SettingActivity"
             android:label="@string/title_activity_setting"
             android:theme="@style/AppTheme"></activity>
-        <activity android:name=".Main.MainActivity">
+        <activity
+            android:name=".Main.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

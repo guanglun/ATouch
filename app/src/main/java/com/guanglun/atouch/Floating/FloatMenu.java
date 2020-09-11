@@ -2,8 +2,10 @@ package com.guanglun.atouch.Floating;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -72,8 +74,8 @@ public class FloatMenu {
             @Override
             public void NewCreat() {
 
-                mFloatPUBGManager.RemoveAll();
-                mFloatPUBGManager.Show(new PUBG());
+                mFloatPUBGManager.RemoveAll(true);
+                mFloatPUBGManager.Show(new PUBG(),false);
             }
         });
 
@@ -244,7 +246,13 @@ public class FloatMenu {
     View.OnClickListener FloatMenuConfigOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            ConfigDialog configDialog = new ConfigDialog(new ConfigDialog.ConfigDialogCallback() {
+                @Override
+                public void onOffsetUpdate() {
+                    mFloatPUBGManager.reload();
+                }
+            });
+            configDialog.mainView(mContext);
         }
     };
 
@@ -307,9 +315,9 @@ public class FloatMenu {
                                 cb.ChoseName(DialogSelectName);
                                 break;
                             case "修改":
-                                mFloatPUBGManager.RemoveAll();
+                                mFloatPUBGManager.RemoveAll(true);
                                 mFloatPUBGManager.SelectName = DialogSelectName;
-                                mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(mFloatPUBGManager.SelectName));
+                                mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(mFloatPUBGManager.SelectName),false);
 
                                 break;
                             case "删除":
