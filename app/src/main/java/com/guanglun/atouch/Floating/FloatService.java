@@ -1,7 +1,10 @@
 package com.guanglun.atouch.Floating;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,6 +13,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Surface;
+import android.view.WindowManager;
 
 import com.guanglun.atouch.Floating.FloatingView;
 import com.guanglun.atouch.Main.ActivityServiceMessage;
@@ -42,10 +46,12 @@ public class FloatService extends Service {
             @Override
             public void ChoseName(String Name) {
                 SendToActivityUseName(Name);
+
             }
         });
 
         mFloatingView.setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        registerConfigChangeReceiver();
     }
 
 
@@ -193,4 +199,20 @@ public class FloatService extends Service {
         }
 
     }
+
+    private void registerConfigChangeReceiver(){
+        IntentFilter configChangeFilter = new IntentFilter();
+        configChangeFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+        configChangeFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mConfigChangeReceiver, configChangeFilter);
+    }
+
+    private BroadcastReceiver mConfigChangeReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //int angle = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
+            mFloatingView.onSreenOrientationConfigChange(0);
+        }
+    };
+
 }

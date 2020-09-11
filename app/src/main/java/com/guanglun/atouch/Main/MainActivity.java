@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,15 +89,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Upgrade upgrade;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         AppConfig config = new AppConfig();
         config.init(this);
-
 
         context = this;
 
@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("IsStartUp", "true");
         bindService(intent, mActivityServiceMessage.mServiceConnection, Context.BIND_AUTO_CREATE);
 
+        Log.i(TAG,"OnCreat Exit");
     }
 
     public void add_plan() {
@@ -400,13 +401,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //mDBManager.LoadTableList();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Log.e("DEBUG", "We are in onPause");
     }
 
     @Override

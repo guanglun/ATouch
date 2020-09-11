@@ -39,7 +39,7 @@ public class FloatMenu {
     private final int ROUNDD = 50;
     private int StartX = 0,StartY = 0;
     private FloatMenuButton fmb_menu,fmb_config,fmb_database,fmb_revise,fmb_save;
-    private FloatPUBGManager mFloatPUBGManager;
+    public FloatPUBGManager mFloatPUBGManager;
     private DBControlPUBG dbControlPUBG;
     private FloatSelectAlertDialog floatSelectAlertDialog;
 
@@ -136,7 +136,6 @@ public class FloatMenu {
         //fmb_menu = new FloatMenuButton(mContext,mRelativeLayoutMenu,FloatMenuButton.MENU_MAIN_BUTTON,1,R.drawable.float_menu_add);
         //fmb_menu.SetOnTouchListener(mOnTouchListener);
 
-
         mFloatMenuStatus = new FloatMenuStatus(mContext,mFloatingManager,mRelativeLayoutMenu,mOnTouchListener);
         mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
 
@@ -201,7 +200,7 @@ public class FloatMenu {
     {
         if(isMenuClick)
         {
-            Log.i("DEBUG","MenuClick");
+            //Log.i("DEBUG","MenuClick");
             isMenuClick = false;
             mFloatMenuStatus.startRotateAnimation(0,45);
 

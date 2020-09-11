@@ -1,11 +1,14 @@
 package com.guanglun.atouch.Floating;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -54,7 +57,7 @@ public class FloatingView extends FrameLayout{
 
     private List<KeyMouse> keyMouseList;
 
-    private FloatPUBGManager mFloatPUBGManager;
+
     private FloatButtonManager mFloatButtonManager;
     private WindowManager.LayoutParams mParams;
     private DBControl dbControl;
@@ -78,21 +81,6 @@ public class FloatingView extends FrameLayout{
     public interface FloatingViewCallBack {
         void ChoseName(String Name);
     }
-
-    TimerTask task_1s = new TimerTask(){
-        public void run() {
-
-            int mRotation = wManager.getDefaultDisplay().getRotation();
-            if(mRotationLast != mRotation)
-            {
-                mRotationLast = mRotation;
-                int [] wh = getAccurateScreenDpi();
-                ((FloatService)mcontext).SendToActivityRotation(mRotation,wh[0],wh[1]);
-                Log.i("SCREEN ", mRotation * 90 + " " + wh[0] + "x" + wh[1]);
-            }
-        }
-
-    };
 
     public int[] getAccurateScreenDpi()
     {
@@ -120,41 +108,19 @@ public class FloatingView extends FrameLayout{
         mFloatMenu = new FloatMenu(mContext,cb);
 
         wManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-
-        Timer timer = new Timer();
-        timer.schedule(task_1s, 0,1000);
     }
 
     public void show(String SelectName,String IsStartUp) {
 
+    }
 
-
-//        if(SelectName != null) {
-//
-//            pubg = dbControlPUBG.GetRawByName(SelectName);
-//
-//            //isChange = true;
-//            mParams.height = LayoutParams.MATCH_PARENT;
-//            mRelativeLayout.setBackgroundColor(0x60ebebeb);
-//            mFloatingManager.updateView(mRelativeLayout, mParams);
-//            bt_float_manager.setText("取消");
-//            bt_float_chose.setVisibility(VISIBLE);
-//            bt_float_save.setVisibility(VISIBLE);
-//            bt_float_close.setVisibility(VISIBLE);
-//
-//            mWindowStatus = WindowStatus.OPEN;
-//
-//            mFloatPUBGManager.Show(pubg);
-//
-//        }else {
-//            pubg = new PUBG();
-//            mFloatPUBGManager.Show(pubg);
-//        }
-
+    public void onSreenOrientationConfigChange(int angle) {
+        if(mFloatMenu.mFloatPUBGManager != null) {
+            mFloatMenu.mFloatPUBGManager.reload();
+        }
     }
 
     public void hide() {
-        mFloatPUBGManager.RemoveAll();
         mFloatingManager.removeView(mRelativeLayout);
 
     }
@@ -163,4 +129,7 @@ public class FloatingView extends FrameLayout{
     {
         mFloatMenu.mFloatMouse.SetMouse(x,y);
     }
+
+
+
 }
