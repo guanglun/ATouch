@@ -46,7 +46,6 @@ public class FloatService extends Service {
             @Override
             public void ChoseName(String Name) {
                 SendToActivityUseName(Name);
-
             }
         });
 
@@ -134,6 +133,11 @@ public class FloatService extends Service {
                     int y = msg.getData().getInt("STATUS_MOUSE_DATA_Y");
                     mFloatingView.MouseDataRecv(x,y);
                     break;
+                case ActivityServiceMessage
+                        .STATUS_MOUSE_CLICK:
+                    boolean down = msg.getData().getBoolean("STATUS_MOUSE_CLICK");
+                    mFloatingView.MouseClickRecv(down);
+                break;                    
                 case ActivityServiceMessage
                         .STATUS_MOUSE_SHOW:
                     boolean isshow = msg.getData().getBoolean("STATUS_MOUSE_SHOW");

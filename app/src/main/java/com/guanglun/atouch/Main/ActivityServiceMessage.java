@@ -24,8 +24,10 @@ public class ActivityServiceMessage {
     public static final int STATUS_KEYBOARD = 4;
     public static final int STATUS_MOUSE    = 5;
     public static final int STATUS_MOUSE_DATA    = 6;
-    public static final int STATUS_MOUSE_SHOW    = 7;
-    public static final int STATUS_GET_ROTATION    = 8;
+    public static final int STATUS_MOUSE_CLICK    = 7;
+    public static final int STATUS_MOUSE_SHOW    = 8;
+    public static final int STATUS_GET_ROTATION    = 9;
+    
 
     private Messenger sMessenger;
 
@@ -219,7 +221,26 @@ public class ActivityServiceMessage {
                 e.printStackTrace();
             }
         }
+    }
 
+    public void SendToServiceMouseClick(boolean down)
+    {
+        if(sMessenger != null)
+        {
+            // 初始化发送给Service的消息，并将cMessenger传递给Service
+            Message msg = new Message();
+            msg.what = STATUS_MOUSE_CLICK;
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("STATUS_MOUSE_CLICK",down);
+            msg.setData(bundle);//mes利用Bundle传递数据
+
+            try {
+                sMessenger.send(msg);
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public void SendToServiceMouseIsShow(boolean isshow)

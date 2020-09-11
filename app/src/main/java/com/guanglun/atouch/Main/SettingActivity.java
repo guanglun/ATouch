@@ -31,7 +31,8 @@ public class SettingActivity extends AppCompatActivity {
         RadioButton radioButton1 = (RadioButton)findViewById(R.id.rb_setting_offset_1);
         RadioButton radioButton2 = (RadioButton)findViewById(R.id.rb_setting_offset_2);
         RadioButton radioButton3 = (RadioButton)findViewById(R.id.rb_setting_offset_3);
-
+        RadioButton radioButton4 = (RadioButton)findViewById(R.id.rb_setting_offset_4);
+        RadioButton radioButton5 = (RadioButton)findViewById(R.id.rb_setting_offset_5);
 
         Log.e("SETTING", " " + config.getOffsetConfig());
         switch(config.getOffsetConfig())
@@ -45,6 +46,12 @@ public class SettingActivity extends AppCompatActivity {
             case 3:
                 radioButton3.setChecked(true);
                 break;
+            case 4:
+                radioButton4.setChecked(true);
+                break;
+            case 5:
+                radioButton5.setChecked(true);
+                break;
             default:
                 break;
         }
@@ -52,7 +59,6 @@ public class SettingActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.e("SETTING", " " + checkedId);
                 switch(checkedId)
                 {
                     case R.id.rb_setting_offset_1:
@@ -62,8 +68,13 @@ public class SettingActivity extends AppCompatActivity {
                         config.setOffsetConfig(2);
                         break;
                     case R.id.rb_setting_offset_3:
-                        Log.e("SETTING", "setOffsetConfig" + 3);
                         config.setOffsetConfig(3);
+                        break;
+                    case R.id.rb_setting_offset_4:
+                        config.setOffsetConfig(4);
+                        break;
+                    case R.id.rb_setting_offset_5:
+                        config.setOffsetConfig(5);
                         break;
                     default:
                         break;

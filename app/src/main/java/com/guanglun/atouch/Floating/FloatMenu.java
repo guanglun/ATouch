@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.guanglun.atouch.DBManager.DBControlPUBG;
 import com.guanglun.atouch.DBManager.PUBG;
@@ -31,11 +32,13 @@ import com.guanglun.atouch.R;
 
 import java.util.List;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class FloatMenu {
 
     private Button button;
     private Context mContext;
-    private FloatingManager mFloatingManager;
+    public FloatingManager mFloatingManager;
     private RelativeLayout mRelativeLayoutMenu,mRelativeLayoutEdit;
     private WindowManager.LayoutParams mParamsMenu,mParamsEdit;
     private final int ROUNDD = 50;
@@ -49,6 +52,8 @@ public class FloatMenu {
     public FloatMenuStatus mFloatMenuStatus;
     private FloatingView.FloatingViewCallBack cb;
     public FloatMouse mFloatMouse;
+
+    private int[] offset = new int[2],offset2 = new int[2];
 
     @SuppressLint("ResourceType")
     public FloatMenu(Context context,FloatingView.FloatingViewCallBack cb)
@@ -67,7 +72,14 @@ public class FloatMenu {
         /****/
 
         dbControlPUBG = new DBControlPUBG(mContext);
-        mFloatPUBGManager = new FloatPUBGManager(mContext,mFloatingManager,mRelativeLayoutEdit,mParamsEdit);
+        mFloatPUBGManager = new FloatPUBGManager(mContext, this, mRelativeLayoutEdit, mParamsEdit, new FloatPUBGManager.FloatPUBGManagerCallback() {
+            @Override
+            public void onSetMouseOffset(int x, int y) {
+                mFloatMouse.offset_x = x;
+                mFloatMouse.offset_y = y;
+            }
+        });
+
         View select_view = LayoutInflater.from(mContext).inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
         floatSelectAlertDialog = new FloatSelectAlertDialog(mContext, select_view, new FloatSelectAlertDialog.FloatSelectAlertDialogCallBack() {
@@ -80,11 +92,7 @@ public class FloatMenu {
         });
 
         /****/
-
-
-
         mRelativeLayoutEdit.setBackgroundColor(0x60ebebeb);
-
 
         mParamsEdit.gravity = Gravity.LEFT|Gravity.TOP;
 
@@ -107,8 +115,6 @@ public class FloatMenu {
 
         ////////////////////////////////////////////////////////////
 
-
-        mParamsMenu = new WindowManager.LayoutParams();
         mParamsMenu.gravity = Gravity.LEFT|Gravity.TOP;
 
         mParamsMenu.x = (StartX);
@@ -142,7 +148,22 @@ public class FloatMenu {
         mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
 
 
-        mFloatMouse = new FloatMouse(mContext,mFloatingManager);
+        mFloatMouse = new FloatMouse(mContext, mFloatingManager, new FloatMouse.MouseCallback() {
+            @Override
+            public void onClick(boolean down) {
+                //if(mFloatPUBGManager.calibrFlag == FloatPUBGManager.CALIBR_START)
+                if(down)
+                {
+                    mRelativeLayoutEdit.getLocationOnScreen(offset);
+                    mRelativeLayoutEdit.getLocationInWindow(offset2);
+
+                    Log.i("pubg[size]",offset[0]+" "+offset[1]+" "+offset2[0]+" "+offset2[1]);
+                    //Toast.makeText(mContext,"size "+offset[0]+" "+offset[1],Toast.LENGTH_SHORT).show();
+                    //Log.i(TAG,"x:"+mFloatMouse.mParamsMouse.x+" y:"+mFloatMouse.mParamsMouse.y);
+                    //Toast.makeText(mContext,"x:"+mFloatMouse.mParamsMouse.x+" y:"+mFloatMouse.mParamsMouse.y,Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
     }
@@ -250,6 +271,13 @@ public class FloatMenu {
                 @Override
                 public void onOffsetUpdate() {
                     mFloatPUBGManager.reload();
+                }
+
+                @Override
+                public void onStartCalibr() {
+                    //mFloatPUBGManager.RemoveAll(true);
+                    //mFloatPUBGManager.ShowCalibr(false);
+                    //mFloatPUBGManager.calibrFlag = FloatPUBGManager.CALIBR_START;
                 }
             });
             configDialog.mainView(mContext);

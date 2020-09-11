@@ -129,7 +129,10 @@ public class FloatingView extends FrameLayout{
     {
         mFloatMenu.mFloatMouse.SetMouse(x,y);
     }
-
+    public void MouseClickRecv(boolean down)
+    {
+        mFloatMenu.mFloatMouse.SetMouseClick(down);
+    }
 
 
 }

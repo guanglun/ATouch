@@ -44,6 +44,18 @@
                 android:layout_height="wrap_content"
                 android:text="方案3"
                 android:checked="false" />
+            <RadioButton
+                android:id="@+id/rb_setting_offset_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="方案4"
+                android:checked="false" />
+            <RadioButton
+                android:id="@+id/rb_setting_offset_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="方案5"
+                android:checked="false" />
         </RadioGroup>
 
         <View android:layout_height="1px" android:background="#000000" android:layout_width="fill_parent"></View>

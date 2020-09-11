@@ -209,6 +209,16 @@ public class DataProc {
             case 0x01:
                 if(!isfirstconnect) {
                     mMousePointer.MouseDataProc(buf, len);
+                    if(mMousePointer.isClickDown)
+                    {
+                        mMousePointer.isClickDown = false;
+                        mActivityServiceMessage.SendToServiceMouseClick(true);
+                    }else if(mMousePointer.isClickUp)
+                    {
+                        mMousePointer.isClickUp = false;
+                        mActivityServiceMessage.SendToServiceMouseClick(false);
+                    }
+
                     mActivityServiceMessage.SendToServiceMouseData(mMousePointer.mouse_x, mMousePointer.mouse_y);
                 }
                 //Log.i("DEBUG",EasyTool.bytes2hex(buf,len));

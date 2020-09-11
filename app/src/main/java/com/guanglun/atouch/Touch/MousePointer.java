@@ -12,6 +12,7 @@ public class MousePointer {
     private Context mContext;
     public int mouse_x,mouse_y,mouse_l,mouse_h;
     private TCPClient mTCPClient;
+    public boolean isClickDown = false,isClickUp = false;
 
     public MousePointer(Context mContext,TCPClient mTCPClient)
     {
@@ -33,10 +34,12 @@ public class MousePointer {
         {
             SendMouseClick((byte)0x01,mouse_x-1,mouse_y-1);
             ischeckdown = true;
+            isClickDown = true;
         }else if(((buf[1] & 0x01) == 0x00) && ischeckdown)
         {
             SendMouseClick((byte)0x00,mouse_x-1,mouse_y-1);
             ischeckdown = false;
+            isClickUp = true;
         }
 
         if(buf[2] > 100)

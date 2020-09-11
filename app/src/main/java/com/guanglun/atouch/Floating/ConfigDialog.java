@@ -14,6 +14,7 @@ public class ConfigDialog {
     ConfigDialogCallback cb;
     public interface ConfigDialogCallback {
         void onOffsetUpdate();
+        void onStartCalibr();
     }
 
     public ConfigDialog(ConfigDialogCallback cb){
@@ -24,17 +25,16 @@ public class ConfigDialog {
 
         config.init(mContext);
 
-        final String items[] = {"偏移设置"};
+        final String items[] = {"通用偏移设置","自定义偏移"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 .setTitle("设置菜单")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         switch (which)
                         {
                             case 0:
-                                final String itemOffset[] = {"方案1","方案2","方案3"};
+                                final String itemOffset[] = {"方案1","方案2","方案3","方案4","方案5"};
                                 AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("选择偏移方案")
                                         .setSingleChoiceItems(itemOffset, config.getOffsetConfig()-1, new DialogInterface.OnClickListener() {
 
@@ -55,6 +55,9 @@ public class ConfigDialog {
                                 }
 
                                 dialog2.show();
+                                break;
+                            case 1:
+
                                 break;
                             default:
                                 break;

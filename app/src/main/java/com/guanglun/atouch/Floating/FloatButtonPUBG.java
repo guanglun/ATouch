@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.Main.EasyTool;
@@ -27,25 +28,31 @@ public class FloatButtonPUBG {
 
     public int PositionX,PositionY;
     private int xtmp = 0, ytmp = 0;;
+    private FloatMenu mFloatMenu;
+    private int[] offset = new int[2],offset2 = new int[2];
 
-
-    public FloatButtonPUBG(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
+    public FloatButtonPUBG(Context context, FloatMenu mFloatMenu, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
                        int StartX, int StartY,int picture,int xtmp,int ytmp)
     {
         mContext = context;
-        mFloatingManager = floatingmanager;
+        this.mFloatMenu = mFloatMenu;
+        mFloatingManager = mFloatMenu.mFloatingManager;
         mRelativeLayout = relativeLayout;
         mParams = params;
 
         this.xtmp = xtmp;
         this.ytmp = ytmp;
 
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
 
         button = new Button(mContext);
 
-        lp.width = EasyTool.dip2px(mContext,ROUNDD);
-        lp.height  = EasyTool.dip2px(mContext,ROUNDD);
+        mLayoutParams.width = EasyTool.dip2px(mContext,ROUNDD);
+        mLayoutParams.height  = EasyTool.dip2px(mContext,ROUNDD);
+
+        mLayoutParams.setMargins(0,0,0,0);
+        mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+        mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
 
         button.setBackground(mContext.getResources().getDrawable(picture));
 
@@ -57,11 +64,12 @@ public class FloatButtonPUBG {
 
         //button.setText(mKeyMouse.Name);
         button.setPadding(0,0,0,0);
-        button.setLayoutParams(lp);   ////设置按钮的布局属性
+        button.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
         button.setOnTouchListener(ButtonOnTouchListener);
         mRelativeLayout.addView(button);
 
         mFloatingManager.updateView(mRelativeLayout,mParams);
+
     }
 
     public void Remove()
@@ -97,14 +105,13 @@ public class FloatButtonPUBG {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
-            PositionX = (int)event.getRawX();
-            PositionY = (int)event.getRawY();
-            button.setX(PositionX - xtmp - EasyTool.dip2px(mContext,ROUNDD/2));
-            button.setY(PositionY - ytmp - EasyTool.dip2px(mContext,ROUNDD/2));
+            Log.i("BUTTON",mFloatMenu.mFloatMouse.mParamsMouse.x + " "+mFloatMenu.mFloatMouse.mParamsMouse.y+" "+event.getRawX()+" " +event.getRawY());
+            PositionX = mFloatMenu.mFloatMouse.mParamsMouse.x;//(int)event.getRawX();
+            PositionY = mFloatMenu.mFloatMouse.mParamsMouse.y;//(int)event.getRawY();
+            button.setX(PositionX - offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setY(PositionY - offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
 
             return false;
         }
     };
-
-
 }
