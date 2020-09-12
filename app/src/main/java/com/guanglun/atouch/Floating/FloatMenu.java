@@ -257,17 +257,17 @@ public class FloatMenu {
     View.OnClickListener FloatMenuConfigOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ConfigDialog configDialog = new ConfigDialog(new ConfigDialog.ConfigDialogCallback() {
-                @Override
-                public void onOffsetUpdate() {
-                    mFloatPUBGManager.reload();
-                }
+            // ConfigDialog configDialog = new ConfigDialog(new ConfigDialog.ConfigDialogCallback() {
+            //     @Override
+            //     public void onOffsetUpdate() {
+            //         mFloatPUBGManager.reload();
+            //     }
 
-                @Override
-                public void onStartCalibr() {
-                }
-            });
-            configDialog.mainView(mContext);
+            //     @Override
+            //     public void onStartCalibr() {
+            //     }
+            // });
+            // configDialog.mainView(mContext);
         }
     };
 

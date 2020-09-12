@@ -57,7 +57,6 @@ public class ConfigDialog {
                                 dialog2.show();
                                 break;
                             case 1:
-
                                 break;
                             default:
                                 break;

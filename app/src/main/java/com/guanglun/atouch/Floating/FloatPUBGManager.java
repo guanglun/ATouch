@@ -229,18 +229,17 @@ public class FloatPUBGManager {
 
     public void reload()
     {
-        if(isShow)
-        {
-            RemoveAll(false);
-
-            if(isShowEditWindow)
-            {
-                Show(pubg,false);
-            }else{
-                Show(pubg,true);
-            }
-
-        }
+//        if(isShow)
+//        {
+//            RemoveAll(false);
+//
+//            if(isShowEditWindow)
+//            {
+//                Show(pubg,false);
+//            }else{
+//                Show(pubg,true);
+//            }
+//        }
     }
     public void RemoveAll(boolean isRemoveName)
     {

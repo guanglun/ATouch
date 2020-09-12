@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         AppConfig config = new AppConfig();
@@ -464,8 +465,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_setting:
-                Intent intent = new Intent(this , SettingActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this , SettingActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.menu_upgrade:
                 upgrade.showGetVersionDialog(this);
@@ -524,8 +525,6 @@ public class MainActivity extends AppCompatActivity {
                         }).create();
                 dialog_upgrade.show();
                 break;
-
-
         }
         return true;
     }
@@ -562,6 +561,7 @@ public class MainActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 }).create();
+
         if (Build.VERSION.SDK_INT >= 26) {// 8.0新特性
             dialog1.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
         } else {
