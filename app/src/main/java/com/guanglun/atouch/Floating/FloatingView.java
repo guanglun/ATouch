@@ -116,6 +116,7 @@ public class FloatingView extends FrameLayout{
 
     public void onSreenOrientationConfigChange(int angle) {
         if(mFloatMenu.mFloatPUBGManager != null) {
+            mFloatMenu.mFloatPUBGManager.reloadOffset();
             mFloatMenu.mFloatPUBGManager.reload();
         }
     }

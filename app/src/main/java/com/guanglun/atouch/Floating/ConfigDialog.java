@@ -25,7 +25,7 @@ public class ConfigDialog {
 
         config.init(mContext);
 
-        final String items[] = {"通用偏移设置","自定义偏移"};
+        final String items[] = {"通用偏移设置"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 .setTitle("设置菜单")
                 .setItems(items, new DialogInterface.OnClickListener() {

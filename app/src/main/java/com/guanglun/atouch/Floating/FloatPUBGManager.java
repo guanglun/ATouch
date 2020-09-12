@@ -65,6 +65,7 @@ public class FloatPUBGManager {
     private FloatPUBGManagerCallback cb;
     private FloatMenu mFloatMenu;
 
+    public int[] offset = new int[2];
     public interface FloatPUBGManagerCallback {
         void onSetMouseOffset(int x,int y);
     }
@@ -87,243 +88,133 @@ public class FloatPUBGManager {
         ScreenWidth = metrics.widthPixels;//获取到的是px，像素，绝对像素，需要转化为dpi
         ScreenHigh = metrics.heightPixels;
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                reloadOffset();
+            }
+        }).start();
+    }
+
+    public void reloadOffset()
+    {
+        mRelativeLayout.getLocationOnScreen(offset);
+        Log.i("button offset",offset[0] + " " + offset[1]);
     }
 
     public void Show(PUBG pubg,boolean isHide)
     {
         this.pubg = pubg;
-        angle = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-        //获取状态栏高度的资源id
-        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            height = mContext.getResources().getDimensionPixelSize(resourceId);
-        }
-
-        config.init(mContext);
-
-        Display display = ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int screenState = display.getState();
-        Log.i("Notch", "config: " + config.getOffsetConfig() + " heigh: " + height + " display: "  + screenState);
-
-        switch(config.getOffsetConfig())
-        {
-            case 1:
-                cb.onSetMouseOffset(0,0);
-                xtmp = 0;
-                ytmp = 0;
-                break;
-            case 2:
-                cb.onSetMouseOffset(0,0);
-                switch (angle) {
-                    case Surface.ROTATION_0:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                    case Surface.ROTATION_90:
-                        xtmp = height;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_180:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_270:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    default:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                }
-                break;
-            case 3:
-                cb.onSetMouseOffset(0,0);
-                switch (angle) {
-                    case Surface.ROTATION_0:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                    case Surface.ROTATION_90:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_180:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_270:
-                        xtmp = height;
-                        ytmp = 0;
-                        break;
-                    default:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                }
-                break;
-            case 4:
-                cb.onSetMouseOffset(0,0);
-                switch (angle) {
-                    case Surface.ROTATION_0:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_90:
-                        xtmp = height;
-                        ytmp = 0;
-                        cb.onSetMouseOffset(-height,0);
-                        break;
-                    case Surface.ROTATION_180:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_270:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    default:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                }
-                break;
-            case 5:
-                cb.onSetMouseOffset(0,0);
-                switch (angle) {
-                    case Surface.ROTATION_0:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_90:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_180:
-                        xtmp = 0;
-                        ytmp = 0;
-                        break;
-                    case Surface.ROTATION_270:
-                        xtmp = height;
-                        ytmp = 0;
-                        cb.onSetMouseOffset(-height,0);
-                        break;
-                    default:
-                        xtmp = 0;
-                        ytmp = height;
-                        break;
-                }
-                break;
-            default:
-                xtmp = 0;
-                ytmp = 0;
-                break;
-        }
 
         {
             //攻击
             bt_attack = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N3_AttackX, pubg.N4_AttackY, R.drawable.pubg_attack, xtmp, ytmp);
+                    pubg.N3_AttackX, pubg.N4_AttackY, R.drawable.pubg_attack);
             //移动
             bt_move = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N5_MoveX, pubg.N6_MoveY, R.drawable.pubg_move, xtmp, ytmp);
+                    pubg.N5_MoveX, pubg.N6_MoveY, R.drawable.pubg_move);
             //跳跃
             bt_jump = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N7_JumpX, pubg.N8_JumpY, R.drawable.pubg_jump, xtmp, ytmp);
+                    pubg.N7_JumpX, pubg.N8_JumpY, R.drawable.pubg_jump);
             //蹲下
             bt_squat = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N9_SquatX, pubg.N10_SquatY, R.drawable.pubg_squat, xtmp, ytmp);
+                    pubg.N9_SquatX, pubg.N10_SquatY, R.drawable.pubg_squat);
 
             //趴下
             bt_lie = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N11_LieX, pubg.N12_LieY, R.drawable.pubg_lie, xtmp, ytmp);
+                    pubg.N11_LieX, pubg.N12_LieY, R.drawable.pubg_lie);
 
             //朝向
             bt_face = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N13_FaceX, pubg.N14_FaceY, R.drawable.pubg_face, xtmp, ytmp);
+                    pubg.N13_FaceX, pubg.N14_FaceY, R.drawable.pubg_face);
 
             //观察
             bt_watch = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N15_WatchX, pubg.N16_WatchY, R.drawable.pubg_watch, xtmp, ytmp);
+                    pubg.N15_WatchX, pubg.N16_WatchY, R.drawable.pubg_watch);
 
             //背包
             bt_package = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N17_PackageX, pubg.N18_PackageY, R.drawable.pubg_package, xtmp, ytmp);
+                    pubg.N17_PackageX, pubg.N18_PackageY, R.drawable.pubg_package);
 
             //左武器
             bt_armsleft = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N19_ArmsLeftX, pubg.N20_ArmsLeftY, R.drawable.pubg_armsleft, xtmp, ytmp);
+                    pubg.N19_ArmsLeftX, pubg.N20_ArmsLeftY, R.drawable.pubg_armsleft);
 
             //右武器
             bt_armsright = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N21_ArmsRightX, pubg.N22_ArmsRightY, R.drawable.pubg_armsright, xtmp, ytmp);
+                    pubg.N21_ArmsRightX, pubg.N22_ArmsRightY, R.drawable.pubg_armsright);
 
             //右武器
             bt_map = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N23_MapX, pubg.N24_MapY, R.drawable.pubg_map, xtmp, ytmp);
+                    pubg.N23_MapX, pubg.N24_MapY, R.drawable.pubg_map);
 /****/
             //瞄准
             bt_aim = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N25_AimX, pubg.N26_AimY, R.drawable.pubg_aim, xtmp, ytmp);
+                    pubg.N25_AimX, pubg.N26_AimY, R.drawable.pubg_aim);
 
             //舔包
             bt_checkpackage = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N27_CheckPackageX, pubg.N28_CheckPackageY, R.drawable.pubg_checkpackage, xtmp, ytmp);
+                    pubg.N27_CheckPackageX, pubg.N28_CheckPackageY, R.drawable.pubg_checkpackage);
 
             //开门
             bt_door = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N29_DoorX, pubg.N30_DoorY, R.drawable.pubg_door, xtmp, ytmp);
+                    pubg.N29_DoorX, pubg.N30_DoorY, R.drawable.pubg_door);
 
             //驾驶
             bt_drive = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N31_DriveX, pubg.N32_DriveY, R.drawable.pubg_drive, xtmp, ytmp);
+                    pubg.N31_DriveX, pubg.N32_DriveY, R.drawable.pubg_drive);
 
             //下车
             bt_getoff = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N33_GetOffX, pubg.N34_GetOffY, R.drawable.pubg_getoff, xtmp, ytmp);
+                    pubg.N33_GetOffX, pubg.N34_GetOffY, R.drawable.pubg_getoff);
 
             //手雷
             bt_grenade = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N35_GrenadeX, pubg.N36_GrenadeY, R.drawable.pubg_grenade, xtmp, ytmp);
+                    pubg.N35_GrenadeX, pubg.N36_GrenadeY, R.drawable.pubg_grenade);
 
             //用药
             bt_medicine = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N37_MedicineX, pubg.N38_MedicineY, R.drawable.pubg_medicine, xtmp, ytmp);
+                    pubg.N37_MedicineX, pubg.N38_MedicineY, R.drawable.pubg_medicine);
 
             //重装
             bt_reload = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N39_ReloadX, pubg.N40_ReloadY, R.drawable.pubg_reload, xtmp, ytmp);
+                    pubg.N39_ReloadX, pubg.N40_ReloadY, R.drawable.pubg_reload);
 
             //救援
             bt_save = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N41_SaveX, pubg.N42_SaveY, R.drawable.pubg_save, xtmp, ytmp);
+                    pubg.N41_SaveX, pubg.N42_SaveY, R.drawable.pubg_save);
 
             //冲刺
             bt_sprint = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N43_SprintX, pubg.N44_SprintY, R.drawable.pubg_sprint, xtmp, ytmp);
+                    pubg.N43_SprintX, pubg.N44_SprintY, R.drawable.pubg_sprint);
             //跳伞跟随
             bt_follow = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N45_FollowX, pubg.N46_FollowY, R.drawable.pubg_follow, xtmp, ytmp);
+                    pubg.N45_FollowX, pubg.N46_FollowY, R.drawable.pubg_follow);
 
             //拾取
             bt_pick = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N47_PickX, pubg.N48_PickY, R.drawable.pubg_pick, xtmp, ytmp);
+                    pubg.N47_PickX, pubg.N48_PickY, R.drawable.pubg_pick);
 
             //拾取
             bt_ride = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N49_RideX, pubg.N50_RideY, R.drawable.pubg_ride, xtmp, ytmp);
+                    pubg.N49_RideX, pubg.N50_RideY, R.drawable.pubg_ride);
 
             //拾取1
             bt_pick1 = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N51_Pick1X, pubg.N52_Pick1Y, R.drawable.pubg_pick1, xtmp, ytmp);
+                    pubg.N51_Pick1X, pubg.N52_Pick1Y, R.drawable.pubg_pick1);
 
             //拾取2
             bt_pick2 = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N53_Pick2X, pubg.N54_Pick2Y, R.drawable.pubg_pick2, xtmp, ytmp);
+                    pubg.N53_Pick2X, pubg.N54_Pick2Y, R.drawable.pubg_pick2);
 
             //拾取3
             bt_pick3 = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                    pubg.N55_Pick3X, pubg.N56_Pick3Y, R.drawable.pubg_pick3, xtmp, ytmp);
+                    pubg.N55_Pick3X, pubg.N56_Pick3Y, R.drawable.pubg_pick3);
 
         }
 
@@ -433,30 +324,6 @@ public class FloatPUBGManager {
         isShow = false;
     }
 
-    public void ShowCalibr(boolean isHide)
-    {
-        bt_calibr = new FloatButtonPUBG(mContext, mFloatMenu, mRelativeLayout, mParams,
-                500, 500, R.drawable.pubg_aim, 0, 0);
-
-        if(isHide) {
-            HideWindow();
-        }else{
-            ShowWindow();
-        }
-        isShow = true;
-    }
-
-    public void RemoveCalibr(){
-
-        if(bt_calibr != null)
-        {
-            bt_calibr.Remove();
-            bt_calibr = null;
-        }
-
-        isShow = false;
-    }
-
     public void ShowAll()
     {
 
@@ -546,9 +413,7 @@ public class FloatPUBGManager {
         pubg.SetPick2(bt_pick2.PositionX,bt_pick2.PositionY);
         pubg.SetPick3(bt_pick3.PositionX,bt_pick3.PositionY);
 
-
-        Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
-
+        //Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
         mDBControlPUBG.InsertDatabase(pubg);
 
     }

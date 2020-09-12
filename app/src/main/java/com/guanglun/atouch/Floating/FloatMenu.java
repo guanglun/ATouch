@@ -75,10 +75,10 @@ public class FloatMenu {
         mFloatPUBGManager = new FloatPUBGManager(mContext, this, mRelativeLayoutEdit, mParamsEdit, new FloatPUBGManager.FloatPUBGManagerCallback() {
             @Override
             public void onSetMouseOffset(int x, int y) {
-                mFloatMouse.offset_x = x;
-                mFloatMouse.offset_y = y;
+
             }
         });
+
 
         View select_view = LayoutInflater.from(mContext).inflate(R.layout.float_controller_volume, null);
         select_listview = select_view.findViewById(R.id.listview);
@@ -105,8 +105,10 @@ public class FloatMenu {
 
         //设置图片格式，效果为背景透明
         mParamsEdit.format = PixelFormat.RGBA_8888;
+//        mParamsEdit.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+//                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mParamsEdit.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         mParamsEdit.width = 0;
         mParamsEdit.height = 0;
 
@@ -148,23 +150,11 @@ public class FloatMenu {
         mFloatingManager.addView(mRelativeLayoutMenu, mParamsMenu);
 
 
-        mFloatMouse = new FloatMouse(mContext, mFloatingManager, new FloatMouse.MouseCallback() {
+        mFloatMouse = new FloatMouse(mContext, this, new FloatMouse.MouseCallback() {
             @Override
             public void onClick(boolean down) {
-                //if(mFloatPUBGManager.calibrFlag == FloatPUBGManager.CALIBR_START)
-                if(down)
-                {
-                    mRelativeLayoutEdit.getLocationOnScreen(offset);
-                    mRelativeLayoutEdit.getLocationInWindow(offset2);
-
-                    Log.i("pubg[size]",offset[0]+" "+offset[1]+" "+offset2[0]+" "+offset2[1]);
-                    //Toast.makeText(mContext,"size "+offset[0]+" "+offset[1],Toast.LENGTH_SHORT).show();
-                    //Log.i(TAG,"x:"+mFloatMouse.mParamsMouse.x+" y:"+mFloatMouse.mParamsMouse.y);
-                    //Toast.makeText(mContext,"x:"+mFloatMouse.mParamsMouse.x+" y:"+mFloatMouse.mParamsMouse.y,Toast.LENGTH_SHORT).show();
-                }
             }
         });
-
 
     }
 
@@ -275,9 +265,6 @@ public class FloatMenu {
 
                 @Override
                 public void onStartCalibr() {
-                    //mFloatPUBGManager.RemoveAll(true);
-                    //mFloatPUBGManager.ShowCalibr(false);
-                    //mFloatPUBGManager.calibrFlag = FloatPUBGManager.CALIBR_START;
                 }
             });
             configDialog.mainView(mContext);

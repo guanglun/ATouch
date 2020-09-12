@@ -2,6 +2,7 @@ package com.guanglun.atouch.Main;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Instrumentation;
 import android.bluetooth.BluetoothAdapter;
 
 import android.content.ActivityNotFoundException;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 
@@ -100,6 +103,22 @@ public class MainActivity extends AppCompatActivity {
         config.init(this);
 
         context = this;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Instrumentation inst = new Instrumentation();
+                inst.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                        SystemClock.uptimeMillis(),
+                        MotionEvent.TOOL_TYPE_MOUSE, 240, 400, 0));
+            }
+        }).start();
+
 
         upgrade = new Upgrade(this);
         openvio = new OpenVIO(this, new OpenVIO.OpenVIOCallback() {

@@ -24,24 +24,19 @@ public class FloatButtonPUBG {
     private RelativeLayout mRelativeLayout;
     private WindowManager.LayoutParams mParams;
 
-    private Button button = null;
+    private Button button;
 
     public int PositionX,PositionY;
-    private int xtmp = 0, ytmp = 0;;
     private FloatMenu mFloatMenu;
-    private int[] offset = new int[2],offset2 = new int[2];
 
     public FloatButtonPUBG(Context context, FloatMenu mFloatMenu, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
-                       int StartX, int StartY,int picture,int xtmp,int ytmp)
+                       int StartX, int StartY,int picture)
     {
         mContext = context;
         this.mFloatMenu = mFloatMenu;
         mFloatingManager = mFloatMenu.mFloatingManager;
         mRelativeLayout = relativeLayout;
         mParams = params;
-
-        this.xtmp = xtmp;
-        this.ytmp = ytmp;
 
         RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
 
@@ -56,8 +51,8 @@ public class FloatButtonPUBG {
 
         button.setBackground(mContext.getResources().getDrawable(picture));
 
-        button.setX(StartX - xtmp - EasyTool.dip2px(mContext,ROUNDD/2));
-        button.setY(StartY - ytmp - EasyTool.dip2px(mContext,ROUNDD/2));
+        button.setX(StartX - mFloatMenu.mFloatPUBGManager.offset[0]- EasyTool.dip2px(mContext,ROUNDD/2));
+        button.setY(StartY - mFloatMenu.mFloatPUBGManager.offset[1]- EasyTool.dip2px(mContext,ROUNDD/2));
 
         PositionX =StartX;
         PositionY = StartY;
@@ -105,11 +100,13 @@ public class FloatButtonPUBG {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
-            Log.i("BUTTON",mFloatMenu.mFloatMouse.mParamsMouse.x + " "+mFloatMenu.mFloatMouse.mParamsMouse.y+" "+event.getRawX()+" " +event.getRawY());
-            PositionX = mFloatMenu.mFloatMouse.mParamsMouse.x;//(int)event.getRawX();
-            PositionY = mFloatMenu.mFloatMouse.mParamsMouse.y;//(int)event.getRawY();
-            button.setX(PositionX - offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
-            button.setY(PositionY - offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
+
+//            PositionX = mFloatMenu.mFloatMouse.mParamsMouse.x;//(int)event.getRawX();
+//            PositionY = mFloatMenu.mFloatMouse.mParamsMouse.y;//(int)event.getRawY();
+            PositionX = (int)event.getRawX();
+            PositionY = (int)event.getRawY();
+            button.setX(PositionX  - mFloatMenu.mFloatPUBGManager.offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
+            button.setY(PositionY  - mFloatMenu.mFloatPUBGManager.offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
 
             return false;
         }
