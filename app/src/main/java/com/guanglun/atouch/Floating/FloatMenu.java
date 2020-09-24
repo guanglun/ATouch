@@ -87,9 +87,7 @@ public class FloatMenu {
         floatSelectAlertDialog = new FloatSelectAlertDialog(mContext, select_view, new FloatSelectAlertDialog.FloatSelectAlertDialogCallBack() {
             @Override
             public void NewCreat() {
-
-                mFloatPUBGManager.RemoveAll(true);
-                mFloatPUBGManager.Show(new PUBG(),false);
+                dbManager.showDialogListByName("新建映射");
             }
         });
 

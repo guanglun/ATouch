@@ -5,16 +5,29 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.guanglun.atouch.Floating.FloatService;
+import com.guanglun.atouch.Floating.KeyBoardView;
 import com.guanglun.atouch.R;
+import com.guanglun.atouch.upgrade.AppDownloadManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class DBManagerMapUnit {
 
@@ -22,6 +35,8 @@ public class DBManagerMapUnit {
     public DBControlMapUnit dbControl;
     private ArrayAdapter<String> adapter;
     private DBManagerMapUnitCallBack cb;
+    private List<MapUnit> map_list = new ArrayList<MapUnit>();
+    private MapAdapter mapa;
     private String DEBUG_TAG = "DBManagerMapUnit";
 
     public interface DBManagerMapUnitCallBack {
@@ -38,16 +53,23 @@ public class DBManagerMapUnit {
 
     }
 
-    public void showDialogListByName(String Name)
+    public void showDialogListByName(final String Name)
     {
-        List<MapUnit> list = dbControl.getRawByName(Name);
+        if(Name.equals("新建映射"))
+        {
+            map_list = new ArrayList<MapUnit>();
+        }else{
+            map_list = dbControl.getRawByName(Name);
+
+        }
 
         ListView mListView = new ListView(mContext);
-        MapAdapter mapa = new MapAdapter(mContext, R.layout.map_item_layout,list);
+        mapa = new MapAdapter(mContext, R.layout.map_item_layout,map_list);
         mListView.setAdapter(mapa);
+        mListView.setOnItemClickListener(OnItemClickListenerItem);
 
         AlertDialog dialog = new AlertDialog.Builder(mContext)
-                .setTitle("选择操作 "+Name)
+                .setTitle("正在操作 " + Name)
                 .setView(mListView)
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -55,12 +77,147 @@ public class DBManagerMapUnit {
                         dialog.dismiss();
                     }
                 })
-                .setPositiveButton("添加", new DialogInterface.OnClickListener() {
+                .setPositiveButton("保存", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if(Name.equals("新建映射") || dbControl.getRawByName(Name) == null)
+                        {
+                            final EditText editText = new EditText(mContext);
+                            AlertDialog dialog2 = new AlertDialog.Builder(mContext)
+                                    .setTitle("请输入新的映射名称")
+                                    .setView(editText)
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String NewName = editText.getText().toString();
+                                            if(NewName.length() > 0)
+                                            {
+                                                if(dbControl.getRawByName(NewName) != null)
+                                                {
+                                                    Toast.makeText(mContext,"名称已存在",Toast.LENGTH_SHORT);
+                                                }else{
+                                                    for(MapUnit map:map_list)
+                                                    {
+                                                        map.Name = editText.getText().toString();
+                                                    }
+                                                    dbControl.insertList(map_list);
+                                                }
+                                            }else{
+                                                Toast.makeText(mContext,"名称不能为空",Toast.LENGTH_SHORT);
+                                            }
+                                        }
+                                    }).create();
+                            if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                            }else{
+                                dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                            }
+                            dialog2.show();
+                        }else{
+                            dbControl.deleteName(Name);
+                            dbControl.insertList(map_list);
+                        }
+
+                        dialog.dismiss();
+                    }
+                }).setNeutralButton("添加", null)
+                .create();
+        dialog.setCancelable(false);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMapAdapterView(true,0);
+            }
+        });
+    }
+
+    private void showMapAdapterView(final boolean isNew, final int i)
+    {
+        final MapUnit map = new MapUnit();
+        View v = View.inflate(mContext, R.layout.map_layout, null);
+
+        Button bt_kb = ((Button)v.findViewById(R.id.bt_kb));
+        Button bt_joystick = ((Button)v.findViewById(R.id.bt_joystick));
+        Button bt_mouse = ((Button)v.findViewById(R.id.bt_mouse));
+        final TextView tv_code = ((TextView)v.findViewById(R.id.tv_code));
+
+        if(isNew)
+        {
+            tv_code.setText(String.valueOf(map.KeyCode));
+        }else{
+            tv_code.setText(String.valueOf(map_list.get(i).KeyCode));
+        }
+
+
+        bt_kb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final AlertDialog dialog = new AlertDialog.Builder(mContext)
+                        .setTitle("操作")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+
+                KeyBoardView kbv = new KeyBoardView(mContext, new KeyBoardView.KBCallback() {
+                    @Override
+                    public void onClick(Integer value) {
+
+                        tv_code.setText(String.valueOf(value));
+                        dialog.dismiss();
 
                     }
+                });
+                dialog.setView(kbv);
+                dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+                if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                }else{
+                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                }
+                dialog.show();
+            }
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("操作")
+                .setView(v)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(isNew)
+                        {
+                            map.setKeyCode(Integer.parseInt(tv_code.getText().toString()));
+                            map_list.add(map);
+                        }else{
+                            map_list.get(i).setKeyCode(Integer.parseInt(tv_code.getText().toString()));
+                        }
+
+                        mapa.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
                 }).create();
+
         dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
         if (Build.VERSION.SDK_INT>=26) {//8.0新特性
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
@@ -72,9 +229,9 @@ public class DBManagerMapUnit {
 
     private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+            showMapAdapterView(false,i);
 
-            //DialogShow(name_list.get(i));
         }
     };
 

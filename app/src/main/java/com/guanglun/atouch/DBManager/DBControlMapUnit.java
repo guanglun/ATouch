@@ -74,12 +74,15 @@ public class DBControlMapUnit {
 
         try{
 
-            MapUnit map = new MapUnit();
+
             cursor = database.query(TableName,null,"Name =?",new String[]{Name},null,null,null);
+            if(cursor.getCount() == 0)
+                return null;
 
             cursor.moveToFirst();
 
             do{
+                    MapUnit map = new MapUnit();
                     map.Name = cursor.getString(cursor.getColumnIndex("Name"));
                     map.DeviceValue = cursor.getInt(cursor.getColumnIndex("DeviceValue"));
                     map.KeyCode = cursor.getInt(cursor.getColumnIndex("KeyCode"));
@@ -102,6 +105,9 @@ public class DBControlMapUnit {
             return null;
         }
 
+        if(MapList.size() == 0)
+            return null;
+
         return MapList;
     }
 
@@ -123,6 +129,14 @@ public class DBControlMapUnit {
 
         return true;
 
+    }
+
+    public void insertList(List<MapUnit> mapList)
+    {
+        for(MapUnit map:mapList)
+        {
+            insertDatabase(map);
+        }
     }
 
     public boolean deleteName(String DeleteName)

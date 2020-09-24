@@ -59,6 +59,10 @@ public class MapUnit {
         cv.put("Config",Config);
         return cv;
     }
+    public void setKeyCode(int KeyCode)
+    {
+        this.KeyCode = KeyCode;
+    }
 
     public String toString()
     {

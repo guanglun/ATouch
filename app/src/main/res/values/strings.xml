@@ -2,5 +2,7 @@
     <string name="app_name">Atouch</string>
     <string name="title_activity_setting">设置</string>
 
-
+    <string name="sdas"><![CDATA[<]]></string>
+    <string name="wdsa">\" \'</string>
+    <string name="sadas">: ;</string>
 </resources>

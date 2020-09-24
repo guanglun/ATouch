@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/kblayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:tag="29"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="Esc"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/kb0x3A"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F1"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x3B"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F2"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x3C"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F3"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x3D"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F4"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/kb0x3E"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F5"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x3F"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F6"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x40"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F7"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x41"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F8"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/kb0x42"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F9"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x43"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F10"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x44"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F11"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:id="@+id/kb0x45"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="F12"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="PrtSc\nSysRq"
+                        android:textSize="8sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="Scroll\nLock"
+                        android:textSize="8sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:text="Pause\nBreak"
+                        android:textSize="8sp"
+                        android:textAllCaps="false" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="~ `"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="1"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="2"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="3"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="4"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="5"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="6"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="7"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="8"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="9"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="0"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="-"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="+"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="Backspace"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Insert"
+                        android:textSize="12sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Home"
+                        android:textSize="12sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="PU ▲"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="NumLock"
+                        android:textSize="12sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="/"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="*"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="-"
+                        android:textAllCaps="false" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="90dp"
+                        android:layout_height="60dp"
+                        android:text="Tab"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Q"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="W"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="E"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="R"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="T"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Y"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="U"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="I"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="O"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="P"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="{ ["
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="} ]"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="90dp"
+                        android:layout_height="60dp"
+                        android:text="| \"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Delete"
+                        android:textSize="12sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="End"
+                        android:textSize="12sp"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="PD ▼"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="7"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="8"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="9"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="Caps"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="A"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="S"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="D"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="F"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="G"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="H"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="J"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="K"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="L"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="@string/sadas"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="@string/wdsa"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="回车"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="4"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="5"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="6"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="+"
+                        android:textAllCaps="false" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="150dp"
+                        android:layout_height="60dp"
+                        android:text="Shift"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Z"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="X"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="C"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="V"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="B"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="N"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="M"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="@string/sdas"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=">"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="\? \/"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="150dp"
+                        android:layout_height="60dp"
+                        android:text="Shift"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="▲"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="1"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="2"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="3"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="Ctrl"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Win"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Alt"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="360dp"
+                        android:layout_height="60dp"
+                        android:text="空格"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Alt"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="文档"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="Ctrl"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="◀"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="▼"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="▶"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="20dp"
+                        android:layout_height="60dp"
+                        android:text=""
+                        android:textAllCaps="false"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:text="0"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="."
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="回车"
+                        android:textAllCaps="false" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </ScrollView>
+</LinearLayout>

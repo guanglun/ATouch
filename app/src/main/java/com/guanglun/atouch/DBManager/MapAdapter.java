@@ -1,6 +1,7 @@
 package com.guanglun.atouch.DBManager;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,9 @@ public class MapAdapter extends ArrayAdapter<MapUnit> {
         TextView name = view.findViewById (R.id.map_unit_name);
         TextView code = view.findViewById (R.id.map_unit_code);
 
-        name.setText (map.Name);
-        code.setText (String.valueOf(map.DeviceValue));
+        name.setText (String.valueOf(map.DeviceValue));
+        code.setText (String.valueOf(map.KeyCode));
+
         return view;
     }
 }
