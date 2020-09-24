@@ -45,7 +45,9 @@ import android.support.v7.widget.Toolbar;
 
 import com.guanglun.atouch.Bluetooth.BTDevice;
 import com.guanglun.atouch.Bluetooth.BlueDevice;
+import com.guanglun.atouch.DBManager.DBControlMapUnit;
 import com.guanglun.atouch.DBManager.DBManager;
+import com.guanglun.atouch.DBManager.MapUnit;
 import com.guanglun.atouch.Floating.FloatService;
 
 import com.guanglun.atouch.R;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
 
         AppConfig config = new AppConfig();
         config.init(this);
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         });
         usbPermission = new USBPermission(this, serialPort, openvio);
 
-        /** 禁止翻转 **/
+        //禁止翻转
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         try {
@@ -315,6 +318,22 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(FloatService.ACTION, FloatService.SHOW);
         intent.putExtra("IsStartUp", "true");
         bindService(intent, mActivityServiceMessage.mServiceConnection, Context.BIND_AUTO_CREATE);
+
+
+
+//        DBControlMapUnit dbControlMapUnit = new DBControlMapUnit(this);
+//        dbControlMapUnit.insertDatabase(new MapUnit("Hello",1,2,3,4,5,6,7,"ccoo"));
+//        dbControlMapUnit.printfTable();
+////        dbControlMapUnit.deleteName("Hello");
+////        dbControlMapUnit.printfTable();
+////        List<String> list = dbControlMapUnit.loadNameList();
+////        Log.i(TAG,"Name size : "+list.size());
+//
+//        List<MapUnit> maplist = dbControlMapUnit.getRawByName("Hello");
+//        for(MapUnit u:maplist)
+//        {
+//            Log.i(TAG,u.toString());
+//        }
     }
 
     public void add_plan() {

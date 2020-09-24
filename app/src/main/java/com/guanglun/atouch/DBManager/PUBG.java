@@ -36,6 +36,7 @@ public class PUBG {
     {
         this.N1_Name = name;
     }
+
     public void SetDescription(String description)
     {
         this.N2_Description = description;
