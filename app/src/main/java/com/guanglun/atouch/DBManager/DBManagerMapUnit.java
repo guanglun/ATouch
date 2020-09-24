@@ -4,21 +4,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.guanglun.atouch.Floating.FloatService;
+import com.guanglun.atouch.R;
 
 import java.util.List;
 
 public class DBManagerMapUnit {
 
     private Context mContext;
-    private ListView mListView;
-    private List<String> name_list;
-    private DBControlMapUnit dbControlMapUnit;
+    public DBControlMapUnit dbControl;
     private ArrayAdapter<String> adapter;
     private DBManagerMapUnitCallBack cb;
     private String DEBUG_TAG = "DBManagerMapUnit";
@@ -27,31 +28,53 @@ public class DBManagerMapUnit {
         void on_update_use_table_now(String Name);
     }
 
-    public DBManagerMapUnit(Context context, ListView listview, DBManagerMapUnitCallBack cb)
+    public DBManagerMapUnit(Context context)
     {
         mContext = context;
-        mListView = listview;
+
         this.cb = cb;
 
-        mListView.setOnItemClickListener(OnItemClickListenerItem);
-
-        dbControlMapUnit = new DBControlMapUnit(mContext);
+        dbControl = new DBControlMapUnit(mContext);
 
     }
 
-    public void LoadTableList()
+    public void showDialogListByName(String Name)
     {
-        name_list = dbControlMapUnit.loadNameList();
+        List<MapUnit> list = dbControl.getRawByName(Name);
 
-        adapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_1,name_list);
-        mListView.setAdapter(adapter);                          //设置适配器
+        ListView mListView = new ListView(mContext);
+        MapAdapter mapa = new MapAdapter(mContext, R.layout.map_item_layout,list);
+        mListView.setAdapter(mapa);
+
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("选择操作 "+Name)
+                .setView(mListView)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("添加", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
     }
 
     private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            DialogShow(name_list.get(i));
+            //DialogShow(name_list.get(i));
         }
     };
 
@@ -88,8 +111,7 @@ public class DBManagerMapUnit {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                dbControlMapUnit.deleteName(SelectName);
-                                                LoadTableList();
+                                                dbControl.deleteName(SelectName);
                                             }
                                         }).create();
                                 //dialog2.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);

@@ -17,7 +17,7 @@
         android:id="@+id/map_unit_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/blue_name"
+        android:layout_below="@+id/map_unit_name"
         android:layout_marginTop="1dp"
         android:maxLines="2"
         android:minLines="1"

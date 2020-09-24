@@ -24,7 +24,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.guanglun.atouch.DBManager.DBControlMapUnit;
 import com.guanglun.atouch.DBManager.DBControlPUBG;
+import com.guanglun.atouch.DBManager.DBManagerMapUnit;
 import com.guanglun.atouch.DBManager.PUBG;
 import com.guanglun.atouch.Floating.FloatMenuButton;
 import com.guanglun.atouch.Main.EasyTool;
@@ -45,7 +47,7 @@ public class FloatMenu {
     private int StartX = 0,StartY = 0;
     private FloatMenuButton fmb_menu,fmb_config,fmb_database,fmb_revise,fmb_save;
     public FloatPUBGManager mFloatPUBGManager;
-    private DBControlPUBG dbControlPUBG;
+    private DBManagerMapUnit dbManager;
     private FloatSelectAlertDialog floatSelectAlertDialog;
 
     private ListView select_listview;
@@ -71,7 +73,7 @@ public class FloatMenu {
 
         /****/
 
-        dbControlPUBG = new DBControlPUBG(mContext);
+        dbManager = new DBManagerMapUnit(mContext);
         mFloatPUBGManager = new FloatPUBGManager(mContext, this, mRelativeLayoutEdit, mParamsEdit, new FloatPUBGManager.FloatPUBGManagerCallback() {
             @Override
             public void onSetMouseOffset(int x, int y) {
@@ -275,7 +277,7 @@ public class FloatMenu {
         @Override
         public void onClick(View v) {
 
-            mFloatPUBGManager.DBNameList = dbControlPUBG.LoadNameList();
+            mFloatPUBGManager.DBNameList = dbManager.dbControl.loadNameList();
             FloatListAdapter floatListAdapter = new FloatListAdapter(mContext,mFloatPUBGManager.DBNameList);
 
             select_listview.setAdapter(floatListAdapter);
@@ -330,10 +332,10 @@ public class FloatMenu {
                                 cb.ChoseName(DialogSelectName);
                                 break;
                             case "修改":
-                                mFloatPUBGManager.RemoveAll(true);
-                                mFloatPUBGManager.SelectName = DialogSelectName;
-                                mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(mFloatPUBGManager.SelectName),false);
-
+                                //mFloatPUBGManager.RemoveAll(true);
+                                //mFloatPUBGManager.SelectName = DialogSelectName;
+                                //mFloatPUBGManager.Show(dbControlPUBG.GetRawByName(mFloatPUBGManager.SelectName),false);
+                                dbManager.showDialogListByName(DialogSelectName);
                                 break;
                             case "删除":
 
@@ -342,7 +344,7 @@ public class FloatMenu {
 
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                dbControlPUBG.DeleteRaw(DialogSelectName);
+                                                dbManager.dbControl.deleteName(DialogSelectName);
                                             }
                                         }).create();
                                 if (Build.VERSION.SDK_INT>=26) {//8.0新特性
@@ -396,9 +398,8 @@ public class FloatMenu {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mFloatPUBGManager.SelectName = editText.getText().toString();
-
-                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+                            //mFloatPUBGManager.SelectName = editText.getText().toString();
+                            //mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
                             dialog.dismiss();
                         }
                     }).create();
@@ -415,9 +416,9 @@ public class FloatMenu {
                     .setNeutralButton("保存并使用", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
-                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
-                            cb.ChoseName(mFloatPUBGManager.SelectName);
+                            //dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
+                            //mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+                            //cb.ChoseName(mFloatPUBGManager.SelectName);
                             dialog.dismiss();
                         }
                     })
@@ -431,8 +432,8 @@ public class FloatMenu {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
-                            mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
+                            //dbControlPUBG.DeleteRaw(mFloatPUBGManager.SelectName);
+                            //mFloatPUBGManager.Save(mFloatPUBGManager.SelectName, dbControlPUBG);
 
                             dialog.dismiss();
                         }
