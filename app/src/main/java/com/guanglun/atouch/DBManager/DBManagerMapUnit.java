@@ -26,24 +26,99 @@ public class DBManagerMapUnit {
     private Context mContext;
     public DBControlMapUnit dbControl;
     private ArrayAdapter<String> adapter;
-    private DBManagerMapUnitCallBack cb;
     private List<MapUnit> map_list = new ArrayList<MapUnit>();
     private MapAdapter mapa;
     private String DEBUG_TAG = "DBManagerMapUnit";
     private FloatMenu mFloatMenu;
 
-    public interface DBManagerMapUnitCallBack {
-        void on_update_use_table_now(String Name);
-    }
+    private TextView tv_code;
+    private TextView tv_name;
+    private TextView tv_des;
+    private TextView tv_device;
+    private TextView tv_mfv;
+    private TextView tv_fv0;
+    private CheckBox cb_fv0;
+
 
     public DBManagerMapUnit(Context context, FloatMenu mFloatMenu)
     {
         mContext = context;
         this.mFloatMenu = mFloatMenu;
-        this.cb = cb;
 
         dbControl = new DBControlMapUnit(mContext);
 
+    }
+
+    private void showSelectDeviceAdapterView()
+    {
+        final String items[] = {"鼠标","键盘","手柄"};
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("选择添加的类型")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which)
+                        {
+                            case 0:
+                                break;
+                            case 1:
+                                showKeyBoardAdapterView();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+
+        dialog.show();
+    }
+
+    private void showKeyBoardAdapterView()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("操作")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        KeyBoardView kbv = new KeyBoardView(mContext, new KeyBoardView.KBCallback() {
+            @Override
+            public void onClick(Integer value) {
+
+                tv_code.setText(String.valueOf(value));
+                tv_device.setText(String.valueOf(MapUnit.DEVICE_VALUE_KEYBOARD));
+
+                KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                if(kbc != null) {
+                    tv_name.setText(kbc.Name);
+                    tv_des.setText(kbc.Description);
+                }
+                dialog.dismiss();
+
+            }
+        });
+        dialog.setView(kbv);
+        dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
     }
 
     public void showMapAdapterView(MapUnit map)
@@ -51,18 +126,15 @@ public class DBManagerMapUnit {
 
         View v = View.inflate(mContext, R.layout.map_layout, null);
 
-        Button bt_kb = ((Button)v.findViewById(R.id.bt_kb));
-        Button bt_joystick = ((Button)v.findViewById(R.id.bt_joystick));
-        Button bt_mouse = ((Button)v.findViewById(R.id.bt_mouse));
+        Button bt_select = ((Button)v.findViewById(R.id.bt_select));
 
-        final TextView tv_code = ((TextView)v.findViewById(R.id.tv_code));
-        final TextView tv_name = ((TextView)v.findViewById(R.id.tv_name));
-        final TextView tv_des = ((TextView)v.findViewById(R.id.tv_des));
-        final TextView tv_device = ((TextView)v.findViewById(R.id.tv_device));
-        final TextView tv_mfv = ((TextView)v.findViewById(R.id.tv_mfv));
-        final TextView tv_fv0 = ((TextView)v.findViewById(R.id.tv_fv0));
-
-        final CheckBox cb_fv0 = ((CheckBox)v.findViewById(R.id.cb_fv0));
+        tv_code = ((TextView)v.findViewById(R.id.tv_code));
+        tv_name = ((TextView)v.findViewById(R.id.tv_name));
+        tv_des = ((TextView)v.findViewById(R.id.tv_des));
+        tv_device = ((TextView)v.findViewById(R.id.tv_device));
+        tv_mfv = ((TextView)v.findViewById(R.id.tv_mfv));
+        tv_fv0 = ((TextView)v.findViewById(R.id.tv_fv0));
+        cb_fv0 = ((CheckBox)v.findViewById(R.id.cb_fv0));
 
         tv_code.setText(String.valueOf(map.KeyCode));
         tv_name.setText(map.KeyName);
@@ -90,43 +162,11 @@ public class DBManagerMapUnit {
             }
         });
 
-        bt_kb.setOnClickListener(new View.OnClickListener() {
+        bt_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showSelectDeviceAdapterView();
 
-                final AlertDialog dialog = new AlertDialog.Builder(mContext)
-                        .setTitle("操作")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create();
-
-                KeyBoardView kbv = new KeyBoardView(mContext, new KeyBoardView.KBCallback() {
-                    @Override
-                    public void onClick(Integer value) {
-
-                        tv_code.setText(String.valueOf(value));
-                        tv_device.setText(String.valueOf(MapUnit.DEVICE_VALUE_KEYBOARD));
-
-                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
-                        if(kbc != null) {
-                            tv_name.setText(kbc.Name);
-                            tv_des.setText(kbc.Description);
-                        }
-                        dialog.dismiss();
-
-                    }
-                });
-                dialog.setView(kbv);
-                dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
-                if (Build.VERSION.SDK_INT>=26) {//8.0新特性
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-                }else{
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                }
-                dialog.show();
             }
         });
 

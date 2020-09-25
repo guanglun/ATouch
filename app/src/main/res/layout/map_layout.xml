@@ -7,46 +7,29 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/bt_kb"
+        android:id="@+id/bt_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="44dp"
-        android:text="键盘"
-        app:layout_constraintEnd_toStartOf="@+id/bt_mouse"
-        app:layout_constraintTop_toTopOf="@+id/bt_mouse" />
-
-    <Button
-        android:id="@+id/bt_mouse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="鼠标"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="选择映射按键"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
-
-    <Button
-        android:id="@+id/bt_joystick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:text="手柄"
-        app:layout_constraintStart_toEndOf="@+id/bt_mouse"
-        app:layout_constraintTop_toTopOf="@+id/bt_mouse" />
 
     <CheckBox
         android:id="@+id/cb_fv0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:text="长按键"
-        app:layout_constraintStart_toStartOf="@+id/bt_kb"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintStart_toEndOf="@+id/bt_select"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/bt_mouse"
+        app:layout_constraintTop_toBottomOf="@+id/bt_select"
         tools:layout_editor_absoluteX="0dp"></LinearLayout>
 
     <LinearLayout
@@ -56,14 +39,6 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         tools:layout_editor_absoluteX="0dp"></LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/cb_fv0"
-        tools:layout_editor_absoluteX="-16dp"></LinearLayout>
 
     <TextView
         android:id="@+id/tv_fv0"
