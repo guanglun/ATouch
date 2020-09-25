@@ -27,8 +27,6 @@ public class FloatSelectAlertDialog {
 
 
         alertDialog = new AlertDialog.Builder(context)
-                //.setTitle("正在扫描蓝牙...")
-                //.setIcon(R.mipmap.ic_launcher)
                 .setView(select_view)
                 .setNegativeButton("新建", new DialogInterface.OnClickListener() {
                     @Override

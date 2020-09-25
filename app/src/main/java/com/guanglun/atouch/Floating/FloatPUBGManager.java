@@ -3,21 +3,16 @@ package com.guanglun.atouch.Floating;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DBControlPUBG;
-import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.DBManager.PUBG;
 import com.guanglun.atouch.Main.AppConfig;
 import com.guanglun.atouch.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FloatPUBGManager {

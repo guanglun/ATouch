@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.R;
 
 import java.util.List;

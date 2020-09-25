@@ -120,8 +120,8 @@ public class FloatMouse {
     public void SetMouse(int x,int y)
     {
         if(is_enable) {
-            mParamsMouse.x = x - mFloatMenu.mFloatPUBGManager.offset[0];
-            mParamsMouse.y = y - mFloatMenu.mFloatPUBGManager.offset[1];
+            mParamsMouse.x = x - mFloatMenu.mFloatMapManager.offset[0];
+            mParamsMouse.y = y - mFloatMenu.mFloatMapManager.offset[1];
             mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
         }
     }

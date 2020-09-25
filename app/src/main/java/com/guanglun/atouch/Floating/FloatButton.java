@@ -1,15 +1,13 @@
 package com.guanglun.atouch.Floating;
 
 import android.content.Context;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.guanglun.atouch.DBManager.KeyMouse;
+import com.guanglun.atouch.DBManager.KeyBoardCode;
 import com.guanglun.atouch.Main.EasyTool;
 import com.guanglun.atouch.R;
 
@@ -23,13 +21,13 @@ public class FloatButton {
     private WindowManager.LayoutParams mParams;
 
     private Button button;
-    private KeyMouse mKeyMouse;
+    private KeyBoardCode mKeyMouse;
     private int height = 0;
 
     public int PositionX,PositionY;
 
     public FloatButton(Context context, FloatingManager floatingmanager, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
-                       KeyMouse keyMouse, int StartX, int StartY,int height)
+                       KeyBoardCode keyMouse, int StartX, int StartY, int height)
     {
         mContext = context;
         mFloatingManager = floatingmanager;
@@ -53,6 +51,7 @@ public class FloatButton {
         PositionX =StartX;
         PositionY = StartY;
 
+        button.setTextSize(10);
         button.setText(mKeyMouse.Name);
         button.setPadding(0,0,0,0);
         button.setLayoutParams(lp);   ////设置按钮的布局属性

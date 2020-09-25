@@ -9,8 +9,6 @@ import android.widget.LinearLayout;
 
 import com.guanglun.atouch.R;
 
-import java.math.BigInteger;
-
 public class KeyBoardView extends LinearLayout implements View.OnClickListener {
 
     private KBCallback cb;
@@ -46,9 +44,7 @@ public class KeyBoardView extends LinearLayout implements View.OnClickListener {
 
         String tag = (String)v.getTag();
         if(tag != null) {
-            new BigInteger(tag,16);
-            Integer intValue = Integer.parseInt(tag, 16);
-            Log.i("KB", intValue.toString());
+            Integer intValue = Integer.parseInt(tag);
             cb.onClick(intValue);
         }
     };

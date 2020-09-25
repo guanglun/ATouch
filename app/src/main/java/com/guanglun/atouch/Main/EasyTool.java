@@ -1,13 +1,8 @@
 package com.guanglun.atouch.Main;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
@@ -20,20 +15,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.guanglun.atouch.DBManager.KeyMouse;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.Inet4Address;
 import java.net.InetAddress;

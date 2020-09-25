@@ -3,12 +3,9 @@ package com.guanglun.atouch.Touch;
 import android.content.Context;
 import android.util.Log;
 
-import com.guanglun.atouch.DBManager.KeyMouse;
 import com.guanglun.atouch.Main.ActivityServiceMessage;
 import com.guanglun.atouch.Main.EasyTool;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 

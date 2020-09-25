@@ -1,6 +1,5 @@
 package com.guanglun.atouch.DBManager;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -13,6 +12,7 @@ import java.util.List;
 public class DBControlMapUnit {
 
     private String TableName = "MapUnit";
+    private String KeyBoardTableName = "keyboard";
     private String DEBUG_TAG = "DBControlMapUnit";
 
     private SQLiteDatabase database = null;
@@ -74,7 +74,6 @@ public class DBControlMapUnit {
 
         try{
 
-
             cursor = database.query(TableName,null,"Name =?",new String[]{Name},null,null,null);
             if(cursor.getCount() == 0)
                 return null;
@@ -82,16 +81,20 @@ public class DBControlMapUnit {
             cursor.moveToFirst();
 
             do{
-                    MapUnit map = new MapUnit();
-                    map.Name = cursor.getString(cursor.getColumnIndex("Name"));
-                    map.DeviceValue = cursor.getInt(cursor.getColumnIndex("DeviceValue"));
-                    map.KeyCode = cursor.getInt(cursor.getColumnIndex("KeyCode"));
-                    map.MFV = cursor.getInt(cursor.getColumnIndex("MFV"));
-                    map.FV0 = cursor.getInt(cursor.getColumnIndex("FV0"));
-                    map.FV1 = cursor.getInt(cursor.getColumnIndex("FV1"));
-                    map.FV2 = cursor.getInt(cursor.getColumnIndex("FV2"));
-                    map.FV3 = cursor.getInt(cursor.getColumnIndex("FV3"));
-                    map.Config = cursor.getString(cursor.getColumnIndex("Config"));
+                MapUnit map = new MapUnit();
+                map.Name = cursor.getString(cursor.getColumnIndex("Name"));
+                map.DeviceValue = cursor.getInt(cursor.getColumnIndex("DeviceValue"));
+                map.KeyCode = cursor.getInt(cursor.getColumnIndex("KeyCode"));
+                map.KeyName = cursor.getString(cursor.getColumnIndex("KeyName"));
+                map.PX = cursor.getInt(cursor.getColumnIndex("PX"));
+                map.PY = cursor.getInt(cursor.getColumnIndex("PY"));
+                map.Describe = cursor.getString(cursor.getColumnIndex("Describe"));
+                map.MFV = cursor.getInt(cursor.getColumnIndex("MFV"));
+                map.FV0 = cursor.getInt(cursor.getColumnIndex("FV0"));
+                map.FV1 = cursor.getInt(cursor.getColumnIndex("FV1"));
+                map.FV2 = cursor.getInt(cursor.getColumnIndex("FV2"));
+                map.FV3 = cursor.getInt(cursor.getColumnIndex("FV3"));
+                map.Config = cursor.getString(cursor.getColumnIndex("Config"));
 
                 MapList.add(map);
             }while(cursor.moveToNext());
@@ -109,6 +112,44 @@ public class DBControlMapUnit {
             return null;
 
         return MapList;
+    }
+
+    public KeyBoardCode getKeyBoardCode(int Code)
+    {
+        Cursor cursor ;
+        KeyBoardCode kbc = null;
+        if(database == null)
+        {
+            return null;
+        }
+
+        try{
+
+            cursor = database.query(KeyBoardTableName,null,"KeyCode =?",new String[]{String.valueOf(Code)},null,null,null);
+            if(cursor.getCount() == 0)
+                return null;
+
+            kbc = new KeyBoardCode();
+            cursor.moveToFirst();
+
+            do{
+
+                kbc.Name = cursor.getString(cursor.getColumnIndex("Name"));
+                kbc.Description = cursor.getString(cursor.getColumnIndex("Description"));
+                kbc.KeyCode = cursor.getInt(cursor.getColumnIndex("KeyCode"));
+
+            }while(cursor.moveToNext());
+
+            cursor.close();
+
+        }catch(SQLException e){
+
+            Log.i(DEBUG_TAG, e.toString());
+
+            return null;
+        }
+
+        return kbc;
     }
 
     public boolean clearTable()

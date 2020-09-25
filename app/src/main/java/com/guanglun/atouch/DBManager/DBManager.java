@@ -4,16 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.guanglun.atouch.Floating.FloatService;
-import com.guanglun.atouch.R;
 
 import java.util.List;
 
@@ -22,7 +18,6 @@ public class DBManager {
     private Context mContext;
     private ListView mListView;
     private List<String> name_list;
-    private DBControl dbControl;
     private DBControlPUBG dbControl_pubg;
     private ArrayAdapter<String> adapter;
     private DBManagerCallBack cb;
@@ -244,24 +239,7 @@ public class DBManager {
         buf[i++] = (byte)(pubg.N56_Pick3Y>>8);
         buf[i++] = (byte)(pubg.N56_Pick3Y);
 
-        //Log.i("SetAttack", String.valueOf(buf[0])+" "+String.valueOf(buf[1])+" "+String.valueOf(buf[2])+" "+String.valueOf(buf[3]));
-        //Log.i(DEBUG_TAG, "AttackX:"+pubg.N3_AttackX+" AttackY:"+pubg.N4_AttackY);
         return buf;
     }
 
-    public byte[] GetUseTable(List<KeyMouse> list)
-    {
-        byte[] buf = new byte[list.size()*5];
-
-        for(int i=0;i<list.size();i++)
-        {
-            buf[i*5] = (byte)list.get(i).KeyCode;
-            buf[i*5+1] = (byte)(list.get(i).PX>>8);
-            buf[i*5+2] = (byte)(list.get(i).PX);
-            buf[i*5+3] = (byte)(list.get(i).PY>>8);
-            buf[i*5+4] = (byte)(list.get(i).PY);
-        }
-
-        return buf;
-    }
 }

@@ -1,17 +1,16 @@
 package com.guanglun.atouch.DBManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.util.Log;
 
 import com.guanglun.atouch.Main.EasyTool;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 这个类就是实现从assets目录读取数据库文件然后写入SDcard中,如果在SDcard中存在，就打开数据库，不存在就从assets目录下复制过去
@@ -26,8 +25,10 @@ public class SQLdm {
     private final String DBName = "KeyboardMouse.db";
     private final String SettingName = "AppConfig.properties";
 
-    private final boolean isReloadDB = false;
-    //private final boolean isReloadDB = true;
+    //private final boolean isReloadDB = false;
+    private final boolean isReloadDB = true;
+
+
     private String sd_path = null;
     private SQLiteDatabase database;
     private Context context;

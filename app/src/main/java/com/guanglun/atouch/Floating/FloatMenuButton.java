@@ -1,24 +1,15 @@
 package com.guanglun.atouch.Floating;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.guanglun.atouch.Main.EasyTool;
 import com.guanglun.atouch.R;
-
-import static android.view.animation.Animation.ABSOLUTE;
 
 public class FloatMenuButton {
 
@@ -49,7 +40,7 @@ public class FloatMenuButton {
         {
             mLayoutParams.width = EasyTool.dip2px(mContext,ROUNDD - 4);
             mLayoutParams.height  = EasyTool.dip2px(mContext,ROUNDD - 4);
-            mLayoutParams.setMargins(40,0,0,0);
+            mLayoutParams.setMargins(30,0,0,0);
             mLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL,RelativeLayout.TRUE);
             mLayoutParams.addRule(RelativeLayout.RIGHT_OF, align_id );
 

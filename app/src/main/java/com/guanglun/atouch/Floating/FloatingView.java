@@ -1,42 +1,18 @@
 package com.guanglun.atouch.Floating;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.PixelFormat;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Surface;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.guanglun.atouch.DBManager.DBControl;
 import com.guanglun.atouch.DBManager.DBControlPUBG;
-import com.guanglun.atouch.DBManager.DatabaseStatic;
-import com.guanglun.atouch.DBManager.KeyMouse;
-import com.guanglun.atouch.DBManager.PUBG;
-import com.guanglun.atouch.R;
+import com.guanglun.atouch.DBManager.KeyBoardCode;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * 悬浮窗view
@@ -55,12 +31,10 @@ public class FloatingView extends FrameLayout{
 
     private RelativeLayout mRelativeLayout;
 
-    private List<KeyMouse> keyMouseList;
+    private List<KeyBoardCode> keyMouseList;
 
 
-    private FloatButtonManager mFloatButtonManager;
     private WindowManager.LayoutParams mParams;
-    private DBControl dbControl;
     private DBControlPUBG dbControlPUBG;
     private boolean isChange = false;
     private String SelectName;
@@ -115,9 +89,8 @@ public class FloatingView extends FrameLayout{
     }
 
     public void onSreenOrientationConfigChange(int angle) {
-        if(mFloatMenu.mFloatPUBGManager != null) {
-            mFloatMenu.mFloatPUBGManager.reloadOffset();
-            mFloatMenu.mFloatPUBGManager.reload();
+        if(mFloatMenu.mFloatMapManager != null) {
+            mFloatMenu.mFloatMapManager.reloadOffset();
         }
     }
 

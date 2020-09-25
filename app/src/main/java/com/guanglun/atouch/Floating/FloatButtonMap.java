@@ -7,11 +7,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.guanglun.atouch.DBManager.MapUnit;
 import com.guanglun.atouch.Main.EasyTool;
+import com.guanglun.atouch.R;
 
 import static android.view.View.VISIBLE;
 
-public class FloatButtonPUBG {
+public class FloatButtonMap {
     private final int ROUNDD = 30;
 
     private Context mContext;
@@ -20,18 +22,19 @@ public class FloatButtonPUBG {
     private WindowManager.LayoutParams mParams;
 
     private Button button;
-
+    private MapUnit map;
     public int PositionX,PositionY;
     private FloatMenu mFloatMenu;
 
-    public FloatButtonPUBG(Context context, FloatMenu mFloatMenu, RelativeLayout relativeLayout, WindowManager.LayoutParams params,
-                       int StartX, int StartY,int picture)
+    private boolean isLongClick = false;
+    public FloatButtonMap(Context context, FloatMenu mFloatMenu,MapUnit map)
     {
         mContext = context;
+        this.map = map;
         this.mFloatMenu = mFloatMenu;
         mFloatingManager = mFloatMenu.mFloatingManager;
-        mRelativeLayout = relativeLayout;
-        mParams = params;
+        mRelativeLayout = mFloatMenu.mRelativeLayoutEdit;
+        mParams = mFloatMenu.mParamsEdit;
 
         RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
 
@@ -44,22 +47,29 @@ public class FloatButtonPUBG {
         mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
         mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
 
-        button.setBackground(mContext.getResources().getDrawable(picture));
+        button.setBackground(mContext.getResources().getDrawable(R.drawable.round_button));
+        button.setText(map.KeyName);
+        button.setX(map.PX - mFloatMenu.mFloatMapManager.offset[0]- EasyTool.dip2px(mContext,ROUNDD/2));
+        button.setY(map.PY - mFloatMenu.mFloatMapManager.offset[1]- EasyTool.dip2px(mContext,ROUNDD/2));
 
-        button.setX(StartX - mFloatMenu.mFloatMapManager.offset[0]- EasyTool.dip2px(mContext,ROUNDD/2));
-        button.setY(StartY - mFloatMenu.mFloatMapManager.offset[1]- EasyTool.dip2px(mContext,ROUNDD/2));
+        PositionX = map.PX;
+        PositionY = map.PY;
 
-        PositionX =StartX;
-        PositionY = StartY;
-
-        //button.setText(mKeyMouse.Name);
         button.setPadding(0,0,0,0);
-        button.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
+        button.setLayoutParams(mLayoutParams);
+
         button.setOnTouchListener(ButtonOnTouchListener);
+        button.setOnClickListener(ButtonOnClickListener);
+        button.setOnLongClickListener(ButtonOnLongClickListener);
         mRelativeLayout.addView(button);
 
         mFloatingManager.updateView(mRelativeLayout,mParams);
 
+    }
+
+    public void setText(String text)
+    {
+        button.setText(text);
     }
 
     public void Remove()
@@ -91,17 +101,43 @@ public class FloatButtonPUBG {
         }
     }
 
+    View.OnLongClickListener ButtonOnLongClickListener = new View.OnLongClickListener(){
+
+
+        @Override
+        public boolean onLongClick(View v) {
+            isLongClick = true;
+            return true;
+        }
+    };
+
+    View.OnClickListener ButtonOnClickListener = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+
+            mFloatMenu.dbManager.showMapAdapterView(map);
+        }
+    };
+
     View.OnTouchListener ButtonOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
+            if(isLongClick)
+            {
+                PositionX = (int)event.getRawX();
+                PositionY = (int)event.getRawY();
+                button.setX(PositionX  - mFloatMenu.mFloatMapManager.offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
+                button.setY(PositionY  - mFloatMenu.mFloatMapManager.offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
+                map.PX = PositionX;
+                map.PY = PositionY;
+            }
 
-//            PositionX = mFloatMenu.mFloatMouse.mParamsMouse.x;//(int)event.getRawX();
-//            PositionY = mFloatMenu.mFloatMouse.mParamsMouse.y;//(int)event.getRawY();
-            PositionX = (int)event.getRawX();
-            PositionY = (int)event.getRawY();
-            button.setX(PositionX  - mFloatMenu.mFloatMapManager.offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
-            button.setY(PositionY  - mFloatMenu.mFloatMapManager.offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
+            if(event.getAction() == MotionEvent.ACTION_UP)
+            {
+                isLongClick = false;
+            }
 
             return false;
         }
