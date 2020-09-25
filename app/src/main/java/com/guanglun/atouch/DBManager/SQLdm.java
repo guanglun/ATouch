@@ -42,7 +42,7 @@ public class SQLdm {
         EasyTool.createDir(sd_path + filePath + "/Service");
         EasyTool.createDir(sd_path + filePath + "/Firmware");
 
-        if(isReloadDB == true){
+        if(isReloadDB){
 
             File file = new File( sd_path + filePath + "/" + DBName);
 
