@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,11 +59,36 @@ public class DBManagerMapUnit {
         final TextView tv_name = ((TextView)v.findViewById(R.id.tv_name));
         final TextView tv_des = ((TextView)v.findViewById(R.id.tv_des));
         final TextView tv_device = ((TextView)v.findViewById(R.id.tv_device));
+        final TextView tv_mfv = ((TextView)v.findViewById(R.id.tv_mfv));
+        final TextView tv_fv0 = ((TextView)v.findViewById(R.id.tv_fv0));
+
+        final CheckBox cb_fv0 = ((CheckBox)v.findViewById(R.id.cb_fv0));
 
         tv_code.setText(String.valueOf(map.KeyCode));
         tv_name.setText(map.KeyName);
         tv_des.setText(map.Describe);
         tv_device.setText(String.valueOf(map.DeviceValue));
+        tv_mfv.setText(String.valueOf(map.MFV));
+        tv_fv0.setText(String.valueOf(map.FV0));
+
+        if(map.FV0 == 0)
+        {
+            cb_fv0.setChecked(false);
+        }else{
+            cb_fv0.setChecked(true);
+        }
+
+        cb_fv0.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    tv_fv0.setText("1");
+                }else{
+                    tv_fv0.setText("0");
+                }
+            }
+        });
 
         bt_kb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +138,7 @@ public class DBManagerMapUnit {
                     public void onClick(DialogInterface dialog, int which) {
                         map.KeyCode = Integer.parseInt(tv_code.getText().toString());
                         map.DeviceValue = Integer.parseInt(tv_device.getText().toString());
+                        map.FV0 = Integer.parseInt(tv_fv0.getText().toString());
 
                         KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(map.KeyCode);
                         if(kbc != null) {

@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DataProc mDataProc;
 
-    private String pubg_now_use = null;
+    private String map_now_use_name = null;
     private ActivityServiceMessage mActivityServiceMessage;
 
     private OrientationEventListener mOrientationListener;
@@ -195,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
         mActivityServiceMessage = new ActivityServiceMessage(new ActivityServiceMessage.MessengerCallback() {
             @Override
             public void on_use(String name) {
-                pubg_now_use = name;
+                map_now_use_name = name;
 
-                if (pubg_now_use != null) {
-                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                if (map_now_use_name != null) {
+                    byte[] temp = map_now_use_name.getBytes();
                     temp = DataProc.Creat((byte) 0x01, temp, temp.length);
                     tcpclient.socket_send(temp, temp.length);
                 }
@@ -223,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
                 recv_version = false;
                 Log.e("DEBUG", "socket creat success");
 
-                if (pubg_now_use != null) {
-                    byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+                if (map_now_use_name != null) {
+                    byte[] temp = map_now_use_name.getBytes();
                     temp = DataProc.Creat((byte) 0x01, temp, temp.length);
                     tcpclient.socket_send(temp, temp.length);
                 }
@@ -303,11 +303,10 @@ public class MainActivity extends AppCompatActivity {
            @Override
            public void on_update_use_table_now(String Name) {
 
-               pubg_now_use = Name;
-               // Log.i("DEBUG",keyMouseListUseNow.toString());
+            map_now_use_name = Name;
 
-               if (pubg_now_use != null) {
-                   byte[] temp = mDBManager.GetByteFromPUBG(pubg_now_use);
+               if (map_now_use_name != null) {
+                   byte[] temp = map_now_use_name.getBytes();
                    temp = DataProc.Creat((byte) 0x01, temp, temp.length);
                    tcpclient.socket_send(temp, temp.length);
                }

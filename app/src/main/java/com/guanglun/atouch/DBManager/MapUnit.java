@@ -6,11 +6,16 @@ import com.guanglun.atouch.Floating.FloatButtonMap;
 
 public class MapUnit {
 
-    final static int DEVICE_VALUE_NULL      = 0;
-    final static int DEVICE_VALUE_MOUSE     = 1;
-    final static int DEVICE_VALUE_KEYBOARD  = 2;
+    final static public int DEVICE_VALUE_NULL      = 0;
+    final static public int DEVICE_VALUE_MOUSE     = 1;
+    final static public int DEVICE_VALUE_KEYBOARD  = 2;
 
+    final static public int MFV_NULL       = 0;
+    final static public int MFV_NORMAL     = 1;
+    final static public int MFV_PUBG       = 2;
 
+    final static public int FV0_NORMAL_NORMAL   = 0;
+    final static public int FV0_NORMAL_LONG     = 1;
 
     public String Name = "";
     public int DeviceValue = DEVICE_VALUE_NULL;

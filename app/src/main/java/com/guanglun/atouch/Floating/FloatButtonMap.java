@@ -120,6 +120,7 @@ public class FloatButtonMap {
         }
     };
 
+
     View.OnTouchListener ButtonOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {

@@ -48,7 +48,6 @@ public class ActivityServiceMessage {
 
     }
 
-    //获取服务端传递过来的消息，并显示在TextView上
     private Messenger cMessenger = new Messenger(new Handler() {
         // 获取Service发送过来的消息进行处理
         @Override

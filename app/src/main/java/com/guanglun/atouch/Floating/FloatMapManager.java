@@ -118,10 +118,13 @@ public class FloatMapManager {
                         {
                             case 0:
                                 MapUnit map = new MapUnit();
+                                if(maplist.size() > 0) {
+                                    map.Name = maplist.get(0).Name;
+                                }
                                 map.PX = 400;
                                 map.PY = 400;
                                 map.KeyName = "";
-
+                                map.MFV = MapUnit.MFV_NORMAL;
                                 map.bt =  new FloatButtonMap(mContext,mFloatMenu,map);
                                 mFloatMenu.dbManager.showMapAdapterView(map);
                                 maplist.add(map);
@@ -209,6 +212,7 @@ public class FloatMapManager {
                         public void onClick(DialogInterface dialog, int which) {
                             mFloatMenu.dbManager.dbControl.deleteName(maplist.get(0).Name);
                             mFloatMenu.dbManager.dbControl.insertList(maplist);
+                            mFloatMenu.cb.ChoseName(maplist.get(0).Name);
                             dialog.dismiss();
                         }
                     })

@@ -25,8 +25,8 @@ public class SQLdm {
     private final String DBName = "KeyboardMouse.db";
     private final String SettingName = "AppConfig.properties";
 
-    //private final boolean isReloadDB = false;
-    private final boolean isReloadDB = true;
+    private final boolean isReloadDB = false;
+    //private final boolean isReloadDB = true;
 
 
     private String sd_path = null;

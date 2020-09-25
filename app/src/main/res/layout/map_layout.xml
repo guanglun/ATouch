@@ -6,14 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        tools:layout_editor_absoluteX="0dp"></LinearLayout>
-
     <Button
         android:id="@+id/bt_kb"
         android:layout_width="wrap_content"
@@ -41,12 +33,73 @@
         app:layout_constraintStart_toEndOf="@+id/bt_mouse"
         app:layout_constraintTop_toTopOf="@+id/bt_mouse" />
 
+    <CheckBox
+        android:id="@+id/cb_fv0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="长按键"
+        app:layout_constraintStart_toStartOf="@+id/bt_kb"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/bt_mouse"
-        tools:layout_editor_absoluteX="1dp"></LinearLayout>
+        tools:layout_editor_absoluteX="0dp"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        tools:layout_editor_absoluteX="0dp"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/cb_fv0"
+        tools:layout_editor_absoluteX="-16dp"></LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_fv0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_mfv"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mfv" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FV0："
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/tv_mfv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_device"
+        app:layout_constraintTop_toBottomOf="@+id/tv_device" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MFV："
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/tv_device"

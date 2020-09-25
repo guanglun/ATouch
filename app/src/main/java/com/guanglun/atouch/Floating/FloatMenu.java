@@ -37,7 +37,7 @@ public class FloatMenu {
 
     private ListView select_listview;
     public FloatMenuStatus mFloatMenuStatus;
-    private FloatingView.FloatingViewCallBack cb;
+    public FloatingView.FloatingViewCallBack cb;
     public FloatMouse mFloatMouse;
 
     private int[] offset = new int[2],offset2 = new int[2];

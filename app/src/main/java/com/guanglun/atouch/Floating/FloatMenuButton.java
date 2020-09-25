@@ -72,7 +72,6 @@ public class FloatMenuButton {
         mButton.setBackground(mContext.getResources().getDrawable(R.drawable.shadow));
         mButton.setId(View.generateViewId());
 
-
         id = mButton.getId();
 
         mRelativeLayout.addView(mButton);
