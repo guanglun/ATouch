@@ -39,6 +39,9 @@ public class DBManagerMapUnit {
     private TextView tv_fv0;
     private CheckBox cb_fv0;
 
+    public interface SelectCallBack {
+        void Select(int device,int value);
+    }
 
     public DBManagerMapUnit(Context context, FloatMenu mFloatMenu)
     {
@@ -49,7 +52,7 @@ public class DBManagerMapUnit {
 
     }
 
-    private void showSelectDeviceAdapterView()
+    private void showSelectDeviceAdapterView(SelectCallBack scb)
     {
         final String items[] = {"鼠标","键盘","手柄"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
@@ -62,7 +65,7 @@ public class DBManagerMapUnit {
                             case 0:
                                 break;
                             case 1:
-                                showKeyBoardAdapterView();
+                                showKeyBoardAdapterView(scb);
                                 break;
                             default:
                                 break;
@@ -84,11 +87,12 @@ public class DBManagerMapUnit {
         dialog.show();
     }
 
-    private void showKeyBoardAdapterView()
+    private void showKeyBoardAdapterView(SelectCallBack scb)
     {
+
         final AlertDialog dialog = new AlertDialog.Builder(mContext)
-                .setTitle("操作")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setTitle("选择映射的键盘按键")
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -99,14 +103,7 @@ public class DBManagerMapUnit {
             @Override
             public void onClick(Integer value) {
 
-                tv_code.setText(String.valueOf(value));
-                tv_device.setText(String.valueOf(MapUnit.DEVICE_VALUE_KEYBOARD));
-
-                KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
-                if(kbc != null) {
-                    tv_name.setText(kbc.Name);
-                    tv_des.setText(kbc.Description);
-                }
+                scb.Select(MapUnit.DEVICE_VALUE_KEYBOARD,value);
                 dialog.dismiss();
 
             }
@@ -165,13 +162,25 @@ public class DBManagerMapUnit {
         bt_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectDeviceAdapterView();
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        tv_code.setText(String.valueOf(value));
+                        tv_device.setText(String.valueOf(device));
+
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            tv_name.setText(kbc.Name);
+                            tv_des.setText(kbc.Description);
+                        }
+                    }
+                });
 
             }
         });
 
         AlertDialog dialog = new AlertDialog.Builder(mContext)
-                .setTitle("操作")
+                .setTitle("普通按键")
                 .setView(v)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -203,6 +212,188 @@ public class DBManagerMapUnit {
                             Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
                         }else{
                             map.bt.Remove();
+                            mFloatMenu.mFloatMapManager.maplist.remove(map);
+                            Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.setCancelable(false);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
+    }
+
+    public void showMapSlideAdapterView(MapUnit map)
+    {
+
+        View v = View.inflate(mContext, R.layout.map_slide_layout, null);
+
+        Button bt_top = ((Button)v.findViewById(R.id.bt_top));
+        Button bt_left = ((Button)v.findViewById(R.id.bt_left));
+        Button bt_right = ((Button)v.findViewById(R.id.bt_right));
+        Button bt_back = ((Button)v.findViewById(R.id.bt_back));
+        Button bt_sup = ((Button)v.findViewById(R.id.bt_sup));
+
+        if(map.KeyCode != 0)
+        {
+            bt_top.setText(map.KeyName);
+            bt_top.setTag(map.KeyCode );
+        }else{
+            bt_top.setTag(0);
+        }
+
+        if(map.FV2 != 0)
+        {
+            bt_left.setText(map.FS0);
+            bt_left.setTag(map.FV2 );
+        }else{
+            bt_left.setTag(0);
+        }
+
+        if(map.FV3 != 0)
+        {
+            bt_right.setText(map.FS1);
+            bt_right.setTag(map.FV3 );
+        }else{
+            bt_right.setTag(0);
+        }
+
+        if(map.FV4 != 0)
+        {
+            bt_back.setText(map.FS2);
+            bt_back.setTag(map.FV4 );
+        }else{
+            bt_back.setTag(0);
+        }
+
+        if(map.FV5 != 0)
+        {
+            bt_sup.setText(map.FS3);
+            bt_sup.setTag(map.FV5 );
+        }else{
+            bt_sup.setTag(0);
+        }
+
+        bt_top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_top.setText(kbc.Name);
+                            bt_top.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+
+        bt_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_left.setText(kbc.Name);
+                            bt_left.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+        bt_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_right.setText(kbc.Name);
+                            bt_right.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_back.setText(kbc.Name);
+                            bt_back.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+        bt_sup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_sup.setText(kbc.Name);
+                            bt_sup.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("吃鸡移动滑盘")
+                .setView(v)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        map.KeyName = bt_top.getText().toString();
+                        map.KeyCode = (Integer) bt_top.getTag();
+
+                        map.FS0 = bt_left.getText().toString();
+                        map.FV2 = (Integer) bt_left.getTag();
+
+                        map.FS1 = bt_right.getText().toString();
+                        map.FV3 = (Integer) bt_right.getTag();
+
+                        map.FS2 = bt_back.getText().toString();
+                        map.FV4 = (Integer) bt_back.getTag();
+
+                        map.FS3 = bt_sup.getText().toString();
+                        map.FV5 = (Integer) bt_sup.getTag();
+
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setNeutralButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(mFloatMenu.mFloatMapManager.maplist.size() == 1)
+                        {
+                            Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
+                        }else{
+                            map.bts.Remove();
                             mFloatMenu.mFloatMapManager.maplist.remove(map);
                             Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
                         }

@@ -320,9 +320,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        DBControlMapUnit dbControlMapUnit = new DBControlMapUnit(this);
+//        DBControlMapUnit dbControlMapUnit = new DBControlMapUnit(this);
 //        dbControlMapUnit.insertDatabase(new MapUnit("Hello",1,2,3,4,5,6,7,"ccoo"));
-        dbControlMapUnit.printfTable();
+//        dbControlMapUnit.printfTable();
 ////        dbControlMapUnit.deleteName("Hello");
 ////        dbControlMapUnit.printfTable();
 ////        List<String> list = dbControlMapUnit.loadNameList();

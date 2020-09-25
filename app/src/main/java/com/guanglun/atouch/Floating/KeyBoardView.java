@@ -32,7 +32,7 @@ public class KeyBoardView extends LinearLayout implements View.OnClickListener {
                 for (int ii = 0; ii < viewchild1.getChildCount(); ii++) {
 
                     View viewchild2 = viewchild1.getChildAt(ii);
-                    Log.i("KB", String.valueOf(viewchild2.getId()));
+                    //Log.i("KB", String.valueOf(viewchild2.getId()));
                     viewchild2.setOnClickListener(this);
                 }
             }

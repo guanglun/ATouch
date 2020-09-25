@@ -307,25 +307,25 @@ public class FloatMenu {
     private void DialogShow(final String DialogSelectName){
 
 
-        final String items[] = {"使用", "修改", "删除"};
+        final String items[] = {"使用", "查看", "删除"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
-                .setTitle("选择对\"" + DialogSelectName + "\"的操作")
+                .setTitle("选择对映射 " + DialogSelectName + " 的操作")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        switch (items[which])
+                        switch (which)
                         {
-                            case "使用":
+                            case 0:
                                 cb.ChoseName(DialogSelectName);
                                 break;
-                            case "修改":
+                            case 1:
                                 mFloatMapManager.ShowWindow();
                                 mFloatMapManager.removeAll();
                                 mFloatMapManager.showAll(DialogSelectName);
 
                                 break;
-                            case "删除":
+                            case 2:
 
                                 AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("确认删除\"" + DialogSelectName + "\"?")
                                         .setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {

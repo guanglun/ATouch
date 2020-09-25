@@ -68,22 +68,22 @@ public class DBManager {
 
     private void DialogShow(final String SelectName){
 
-        final String items[] = {"使用", "修改", "删除"};
+        final String items[] = {"使用", "查看", "删除"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 //.setIcon(R.mipmap.icon)//设置标题的图片
-                .setTitle("选择对\""+SelectName+"\"的操作")//设置对话框的标题
+                .setTitle("选择对映射 "+SelectName+" 的操作")//设置对话框的标题
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Toast.makeText(MainActivity.this, items[which], Toast.LENGTH_SHORT).show();
 
-                        switch (items[which])
+                        switch (which)
                         {
-                            case "使用":
+                            case 0:
                                 //List<KeyMouse> list = dbControl.LoadTableDatabaseList(SelectName);
                                 cb.on_update_use_table_now(SelectName);
                                 break;
-                            case "修改":
+                            case 1:
 
                                 Intent intent = new Intent(mContext, FloatService.class);
                                 intent.putExtra(FloatService.ACTION, FloatService.SHOW);
@@ -91,7 +91,7 @@ public class DBManager {
                                 mContext.startService(intent);
 
                                 break;
-                            case "删除":
+                            case 2:
 
                                 AlertDialog dialog2 = new AlertDialog.Builder(mContext).setTitle("确认删除\""+SelectName+"\"?")
                                         .setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {

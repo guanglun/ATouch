@@ -21,12 +21,13 @@ public class FloatButtonMapSlide {
     private RelativeLayout mRelativeLayout;
     private WindowManager.LayoutParams mParams;
 
-    private Button button;
+    private Button button,bt_sup;
     private MapUnit map;
-    public int PositionX,PositionY;
+    public int PositionX,PositionY,PositionX2,PositionY2;
     private FloatMenu mFloatMenu;
 
     private boolean isLongClick = false;
+    private boolean isLongClick2 = false;
     public FloatButtonMapSlide(Context context, FloatMenu mFloatMenu, MapUnit map)
     {
         mContext = context;
@@ -39,6 +40,7 @@ public class FloatButtonMapSlide {
         RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
 
         button = new Button(mContext);
+        bt_sup = new Button(mContext);
 
         mLayoutParams.width = EasyTool.dip2px(mContext,ROUNDD);
         mLayoutParams.height  = EasyTool.dip2px(mContext,ROUNDD);
@@ -47,24 +49,31 @@ public class FloatButtonMapSlide {
         mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
         mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
 
-        button.setBackground(mContext.getResources().getDrawable(R.drawable.round_button));
-        button.setText(map.KeyName);
+        button.setBackground(mContext.getResources().getDrawable(R.drawable.pubg_move));
         button.setX(map.PX - mFloatMenu.mFloatMapManager.offset[0]- EasyTool.dip2px(mContext,ROUNDD/2));
         button.setY(map.PY - mFloatMenu.mFloatMapManager.offset[1]- EasyTool.dip2px(mContext,ROUNDD/2));
-
         PositionX = map.PX;
         PositionY = map.PY;
-
         button.setPadding(0,0,0,0);
         button.setLayoutParams(mLayoutParams);
-
         button.setOnTouchListener(ButtonOnTouchListener);
         button.setOnClickListener(ButtonOnClickListener);
         button.setOnLongClickListener(ButtonOnLongClickListener);
+
+        bt_sup.setBackground(mContext.getResources().getDrawable(R.drawable.pubg_sprint));
+        bt_sup.setX(map.FV0 - mFloatMenu.mFloatMapManager.offset[0]- EasyTool.dip2px(mContext,ROUNDD/2));
+        bt_sup.setY(map.FV1 - mFloatMenu.mFloatMapManager.offset[1]- EasyTool.dip2px(mContext,ROUNDD/2));
+        PositionX2 = map.FV0;
+        PositionY2 = map.FV1;
+        bt_sup.setPadding(0,0,0,0);
+        bt_sup.setLayoutParams(mLayoutParams);
+        bt_sup.setOnTouchListener(BSUPOnTouchListener);
+        bt_sup.setOnClickListener(ButtonOnClickListener);
+        bt_sup.setOnLongClickListener(BSUPOnLongClickListener);
+
         mRelativeLayout.addView(button);
-
+        mRelativeLayout.addView(bt_sup);
         mFloatingManager.updateView(mRelativeLayout,mParams);
-
     }
 
     public void setText(String text)
@@ -79,6 +88,12 @@ public class FloatButtonMapSlide {
             mRelativeLayout.removeView(button);
             button = null;
         }
+
+        if(bt_sup != null)
+        {
+            mRelativeLayout.removeView(bt_sup);
+            bt_sup = null;
+        }
     }
 
     public void Show()
@@ -86,8 +101,6 @@ public class FloatButtonMapSlide {
         if(button != null)
         {
             button.setVisibility(VISIBLE);
-            //mRelativeLayout.up(button);
-            //button = null;
         }
     }
 
@@ -96,8 +109,6 @@ public class FloatButtonMapSlide {
         if(button != null)
         {
             button.setVisibility(View.GONE);
-            //mRelativeLayout.removeView(button);
-            //button = null;
         }
     }
 
@@ -111,12 +122,22 @@ public class FloatButtonMapSlide {
         }
     };
 
+    View.OnLongClickListener BSUPOnLongClickListener = new View.OnLongClickListener(){
+
+
+        @Override
+        public boolean onLongClick(View v) {
+            isLongClick2 = true;
+            return true;
+        }
+    };
+
     View.OnClickListener ButtonOnClickListener = new View.OnClickListener(){
 
         @Override
         public void onClick(View v) {
 
-            mFloatMenu.dbManager.showMapAdapterView(map);
+            mFloatMenu.dbManager.showMapSlideAdapterView(map);
         }
     };
 
@@ -138,6 +159,29 @@ public class FloatButtonMapSlide {
             if(event.getAction() == MotionEvent.ACTION_UP)
             {
                 isLongClick = false;
+            }
+
+            return false;
+        }
+    };
+
+    View.OnTouchListener BSUPOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            if(isLongClick2)
+            {
+                PositionX2 = (int)event.getRawX();
+                PositionY2 = (int)event.getRawY();
+                bt_sup.setX(PositionX2  - mFloatMenu.mFloatMapManager.offset[0] - EasyTool.dip2px(mContext,ROUNDD/2));
+                bt_sup.setY(PositionY2 - mFloatMenu.mFloatMapManager.offset[1] - EasyTool.dip2px(mContext,ROUNDD/2));
+                map.FV0 = PositionX2;
+                map.FV1 = PositionY2;
+            }
+
+            if(event.getAction() == MotionEvent.ACTION_UP)
+            {
+                isLongClick2 = false;
             }
 
             return false;

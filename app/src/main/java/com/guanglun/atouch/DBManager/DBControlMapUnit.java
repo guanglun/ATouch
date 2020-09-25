@@ -94,7 +94,15 @@ public class DBControlMapUnit {
                 map.FV1 = cursor.getInt(cursor.getColumnIndex("FV1"));
                 map.FV2 = cursor.getInt(cursor.getColumnIndex("FV2"));
                 map.FV3 = cursor.getInt(cursor.getColumnIndex("FV3"));
-                map.Config = cursor.getString(cursor.getColumnIndex("Config"));
+                map.FV4 = cursor.getInt(cursor.getColumnIndex("FV4"));
+                map.FV5 = cursor.getInt(cursor.getColumnIndex("FV5"));
+                map.FV6 = cursor.getInt(cursor.getColumnIndex("FV6"));
+                map.FV7 = cursor.getInt(cursor.getColumnIndex("FV7"));
+
+                map.FS0 = cursor.getString(cursor.getColumnIndex("FS0"));
+                map.FS1 = cursor.getString(cursor.getColumnIndex("FS1"));
+                map.FS2 = cursor.getString(cursor.getColumnIndex("FS2"));
+                map.FS3 = cursor.getString(cursor.getColumnIndex("FS3"));
 
                 MapList.add(map);
             }while(cursor.moveToNext());
@@ -219,15 +227,15 @@ public class DBControlMapUnit {
             {
                 for(; !cursor.isAfterLast(); cursor.moveToNext())       // 获取查询游标中的数据
                 {
-                    str.append(cursor.getString(cursor.getColumnIndex("Name")) + "  ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("DeviceValue")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("KeyCode")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("MFV")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("FV0")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("FV1")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("FV2")) + " ");
-                    str.append(cursor.getInt(cursor.getColumnIndex("FV3")) + " ");
-                    str.append(cursor.getString(cursor.getColumnIndex("Config")) + "\n");
+//                    str.append(cursor.getString(cursor.getColumnIndex("Name")) + "  ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("DeviceValue")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("KeyCode")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("MFV")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("FV0")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("FV1")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("FV2")) + " ");
+//                    str.append(cursor.getInt(cursor.getColumnIndex("FV3")) + " ");
+//                    str.append(cursor.getString(cursor.getColumnIndex("Config")) + "\n");
                 }
             }
             cursor.close(); // 记得关闭游标对象

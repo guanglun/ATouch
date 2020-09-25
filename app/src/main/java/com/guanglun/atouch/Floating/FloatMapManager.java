@@ -87,7 +87,12 @@ public class FloatMapManager {
         {
             for(MapUnit map:maplist)
             {
-                map.bt.Remove();
+                if(map.MFV == MapUnit.MFV_NORMAL)
+                {
+                    map.bt.Remove();
+                }else if(map.MFV == MapUnit.MFV_PUBG){
+                    map.bts.Remove();
+                }
             }
             maplist.clear();
         }
@@ -99,7 +104,13 @@ public class FloatMapManager {
         maplist = mFloatMenu.dbManager.dbControl.getRawByName(name);
         for(MapUnit map:maplist)
         {
-            map.bt =  new FloatButtonMap(mContext,mFloatMenu,map);
+            if(map.MFV == MapUnit.MFV_NORMAL)
+            {
+                map.bt =  new FloatButtonMap(mContext,mFloatMenu,map);
+            }else if(map.MFV == MapUnit.MFV_PUBG){
+                map.bts =  new FloatButtonMapSlide(mContext,mFloatMenu,map);
+            }
+
         }
     }
 
@@ -114,10 +125,11 @@ public class FloatMapManager {
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        MapUnit map;
                         switch (which)
                         {
                             case 0:
-                                MapUnit map = new MapUnit();
+                                map = new MapUnit();
                                 if(maplist.size() > 0) {
                                     map.Name = maplist.get(0).Name;
                                 }
@@ -130,6 +142,19 @@ public class FloatMapManager {
                                 maplist.add(map);
                                 break;
                             case 1:
+                                map = new MapUnit();
+                                if(maplist.size() > 0) {
+                                    map.Name = maplist.get(0).Name;
+                                }
+                                map.PX = 400;
+                                map.PY = 400;
+                                map.FV0 = 500;
+                                map.FV1 = 400;
+                                map.KeyName = "";
+                                map.MFV = MapUnit.MFV_PUBG;
+                                map.bts =  new FloatButtonMapSlide(mContext,mFloatMenu,map);
+                                mFloatMenu.dbManager.showMapSlideAdapterView(map);
+                                maplist.add(map);
                                 break;
                             default:
                                 break;
