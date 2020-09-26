@@ -102,4 +102,9 @@ public class MapUnit {
         return cv;
     }
 
+    public String toString()
+    {
+        return getContentValues().toString();
+    }
+
 }

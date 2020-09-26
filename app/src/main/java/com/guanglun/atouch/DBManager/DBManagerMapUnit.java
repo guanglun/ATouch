@@ -379,6 +379,7 @@ public class DBManagerMapUnit {
                         map.FS3 = bt_sup.getText().toString();
                         map.FV5 = (Integer) bt_sup.getTag();
 
+                        //Log.i("ATService",map.toString());
                         dialog.dismiss();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
