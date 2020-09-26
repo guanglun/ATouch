@@ -231,6 +231,7 @@ public class DataProc {
                         isfirstconnect = false;
                     }
                     mActivityServiceMessage.SendToServiceMouseIsShow(true);
+                    mActivityServiceMessage.SendToServiceMouseData(mMousePointer.mouse_x, mMousePointer.mouse_y);
                 }
 
                 //Log.i("DEBUG",EasyTool.bytes2hex(buf,len));

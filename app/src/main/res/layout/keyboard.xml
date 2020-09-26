@@ -658,6 +658,7 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:tag="261"
                         android:layout_width="150dp"
                         android:layout_height="60dp"
                         android:text="Shift"
@@ -734,6 +735,7 @@
                         android:textAllCaps="false" />
 
                     <Button
+                        android:tag="265"
                         android:layout_width="150dp"
                         android:layout_height="60dp"
                         android:text="Shift"
@@ -806,18 +808,21 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:tag="260"
                         android:layout_width="120dp"
                         android:layout_height="60dp"
                         android:text="Ctrl"
                         android:textAllCaps="false" />
 
                     <Button
+                        android:tag="263"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:text="Win"
                         android:textAllCaps="false" />
 
                     <Button
+                        android:tag="262"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:text="Alt"
@@ -831,18 +836,27 @@
                         android:textAllCaps="false" />
 
                     <Button
+                        android:tag="266"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:text="Alt"
                         android:textAllCaps="false" />
 
                     <Button
-                        android:layout_width="120dp"
+                        android:tag="267"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:text="Win"
+                        android:textAllCaps="false" />
+
+                    <Button
+                        android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:text="文档"
                         android:textAllCaps="false" />
 
                     <Button
+                        android:tag="264"
                         android:layout_width="120dp"
                         android:layout_height="60dp"
                         android:text="Ctrl"

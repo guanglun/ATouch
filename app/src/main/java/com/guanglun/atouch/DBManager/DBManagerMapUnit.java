@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.guanglun.atouch.Floating.FloatMenu;
 import com.guanglun.atouch.Floating.KeyBoardView;
+import com.guanglun.atouch.Floating.MouseView;
 import com.guanglun.atouch.R;
 
 import java.util.ArrayList;
@@ -36,8 +37,8 @@ public class DBManagerMapUnit {
     private TextView tv_des;
     private TextView tv_device;
     private TextView tv_mfv;
-    private TextView tv_fv0;
-    private CheckBox cb_fv0;
+    private TextView tv_fv0,tv_fv1;
+    private CheckBox cb_fv0,cb_fv1;
 
     public interface SelectCallBack {
         void Select(int device,int value);
@@ -63,6 +64,7 @@ public class DBManagerMapUnit {
                         switch (which)
                         {
                             case 0:
+                                showMouseAdapterView(scb);
                                 break;
                             case 1:
                                 showKeyBoardAdapterView(scb);
@@ -84,6 +86,36 @@ public class DBManagerMapUnit {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
 
+        dialog.show();
+    }
+
+    private void showMouseAdapterView(SelectCallBack scb)
+    {
+
+        final AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("选择映射的鼠标按键")
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        MouseView mv = new MouseView(mContext, new MouseView.MCallback() {
+            @Override
+            public void onClick(Integer value) {
+                scb.Select(MapUnit.DEVICE_VALUE_MOUSE,value);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.setView(mv);
+        dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
         dialog.show();
     }
 
@@ -132,6 +164,8 @@ public class DBManagerMapUnit {
         tv_mfv = ((TextView)v.findViewById(R.id.tv_mfv));
         tv_fv0 = ((TextView)v.findViewById(R.id.tv_fv0));
         cb_fv0 = ((CheckBox)v.findViewById(R.id.cb_fv0));
+        tv_fv1 = ((TextView)v.findViewById(R.id.tv_fv1));
+        cb_fv1 = ((CheckBox)v.findViewById(R.id.cb_fv1));
 
         tv_code.setText(String.valueOf(map.KeyCode));
         tv_name.setText(map.KeyName);
@@ -139,6 +173,7 @@ public class DBManagerMapUnit {
         tv_device.setText(String.valueOf(map.DeviceValue));
         tv_mfv.setText(String.valueOf(map.MFV));
         tv_fv0.setText(String.valueOf(map.FV0));
+        tv_fv1.setText(String.valueOf(map.FV1));
 
         if(map.FV0 == 0)
         {
@@ -155,6 +190,25 @@ public class DBManagerMapUnit {
                     tv_fv0.setText("1");
                 }else{
                     tv_fv0.setText("0");
+                }
+            }
+        });
+
+        if(map.FV1 == 0)
+        {
+            cb_fv1.setChecked(false);
+        }else{
+            cb_fv1.setChecked(true);
+        }
+
+        cb_fv1.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    tv_fv1.setText("1");
+                }else{
+                    tv_fv1.setText("0");
                 }
             }
         });
@@ -188,6 +242,7 @@ public class DBManagerMapUnit {
                         map.KeyCode = Integer.parseInt(tv_code.getText().toString());
                         map.DeviceValue = Integer.parseInt(tv_device.getText().toString());
                         map.FV0 = Integer.parseInt(tv_fv0.getText().toString());
+                        map.FV1 = Integer.parseInt(tv_fv1.getText().toString());
 
                         KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(map.KeyCode);
                         if(kbc != null) {
@@ -411,6 +466,105 @@ public class DBManagerMapUnit {
         }
         dialog.show();
     }
+
+    public void showMapMouseAdapterView(MapUnit map)
+    {
+
+        View v = View.inflate(mContext, R.layout.map_mouse_layout, null);
+
+        Button bt_change = ((Button)v.findViewById(R.id.bt_change));
+        Button bt_eye = ((Button)v.findViewById(R.id.bt_eye));
+
+        if(map.KeyCode != 0 ) {
+            bt_change.setText(map.KeyName);
+            bt_change.setTag(map.KeyCode);
+        }else{
+            bt_change.setTag(0);
+        }
+
+        if(map.FV0 != 0 ) {
+            bt_eye.setText(map.FS0);
+            bt_eye.setTag(map.FV0);
+        }else{
+            bt_eye.setTag(0);
+        }
+
+        bt_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_change.setText(kbc.Name);
+                            bt_change.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+        bt_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_eye.setText(kbc.Name);
+                            bt_eye.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("吃鸡鼠标滑动")
+                .setView(v)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                            map.KeyName = bt_change.getText().toString();
+                            map.KeyCode = (Integer) bt_change.getTag();
+
+                            map.FS0 = bt_eye.getText().toString();
+                            map.FV0 = (Integer) bt_eye.getTag();
+
+
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setNeutralButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(mFloatMenu.mFloatMapManager.maplist.size() == 1)
+                        {
+                            Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
+                        }else{
+                            map.btm.Remove();
+                            mFloatMenu.mFloatMapManager.maplist.remove(map);
+                            Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.setCancelable(false);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
+    }
+
 
     private AdapterView.OnItemClickListener OnItemClickListenerItem = new AdapterView.OnItemClickListener() {
         @Override

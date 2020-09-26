@@ -92,6 +92,8 @@ public class FloatMapManager {
                     map.bt.Remove();
                 }else if(map.MFV == MapUnit.MFV_PUBG){
                     map.bts.Remove();
+                }else if(map.MFV == MapUnit.MFV_MOUSE){
+                    map.btm.Remove();
                 }
             }
             maplist.clear();
@@ -109,6 +111,8 @@ public class FloatMapManager {
                 map.bt =  new FloatButtonMap(mContext,mFloatMenu,map);
             }else if(map.MFV == MapUnit.MFV_PUBG){
                 map.bts =  new FloatButtonMapSlide(mContext,mFloatMenu,map);
+            }else if(map.MFV == MapUnit.MFV_MOUSE){
+                map.btm =  new FloatButtonMapMouse(mContext,mFloatMenu,map);
             }
 
         }
@@ -119,7 +123,7 @@ public class FloatMapManager {
         if(maplist == null)
             maplist = new ArrayList<MapUnit>();
 
-        final String items[] = {"普通按键","吃鸡移动滑盘"};
+        final String items[] = {"普通按键","吃鸡移动滑盘","吃鸡鼠标滑动"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 .setTitle("选择添加的类型")
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -156,6 +160,21 @@ public class FloatMapManager {
                                 mFloatMenu.dbManager.showMapSlideAdapterView(map);
                                 maplist.add(map);
                                 break;
+                            case 2:
+                                map = new MapUnit();
+                                if(maplist.size() > 0) {
+                                    map.Name = maplist.get(0).Name;
+                                }
+                                map.PX = 400;
+                                map.PY = 400;
+                                map.FV1 = 500;
+                                map.FV2 = 400;
+                                map.KeyName = "";
+                                map.MFV = MapUnit.MFV_MOUSE;
+                                map.btm =  new FloatButtonMapMouse(mContext,mFloatMenu,map);
+                                mFloatMenu.dbManager.showMapMouseAdapterView(map);
+                                maplist.add(map);
+                                break;
                             default:
                                 break;
                         }
@@ -188,6 +207,7 @@ public class FloatMapManager {
         if(maplist.get(0).Name.length() == 0)
         {
             final EditText editText = new EditText(mContext);
+
             AlertDialog dialog = new AlertDialog.Builder(mContext)
                     .setTitle("请输入新的映射名称")
                     .setView(editText)

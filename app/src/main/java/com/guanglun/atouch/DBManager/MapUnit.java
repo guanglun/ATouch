@@ -3,6 +3,7 @@ package com.guanglun.atouch.DBManager;
 import android.content.ContentValues;
 
 import com.guanglun.atouch.Floating.FloatButtonMap;
+import com.guanglun.atouch.Floating.FloatButtonMapMouse;
 import com.guanglun.atouch.Floating.FloatButtonMapSlide;
 
 public class MapUnit {
@@ -14,6 +15,7 @@ public class MapUnit {
     final static public int MFV_NULL       = 0;
     final static public int MFV_NORMAL     = 1;
     final static public int MFV_PUBG       = 2;
+    final static public int MFV_MOUSE      = 3;
 
     final static public int FV0_NORMAL_NORMAL   = 0;
     final static public int FV0_NORMAL_LONG     = 1;
@@ -48,6 +50,7 @@ public class MapUnit {
 
     public FloatButtonMap bt = null;
     public FloatButtonMapSlide bts = null;
+    public FloatButtonMapMouse btm = null;
 
     public MapUnit()
     {
