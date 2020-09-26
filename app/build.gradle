@@ -6,8 +6,8 @@ android {
         applicationId "com.guanglun.atouch"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 18
-        versionName "1.8"
+        versionCode 19
+        versionName "1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
