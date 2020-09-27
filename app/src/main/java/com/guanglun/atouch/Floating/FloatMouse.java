@@ -37,6 +37,10 @@ public class FloatMouse {
         this.mFloatMenu = mFloatMenu;
         this.mFloatingManager = mFloatMenu.mFloatingManager;
 
+        mRelativeLayout = new RelativeLayout(mContext);
+        mParamsMouse = new WindowManager.LayoutParams();
+
+
 
 
     }
@@ -46,75 +50,70 @@ public class FloatMouse {
         if(!is_enable)
         {
             is_enable = true;
-        }
 
-        mRelativeLayout = new RelativeLayout(mContext);
-        mParamsMouse = new WindowManager.LayoutParams();
+            RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        RelativeLayout.LayoutParams mLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        mLayoutParams.width = EasyTool.dip2px(mContext,LENGTH);
-        mLayoutParams.height  = EasyTool.dip2px(mContext,HIGHT);
+            mLayoutParams.width = EasyTool.dip2px(mContext,LENGTH);
+            mLayoutParams.height  = EasyTool.dip2px(mContext,HIGHT);
 
 
-        mLayoutParams.setMargins(0,0,0,0);
-        mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
-        mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+            mLayoutParams.setMargins(0,0,0,0);
+            mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+            mLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
 
-        mButton = new ImageButton(mContext);
+            mButton = new ImageButton(mContext);
+            mButton.setPadding(0,0,0,0);
+            mButton.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
 
+            mButton.setScaleType(ImageButton.ScaleType.FIT_XY);
+            mButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.float_mouse));
+            mButton.setBackgroundColor(0x00000000);
+            mButton.setId(View.generateViewId());
+            mButton.setClickable(false);
 
-        mButton.setPadding(0,0,0,0);
-        mButton.setLayoutParams(mLayoutParams);   ////设置按钮的布局属性
+            mRelativeLayout.setVisibility(View.INVISIBLE);
 
-        mButton.setScaleType(ImageButton.ScaleType.FIT_XY);
-        mButton.setImageDrawable(mContext.getResources().getDrawable(R.drawable.float_mouse));
-        mButton.setBackgroundColor(0x00000000);
-        mButton.setId(View.generateViewId());
-        mButton.setClickable(false);
+            mParamsMouse.gravity = Gravity.LEFT|Gravity.TOP;
+            //总是出现在应用程序窗口之上
+            if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+                mParamsMouse.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            }else{
+                mParamsMouse.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+            }
 
-        mRelativeLayout.setVisibility(View.INVISIBLE);
-
-        mParamsMouse.gravity = Gravity.LEFT|Gravity.TOP;
-        //总是出现在应用程序窗口之上
-        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
-            mParamsMouse.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        }else{
-            mParamsMouse.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        }
-
-        //设置图片格式，效果为背景透明
-        mParamsMouse.format = PixelFormat.RGBA_8888;
-        mParamsMouse.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
+            //设置图片格式，效果为背景透明
+            mParamsMouse.format = PixelFormat.RGBA_8888;
+            mParamsMouse.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
 
 //        mParamsMouse.flags =  WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 //                | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
 
-        /*
-         * 初始化不显示
-         * */
-        mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-        mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+            /*
+             * 初始化不显示
+             * */
+            mParamsMouse.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+            mParamsMouse.height = FrameLayout.LayoutParams.WRAP_CONTENT;
 
-        mRelativeLayout.setClickable(false);
-        mRelativeLayout.setBackgroundColor(0x00000000);
-        //mRelativeLayout.setBackgroundColor(0x6000FF00);
+            mRelativeLayout.setClickable(false);
+            mRelativeLayout.setBackgroundColor(0x00000000);
+            //mRelativeLayout.setBackgroundColor(0x6000FF00);
 
-        mRelativeLayout.addView(mButton);
-        mFloatingManager.addView(mRelativeLayout, mParamsMouse);
+            mRelativeLayout.addView(mButton);
+            mFloatingManager.addView(mRelativeLayout, mParamsMouse);
 
-        mRelativeLayout.setVisibility(View.VISIBLE);
-        mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
+            mRelativeLayout.setVisibility(View.VISIBLE);
+            mFloatingManager.updateView(mRelativeLayout, mParamsMouse);
+        }
     }
 
     public void Hide()
     {
         if(is_enable)
         {
+            is_enable = false;
             mFloatingManager.removeView(mRelativeLayout);
         }
-
     }
 
     public void SetMouse(int x,int y)

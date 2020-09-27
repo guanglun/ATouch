@@ -20,7 +20,7 @@ import java.io.InputStream;
 public class SQLdm {
 
     private String DEBUG_TAG = "SQLdm";
-    //数据库存储路径
+
     private final String filePath = "/ATouch";
     private final String DBName = "KeyboardMouse.db";
     private final String SettingName = "AppConfig.properties";
