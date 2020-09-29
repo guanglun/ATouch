@@ -11,10 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.guanglun.atouch.Floating.FloatMenu;
+import com.guanglun.atouch.Floating.JoyStickView;
 import com.guanglun.atouch.Floating.KeyBoardView;
 import com.guanglun.atouch.Floating.MouseView;
 import com.guanglun.atouch.R;
@@ -69,6 +71,9 @@ public class DBManagerMapUnit {
                             case 1:
                                 showKeyBoardAdapterView(scb);
                                 break;
+                            case 2:
+                                showJoyStickAdapterView(scb);
+                                break;
                             default:
                                 break;
                         }
@@ -86,6 +91,36 @@ public class DBManagerMapUnit {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
 
+        dialog.show();
+    }
+
+    private void showJoyStickAdapterView(SelectCallBack scb)
+    {
+
+        final AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("选择映射的手柄按键")
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        JoyStickView mv = new JoyStickView(mContext, new JoyStickView.MCallback() {
+            @Override
+            public void onClick(Integer value) {
+                scb.Select(MapUnit.DEVICE_VALUE_JOYSTICK,value);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.setView(mv);
+        dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
         dialog.show();
     }
 
@@ -435,6 +470,94 @@ public class DBManagerMapUnit {
                         map.FV5 = (Integer) bt_sup.getTag();
 
                         //Log.i("ATService",map.toString());
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setNeutralButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(mFloatMenu.mFloatMapManager.maplist.size() == 1)
+                        {
+                            Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
+                        }else{
+                            map.bts.Remove();
+                            mFloatMenu.mFloatMapManager.maplist.remove(map);
+                            Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.setCancelable(false);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
+    }
+
+    public void showMapRockerAdapterView(MapUnit map)
+    {
+
+        View v = View.inflate(mContext, R.layout.map_rocker_layout, null);
+
+        Button bt_eye = ((Button)v.findViewById(R.id.bt_eye));
+        RadioButton rb_left = ((RadioButton)v.findViewById(R.id.rb_left));
+        RadioButton rb_right = ((RadioButton)v.findViewById(R.id.rb_right));
+
+        if(map.FV0 != 0 ) {
+            bt_eye.setText(map.FS0);
+            bt_eye.setTag(map.FV0);
+        }else{
+            bt_eye.setTag(0);
+        }
+
+        if(map.FV3 == 0)
+        {
+            rb_left.setChecked(true);
+        }else{
+            rb_right.setChecked(true);
+        }
+
+        bt_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_eye.setText(kbc.Name);
+                            bt_eye.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("摇杆移动滑盘")
+                .setView(v)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        map.FS0 = bt_eye.getText().toString();
+                        map.FV0 = (Integer) bt_eye.getTag();
+
+                        if(rb_left.isChecked())
+                        {
+                            map.FV3 = 0;
+                        }else{
+                            map.FV3 = 1;
+                        }
                         dialog.dismiss();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {

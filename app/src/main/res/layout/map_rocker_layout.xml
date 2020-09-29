@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/bt_eye"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="4dp"
+        android:text="设置视角按键"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        tools:layout_editor_absoluteX="0dp"></LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bt_eye"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/rb_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="左摇杆" />
+
+        <RadioButton
+            android:id="@+id/rb_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="右摇杆" />
+    </RadioGroup>
+
+
+</android.support.constraint.ConstraintLayout>
