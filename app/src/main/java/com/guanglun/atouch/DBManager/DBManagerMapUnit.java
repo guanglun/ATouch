@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -558,6 +559,86 @@ public class DBManagerMapUnit {
                         }else{
                             map.FV3 = 1;
                         }
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setNeutralButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(mFloatMenu.mFloatMapManager.maplist.size() == 1)
+                        {
+                            Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
+                        }else{
+                            map.bts.Remove();
+                            mFloatMenu.mFloatMapManager.maplist.remove(map);
+                            Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.setCancelable(false);
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
+    }
+
+    public void showMapATouchAdapterView(MapUnit map)
+    {
+
+        View v = View.inflate(mContext, R.layout.map_atouch_layout, null);
+
+        Button bt_eye = ((Button)v.findViewById(R.id.bt_eye));
+        EditText et_x = ((EditText)v.findViewById(R.id.et_x));
+        EditText et_y = ((EditText)v.findViewById(R.id.et_y));
+
+        if(map.FV0 != 0 ) {
+            bt_eye.setText(map.FS0);
+            bt_eye.setTag(map.FV0);
+        }else{
+            bt_eye.setTag(0);
+        }
+
+        et_x.setText(String.valueOf(map.FV3));
+        et_y.setText(String.valueOf(map.FV4));
+
+        bt_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectDeviceAdapterView(new SelectCallBack() {
+                    @Override
+                    public void Select(int device, int value) {
+                        KeyBoardCode kbc = mFloatMenu.dbManager.dbControl.getKeyBoardCode(value);
+                        if(kbc != null) {
+                            bt_eye.setText(kbc.Name);
+                            bt_eye.setTag(value);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("ATouch体感")
+                .setView(v)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        map.FS0 = bt_eye.getText().toString();
+                        map.FV0 = (Integer) bt_eye.getTag();
+                        map.FV3 = Integer.parseInt(et_x.getText().toString());
+                        map.FV4 = Integer.parseInt(et_y.getText().toString());
+
                         dialog.dismiss();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {

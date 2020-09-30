@@ -96,6 +96,8 @@ public class FloatMapManager {
                     map.btm.Remove();
                 }else if(map.MFV == MapUnit.MFV_ROCKER){
                     map.btr.Remove();
+                }else if(map.MFV == MapUnit.MFV_ATOUCH){
+                    map.bta.Remove();
                 }
             }
             maplist.clear();
@@ -117,6 +119,8 @@ public class FloatMapManager {
                 map.btm =  new FloatButtonMapMouse(mContext,mFloatMenu,map);
             }else if(map.MFV == MapUnit.MFV_ROCKER){
                 map.btr =  new FloatButtonMapRocker(mContext,mFloatMenu,map);
+            }else if(map.MFV == MapUnit.MFV_ATOUCH){
+                map.bta =  new FloatButtonMapATouch(mContext,mFloatMenu,map);
             }
 
         }
@@ -127,7 +131,7 @@ public class FloatMapManager {
         if(maplist == null)
             maplist = new ArrayList<MapUnit>();
 
-        final String items[] = {"普通按键","移动滑盘","鼠标滑动","摇杆滑动"};
+        final String items[] = {"普通按键","移动滑盘","鼠标滑动","摇杆滑动","ATouch体感"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 .setTitle("选择添加的类型")
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -192,6 +196,23 @@ public class FloatMapManager {
                                 map.MFV = MapUnit.MFV_ROCKER;
                                 map.btr =  new FloatButtonMapRocker(mContext,mFloatMenu,map);
                                 mFloatMenu.dbManager.showMapRockerAdapterView(map);
+                                maplist.add(map);
+                                break;
+                            case 4:
+                                map = new MapUnit();
+                                if(maplist.size() > 0) {
+                                    map.Name = maplist.get(0).Name;
+                                }
+                                map.PX = 400;
+                                map.PY = 400;
+                                map.FV1 = 500;
+                                map.FV2 = 400;
+                                map.FV3 = 30;
+                                map.FV4 = 30;
+                                map.KeyName = "";
+                                map.MFV = MapUnit.MFV_ATOUCH;
+                                map.bta =  new FloatButtonMapATouch(mContext,mFloatMenu,map);
+                                mFloatMenu.dbManager.showMapATouchAdapterView(map);
                                 maplist.add(map);
                                 break;
                             default:
