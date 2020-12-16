@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.guanglun.atouch.Floating.ATouchView;
 import com.guanglun.atouch.Floating.FloatMenu;
 import com.guanglun.atouch.Floating.JoyStickView;
 import com.guanglun.atouch.Floating.KeyBoardView;
@@ -58,7 +59,7 @@ public class DBManagerMapUnit {
 
     private void showSelectDeviceAdapterView(SelectCallBack scb)
     {
-        final String items[] = {"鼠标","键盘","手柄"};
+        final String items[] = {"鼠标","键盘","手柄","ATouch外设"};
         AlertDialog dialog = new AlertDialog.Builder(mContext)
                 .setTitle("选择添加的类型")
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -74,6 +75,9 @@ public class DBManagerMapUnit {
                                 break;
                             case 2:
                                 showJoyStickAdapterView(scb);
+                                break;
+                            case 3:
+                                showATouchAdapterView(scb);
                                 break;
                             default:
                                 break;
@@ -92,6 +96,36 @@ public class DBManagerMapUnit {
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
 
+        dialog.show();
+    }
+
+    private void showATouchAdapterView(SelectCallBack scb)
+    {
+
+        final AlertDialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("选择映射的ATouch外设按键")
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        ATouchView mv = new ATouchView(mContext, new ATouchView.MCallback() {
+            @Override
+            public void onClick(Integer value) {
+                scb.Select(MapUnit.DEVICE_VALUE_ATOUCH,value);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.setView(mv);
+        dialog.setCancelable(false);                                        // 设置是否可以通过点击Back键取消
+        if (Build.VERSION.SDK_INT>=26) {//8.0新特性
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }else{
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
         dialog.show();
     }
 
@@ -653,7 +687,7 @@ public class DBManagerMapUnit {
                         {
                             Toast.makeText(mContext,"无法删除！必须保留一个按键",Toast.LENGTH_SHORT).show();
                         }else{
-                            map.bts.Remove();
+                            map.bta.Remove();
                             mFloatMenu.mFloatMapManager.maplist.remove(map);
                             Toast.makeText(mContext,"删除成功",Toast.LENGTH_SHORT).show();
                         }

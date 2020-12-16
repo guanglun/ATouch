@@ -14,6 +14,7 @@ public class MapUnit {
     final static public int DEVICE_VALUE_MOUSE     = 1;
     final static public int DEVICE_VALUE_KEYBOARD  = 2;
     final static public int DEVICE_VALUE_JOYSTICK  = 3;
+    final static public int DEVICE_VALUE_ATOUCH    = 4;
 
     final static public int MFV_NULL       = 0;
     final static public int MFV_NORMAL     = 1;
